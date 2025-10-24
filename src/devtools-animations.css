@@ -1,0 +1,29 @@
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+    opacity: 0.7;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-down {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(100%);
+    opacity: 0.7;
+  }
+}
+
+.devtools-slide-up {
+  animation: slide-up 0.4s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.devtools-slide-down {
+  animation: slide-down 0.4s cubic-bezier(0.4, 0, 0.2, 1) both;
+}

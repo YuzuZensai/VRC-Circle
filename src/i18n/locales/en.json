@@ -1,0 +1,265 @@
+{
+  "layout": {
+    "sidebar": {
+      "appName": "VRC Circle",
+      "home": "Home",
+      "worlds": "Worlds",
+      "avatars": "Avatars",
+      "logs": "Logs",
+      "developerTools": "Developer Tools"
+    },
+    "friendsSidebar": {
+      "title": "Friends",
+      "collapse": "Collapse friends",
+      "expand": "Expand friends",
+      "location": {
+        "offline": "Offline",
+        "private": "Private instance",
+        "traveling": "Traveling",
+        "group": "Group instance",
+        "instance": "In world instance"
+      },
+      "status": {
+        "website": "On website"
+      },
+      "sections": {
+        "inWorld": {
+          "title": "In World",
+          "empty": "No friends in a world right now"
+        },
+        "active": {
+          "title": "Active",
+          "empty": "No friends active on VRChat"
+        },
+        "offline": {
+          "title": "Offline",
+          "empty": "No friends offline"
+        }
+      },
+      "empty": {
+        "collapsed": "No friends to display"
+      },
+      "errors": {
+        "loadFailed": "Failed to load friends"
+      },
+      "onlineCount": "{{count}} online"
+    },
+    "developerTools": {
+      "tabs": {
+        "logger": "Logger",
+        "databaseStudio": "Database Studio",
+        "storeStudio": "Store Studio",
+        "imageCache": "Image Cache"
+      }
+    }
+  },
+  "component": {
+    "developerTools": {
+      "logger": {
+        "title": "Logger",
+        "sidebar": {
+          "refresh": "Refresh",
+          "autoRefresh": "Auto-refresh",
+          "export": "Export",
+          "clearAll": "Clear All",
+          "searchLabel": "Search",
+          "searchPlaceholder": "Search...",
+          "source": "Source",
+          "level": "Level",
+          "counts": "{{filtered}} / {{total}} logs"
+        },
+        "main": {
+          "title": "Log Entries",
+          "description": "View and filter application logs from frontend and backend",
+          "empty": "No logs found matching the current filters"
+        },
+        "toasts": {
+          "refreshed": "Logs refreshed",
+          "refreshFailed": "Failed to refresh logs",
+          "cleared": "All logs cleared",
+          "clearFailed": "Failed to clear logs",
+          "exported": "Logs exported successfully",
+          "exportFailed": "Failed to export logs"
+        },
+        "confirm": {
+          "clearAll": "Are you sure you want to clear all logs?"
+        }
+      },
+      "databaseStudio": {
+        "sidebar": {
+          "title": "Database Studio",
+          "refresh": "Refresh"
+        },
+        "tabs": {
+          "browse": "Browse Data",
+          "query": "Custom Query"
+        },
+        "browse": {
+          "noTableSelected": {
+            "title": "No Table Selected",
+            "description": "Select a table from the sidebar to view its data"
+          },
+          "schema": {
+            "title": "Schema",
+            "show": "Show",
+            "hide": "Hide",
+            "hidden": "{{count}} column(s) hidden"
+          },
+          "data": {
+            "title": "Data",
+            "previous": "Previous",
+            "next": "Next",
+            "pageInfo": "Page {{page}} of {{total}}",
+            "loading": "Loading...",
+            "noData": "No data available",
+            "table": {
+              "noRows": "No rows in this table",
+              "actions": "Actions",
+              "saveTitle": "Save changes",
+              "deleteTitle": "Delete row"
+            }
+          }
+        },
+        "toasts": {
+          "loadTablesFailed": "Failed to load database tables",
+          "loadTableDataFailed": "Failed to load table data",
+          "enterQuery": "Please enter a query",
+          "queryExecuted": "Query executed successfully",
+          "queryFailed": "Query failed: {{message}}",
+          "cannotUpdateNoPK": "Cannot update: No primary key found",
+          "rowUpdated": "Row updated successfully",
+          "updateFailed": "Failed to update row: {{message}}",
+          "cannotDeleteNoPK": "Cannot delete: No primary key found",
+          "rowDeleted": "Row deleted successfully",
+          "deleteFailed": "Failed to delete row: {{message}}"
+        },
+        "confirm": {
+          "deleteRow": "Delete row where {{column}} = {{value}}?"
+        }
+      }
+    },
+    "loginRequired": {
+      "title": "Login Required",
+      "bottomText": "Sign in to your VRChat account to access this feature.",
+      "signIn": "Sign In"
+    },
+    "accountMenu": {
+      "logout": "Logout",
+      "setStatus": "Set Status",
+      "customStatusPlaceholder": "Custom status message...",
+      "setCustomStatus": "Set Custom Status",
+      "clearStatus": "Clear status",
+      "statusCopied": "Status copied to clipboard!",
+      "statusCopyFailed": "Failed to copy status",
+      "viewProfile": "View Profile",
+      "switchAccount": "Switch Account",
+      "addAccount": "Add Account",
+      "settings": "Settings",
+      "statusUpdateFailed": "Failed to update status. Please try again.",
+      "accountSwitchFailed": "Failed to switch account. Please try again.",
+      "unknownUser": "Unknown User",
+      "unknownUsername": "Unknown"
+    },
+    "themeSwitcher": {
+      "toggle": "Toggle theme",
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System"
+    }
+  },
+  "page": {
+    "login": {
+      "title": "Sign in",
+      "subtitle": "Sign in to your VRChat account",
+      "welcomeTitle": "Welcome back",
+      "welcomeDescription": "Enter your credentials to continue",
+      "placeholderEmail": "vrcat@example.com",
+      "placeholderPassword": "••••••••",
+      "signingIn": "Signing in...",
+      "signInButton": "Sign In",
+      "skip": "Skip logging in"
+    },
+    "worlds": {
+      "title": "Worlds",
+      "description": "Browse and manage your uploaded VRChat worlds",
+      "showingSingle": "Showing {{count}} world",
+      "showingMultiple": "Showing {{count}} worlds",
+      "refresh": {
+        "loading": "Loading...",
+        "label": "Refresh"
+      },
+      "error": {
+        "title": "Unable to load worlds",
+        "tryAgain": "Try again"
+      },
+      "noItemsTitle": "No worlds yet",
+      "noItemsDescription": "We couldn't find any uploaded worlds for this account. Upload a world to VRChat to see it here.",
+      "noPreview": "No preview available",
+      "byAuthor": "By {{author}}",
+      "authorUnknown": "Author unknown",
+      "labels": {
+        "visits": "Visits",
+        "favorites": "Favorites",
+        "capacity": "Capacity",
+        "updatedPrefix": "Updated {{date}}"
+      }
+    },
+    "avatars": {
+      "title": "Avatars",
+      "description": "Browse and manage your uploaded VRChat avatars",
+      "showingSingle": "Showing {{count}} avatar",
+      "showingMultiple": "Showing {{count}} avatars",
+      "refresh": {
+        "loading": "Loading...",
+        "label": "Refresh"
+      },
+      "error": {
+        "title": "Unable to load avatars",
+        "tryAgain": "Try again"
+      },
+      "noItemsTitle": "No avatars yet",
+      "noItemsDescription": "We couldn't find any uploaded avatars for this account. Upload an avatar to VRChat to see it here.",
+      "noPreview": "No preview available",
+      "byAuthor": "By {{author}}",
+      "authorUnknown": "Author unknown",
+      "labels": {
+        "performance": "Performance",
+        "release": "Release",
+        "updated": "Updated",
+        "version": "Version",
+        "style": "Style",
+        "createdPrefix": "Created {{date}}",
+        "unknown": "Unknown"
+      },
+      "status": {
+        "public": "Public",
+        "private": "Private",
+        "hidden": "Hidden",
+        "all": "All"
+      }
+    },
+    "verify2fa": {
+      "title": "Two-Factor Authentication",
+      "authenticator": "Authenticator App",
+      "email": "Email Code",
+      "enterCode": "Enter verification code",
+      "appInstruction": "Open your authenticator app and enter the 6-digit code.",
+      "emailInstruction": "Check your email for the one-time code and enter it below.",
+      "code": "Verification Code",
+      "placeholder": "000000",
+      "verifying": "Verifying...",
+      "verify": "Verify",
+      "back": "Back to Sign In",
+      "help": "Can't sign in? Contact support or try another sign-in method.",
+      "invalid": "Invalid code. Please try again."
+    }
+  },
+  "common": {
+    "status": {
+      "active": "Active",
+      "joinMe": "Join Me",
+      "askMe": "Ask Me",
+      "busy": "Busy"
+    }
+  }
+}

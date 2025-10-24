@@ -1,0 +1,265 @@
+{
+  "layout": {
+    "sidebar": {
+      "appName": "VRC Circle",
+      "home": "ホーム",
+      "worlds": "ワールド",
+      "avatars": "アバター",
+      "logs": "ログ",
+      "developerTools": "開発者ツール"
+    },
+    "friendsSidebar": {
+      "title": "フレンド",
+      "collapse": "フレンドを折りたたむ",
+      "expand": "フレンドを展開",
+      "location": {
+        "offline": "オフライン",
+        "private": "プライベートインスタンス",
+        "traveling": "移動中",
+        "group": "グループインスタンス",
+        "instance": "ワールドのインスタンス"
+      },
+      "status": {
+        "website": "ウェブサイト上"
+      },
+      "sections": {
+        "inWorld": {
+          "title": "ワールド内",
+          "empty": "現在ワールドにいるフレンドはいません"
+        },
+        "active": {
+          "title": "アクティブ",
+          "empty": "VRChatでアクティブなフレンドはいません"
+        },
+        "offline": {
+          "title": "オフライン",
+          "empty": "オフラインのフレンドはいません"
+        }
+      },
+      "empty": {
+        "collapsed": "表示するフレンドがいません"
+      },
+      "errors": {
+        "loadFailed": "フレンドの読み込みに失敗しました"
+      },
+      "onlineCount": "{{count}}人オンライン"
+    },
+    "developerTools": {
+      "tabs": {
+        "logger": "ロガー",
+        "databaseStudio": "データベース",
+        "storeStudio": "ストアスタジオ",
+        "imageCache": "画像キャッシュ"
+      }
+    }
+  },
+  "component": {
+    "developerTools": {
+      "logger": {
+        "title": "ロガー",
+        "sidebar": {
+          "refresh": "更新",
+          "autoRefresh": "自動更新",
+          "export": "エクスポート",
+          "clearAll": "全てクリア",
+          "searchLabel": "検索",
+          "searchPlaceholder": "検索...",
+          "source": "ソース",
+          "level": "レベル",
+          "counts": "{{filtered}} / {{total}} 件のログ"
+        },
+        "main": {
+          "title": "ログエントリ",
+          "description": "フロントエンドとバックエンドのアプリケーションログを表示・フィルタリングします",
+          "empty": "現在のフィルタに一致するログはありません"
+        },
+        "toasts": {
+          "refreshed": "ログを更新しました",
+          "refreshFailed": "ログの更新に失敗しました",
+          "cleared": "全てのログをクリアしました",
+          "clearFailed": "ログのクリアに失敗しました",
+          "exported": "ログをエクスポートしました",
+          "exportFailed": "ログのエクスポートに失敗しました"
+        },
+        "confirm": {
+          "clearAll": "全てのログをクリアしてもよろしいですか？"
+        }
+      },
+      "databaseStudio": {
+        "sidebar": {
+          "title": "データベース",
+          "refresh": "更新"
+        },
+        "tabs": {
+          "browse": "データ参照",
+          "query": "カスタムクエリ"
+        },
+        "browse": {
+          "noTableSelected": {
+            "title": "テーブルが選択されていません",
+            "description": "サイドバーからテーブルを選択してデータを表示してください"
+          },
+          "schema": {
+            "title": "スキーマ",
+            "show": "表示",
+            "hide": "非表示",
+            "hidden": "{{count}} 列が非表示"
+          },
+          "data": {
+            "title": "データ",
+            "previous": "前へ",
+            "next": "次へ",
+            "pageInfo": "ページ {{page}} / {{total}}",
+            "loading": "読み込み中...",
+            "noData": "データがありません",
+            "table": {
+              "noRows": "このテーブルに行がありません",
+              "actions": "操作",
+              "saveTitle": "変更を保存",
+              "deleteTitle": "行を削除"
+            }
+          }
+        },
+        "toasts": {
+          "loadTablesFailed": "データベースのテーブルの読み込みに失敗しました",
+          "loadTableDataFailed": "テーブルデータの読み込みに失敗しました",
+          "enterQuery": "クエリを入力してください",
+          "queryExecuted": "クエリが正常に実行されました",
+          "queryFailed": "クエリの実行に失敗しました: {{message}}",
+          "cannotUpdateNoPK": "更新できません: 主キーが見つかりません",
+          "rowUpdated": "行を更新しました",
+          "updateFailed": "行の更新に失敗しました: {{message}}",
+          "cannotDeleteNoPK": "削除できません: 主キーが見つかりません",
+          "rowDeleted": "行を削除しました",
+          "deleteFailed": "行の削除に失敗しました: {{message}}"
+        },
+        "confirm": {
+          "deleteRow": "{{column}} = {{value}} の行を削除しますか?"
+        }
+      }
+    },
+    "loginRequired": {
+      "title": "ログインが必要です",
+      "bottomText": "この機能にアクセスするには VRChat アカウントでサインインしてください。",
+      "signIn": "サインイン"
+    },
+    "accountMenu": {
+      "logout": "ログアウト",
+      "setStatus": "ステータスを設定",
+      "customStatusPlaceholder": "カスタムステータスメッセージ...",
+      "setCustomStatus": "カスタムステータスを設定",
+      "clearStatus": "ステータスをクリア",
+      "statusCopied": "ステータスをクリップボードにコピーしました！",
+      "statusCopyFailed": "ステータスのコピーに失敗しました",
+      "viewProfile": "プロフィールを見る",
+      "switchAccount": "アカウントを切り替え",
+      "addAccount": "アカウントを追加",
+      "settings": "設定",
+      "statusUpdateFailed": "ステータスの更新に失敗しました。もう一度お試しください。",
+      "accountSwitchFailed": "アカウントの切り替えに失敗しました。もう一度お試しください。",
+      "unknownUser": "不明なユーザー",
+      "unknownUsername": "不明"
+    },
+    "themeSwitcher": {
+      "toggle": "テーマを切り替え",
+      "light": "ライト",
+      "dark": "ダーク",
+      "system": "システム"
+    }
+  },
+  "page": {
+    "login": {
+      "title": "サインイン",
+      "subtitle": "VRChat アカウントでサインイン",
+      "welcomeTitle": "おかえりなさい",
+      "welcomeDescription": "続行するには資格情報を入力してください",
+      "placeholderEmail": "vrchat@example.com",
+      "placeholderPassword": "••••••••",
+      "signingIn": "サインイン中...",
+      "signInButton": "サインイン",
+      "skip": "ログインをスキップ"
+    },
+    "worlds": {
+      "title": "ワールド",
+      "description": "アップロードした VRChat ワールドを閲覧・管理します",
+      "showingSingle": "{{count}} 件のワールドを表示",
+      "showingMultiple": "{{count}} 件のワールドを表示",
+      "refresh": {
+        "loading": "読み込み中...",
+        "label": "更新"
+      },
+      "error": {
+        "title": "ワールドの読み込みに失敗しました",
+        "tryAgain": "再試行"
+      },
+      "noItemsTitle": "まだワールドがありません",
+      "noItemsDescription": "このアカウントにアップロードされたワールドが見つかりませんでした。ワールドを VRChat にアップロードするとここに表示されます。",
+      "noPreview": "プレビューはありません",
+      "byAuthor": "作成者: {{author}}",
+      "authorUnknown": "作成者不明",
+      "labels": {
+        "visits": "訪問数",
+        "favorites": "お気に入り",
+        "capacity": "容量",
+        "updatedPrefix": "更新日 {{date}}"
+      }
+    },
+    "avatars": {
+      "title": "アバター",
+      "description": "アップロードした VRChat アバターを閲覧・管理します",
+      "showingSingle": "{{count}} 件のアバターを表示",
+      "showingMultiple": "{{count}} 件のアバターを表示",
+      "refresh": {
+        "loading": "読み込み中...",
+        "label": "更新"
+      },
+      "error": {
+        "title": "アバターの読み込みに失敗しました",
+        "tryAgain": "再試行"
+      },
+      "noItemsTitle": "まだアバターがありません",
+      "noItemsDescription": "このアカウントにアップロードされたアバターが見つかりませんでした。アバターを VRChat にアップロードするとここに表示されます。",
+      "noPreview": "プレビューはありません",
+      "byAuthor": "作成者: {{author}}",
+      "authorUnknown": "作成者不明",
+      "labels": {
+        "performance": "パフォーマンス",
+        "release": "リリース",
+        "updated": "更新日",
+        "version": "バージョン",
+        "style": "スタイル",
+        "createdPrefix": "作成日 {{date}}",
+        "unknown": "不明"
+      },
+      "status": {
+        "public": "公開",
+        "private": "プライベート",
+        "hidden": "非表示",
+        "all": "すべて"
+      }
+    },
+    "verify2fa": {
+      "title": "二段階認証",
+      "authenticator": "認証アプリ",
+      "email": "メールコード",
+      "enterCode": "確認コードを入力",
+      "appInstruction": "認証アプリを開き、6 桁のコードを入力してください。",
+      "emailInstruction": "メールに送信されたワンタイムコードを確認し、下に入力してください。",
+      "code": "確認コード",
+      "placeholder": "000000",
+      "verifying": "確認中...",
+      "verify": "確認",
+      "back": "サインインに戻る",
+      "help": "サインインできませんか？サポートに連絡するか別のサインイン方法を試してください。",
+      "invalid": "無効なコードです。もう一度お試しください。"
+    }
+  },
+  "common": {
+    "status": {
+      "active": "アクティブ",
+      "joinMe": "参加して",
+      "askMe": "聞いて",
+      "busy": "取り込み中"
+    }
+  }
+}

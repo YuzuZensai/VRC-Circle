@@ -1,0 +1,265 @@
+{
+  "layout": {
+    "sidebar": {
+      "appName": "VRC Circle",
+      "home": "หน้าแรก",
+      "worlds": "เวิลด์",
+      "avatars": "อวาตาร์",
+      "logs": "บันทึก",
+      "developerTools": "เครื่องมือสำหรับนักพัฒนา"
+    },
+    "friendsSidebar": {
+      "title": "เพื่อน",
+      "collapse": "ยุบรายการเพื่อน",
+      "expand": "ขยายรายการเพื่อน",
+      "location": {
+        "offline": "ออฟไลน์",
+        "private": "อินสแตนซ์ส่วนตัว",
+        "traveling": "กำลังเดินทาง",
+        "group": "อินสแตนซ์กลุ่ม",
+        "instance": "อยู่ในอินสแตนซ์ของเวิลด์"
+      },
+      "status": {
+        "website": "อยู่บนเว็บไซต์"
+      },
+      "sections": {
+        "inWorld": {
+          "title": "ในเวิลด์",
+          "empty": "ขณะนี้ไม่มีเพื่อนอยู่ในเวิลด์"
+        },
+        "active": {
+          "title": "กำลังใช้งาน",
+          "empty": "ไม่มีเพื่อนที่กำลังใช้งาน VRChat"
+        },
+        "offline": {
+          "title": "ออฟไลน์",
+          "empty": "ไม่มีเพื่อนที่ออฟไลน์"
+        }
+      },
+      "empty": {
+        "collapsed": "ไม่มีเพื่อนให้แสดง"
+      },
+      "errors": {
+        "loadFailed": "โหลดเพื่อนไม่สำเร็จ"
+      },
+      "onlineCount": "{{count}} คนออนไลน์"
+    },
+    "developerTools": {
+      "tabs": {
+        "logger": "บันทึก",
+        "databaseStudio": "ฐานข้อมูล",
+        "storeStudio": "สตูดิโอสโตร์",
+        "imageCache": "แคชรูปภาพ"
+      }
+    }
+  },
+  "component": {
+    "developerTools": {
+      "logger": {
+        "title": "บันทึก",
+        "sidebar": {
+          "refresh": "รีเฟรช",
+          "autoRefresh": "รีเฟรชอัตโนมัติ",
+          "export": "ส่งออก",
+          "clearAll": "ล้างทั้งหมด",
+          "searchLabel": "ค้นหา",
+          "searchPlaceholder": "ค้นหา...",
+          "source": "แหล่งที่มา",
+          "level": "ระดับ",
+          "counts": "{{filtered}} / {{total}} บันทึก"
+        },
+        "main": {
+          "title": "รายการบันทึก",
+          "description": "ดูและกรองบันทึกแอปพลิเคชันจากฝั่ง frontend และ backend",
+          "empty": "ไม่พบบันทึกที่ตรงกับตัวกรองปัจจุบัน"
+        },
+        "toasts": {
+          "refreshed": "รีเฟรชบันทึกแล้ว",
+          "refreshFailed": "รีเฟรชบันทึกไม่สำเร็จ",
+          "cleared": "ล้างบันทึกทั้งหมดแล้ว",
+          "clearFailed": "ล้างบันทึกไม่สำเร็จ",
+          "exported": "ส่งออกบันทึกเรียบร้อยแล้ว",
+          "exportFailed": "ส่งออกบันทึกไม่สำเร็จ"
+        },
+        "confirm": {
+          "clearAll": "คุณแน่ใจหรือไม่ว่าต้องการล้างบันทึกทั้งหมด?"
+        }
+      },
+      "databaseStudio": {
+        "sidebar": {
+          "title": "สตูดิโอฐานข้อมูล",
+          "refresh": "รีเฟรช"
+        },
+        "tabs": {
+          "browse": "เรียกดูข้อมูล",
+          "query": "คิวรีที่กำหนดเอง"
+        },
+        "browse": {
+          "noTableSelected": {
+            "title": "ยังไม่ได้เลือกตาราง",
+            "description": "เลือกตารางจากแถบด้านข้างเพื่อดูข้อมูล"
+          },
+          "schema": {
+            "title": "สกีมา",
+            "show": "แสดง",
+            "hide": "ซ่อน",
+            "hidden": "มีคอลัมน์ที่ซ่อนอยู่ {{count}} คอลัมน์"
+          },
+          "data": {
+            "title": "ข้อมูล",
+            "previous": "ก่อนหน้า",
+            "next": "ถัดไป",
+            "pageInfo": "หน้า {{page}} จาก {{total}}",
+            "loading": "กำลังโหลด...",
+            "noData": "ไม่มีข้อมูล",
+            "table": {
+              "noRows": "ไม่มีแถวในตารางนี้",
+              "actions": "การกระทำ",
+              "saveTitle": "บันทึกการเปลี่ยนแปลง",
+              "deleteTitle": "ลบแถว"
+            }
+          }
+        },
+        "toasts": {
+          "loadTablesFailed": "โหลดตารางฐานข้อมูลไม่สำเร็จ",
+          "loadTableDataFailed": "โหลดข้อมูลตารางไม่สำเร็จ",
+          "enterQuery": "กรุณาป้อนคำสั่งคิวรี",
+          "queryExecuted": "คิวรีดำเนินการสำเร็จ",
+          "queryFailed": "คิวรีล้มเหลว: {{message}}",
+          "cannotUpdateNoPK": "ไม่สามารถอัปเดต: ไม่พบ primary key",
+          "rowUpdated": "อัปเดตแถวสำเร็จ",
+          "updateFailed": "อัปเดตแถวไม่สำเร็จ: {{message}}",
+          "cannotDeleteNoPK": "ไม่สามารถลบ: ไม่พบ primary key",
+          "rowDeleted": "ลบแถวสำเร็จ",
+          "deleteFailed": "ลบแถวไม่สำเร็จ: {{message}}"
+        },
+        "confirm": {
+          "deleteRow": "ต้องการลบแถวที่ {{column}} = {{value }} หรือไม่"
+        }
+      }
+    },
+    "loginRequired": {
+      "title": "ต้องเข้าสู่ระบบ",
+      "bottomText": "ลงชื่อเข้าใช้บัญชี VRChat ของคุณเพื่อเข้าถึงฟีเจอร์นี้",
+      "signIn": "ลงชื่อเข้าใช้"
+    },
+    "accountMenu": {
+      "logout": "ออกจากระบบ",
+      "setStatus": "ตั้งค่าสถานะ",
+      "customStatusPlaceholder": "ข้อความสถานะแบบกำหนดเอง...",
+      "setCustomStatus": "ตั้งค่าสถานะแบบกำหนดเอง",
+      "clearStatus": "ล้างสถานะ",
+      "statusCopied": "คัดลอกสถานะไปยังคลิปบอร์ดแล้ว!",
+      "statusCopyFailed": "คัดลอกสถานะไม่สำเร็จ",
+      "viewProfile": "ดูโปรไฟล์",
+      "switchAccount": "สลับบัญชี",
+      "addAccount": "เพิ่มบัญชี",
+      "settings": "การตั้งค่า",
+      "statusUpdateFailed": "อัปเดตสถานะไม่สำเร็จ กรุณาลองอีกครั้ง",
+      "accountSwitchFailed": "สลับบัญชีไม่สำเร็จ กรุณาลองอีกครั้ง",
+      "unknownUser": "ผู้ใช้ไม่ทราบ",
+      "unknownUsername": "ชื่อผู้ใช้ไม่ทราบ"
+    },
+    "themeSwitcher": {
+      "toggle": "สลับธีม",
+      "light": "สว่าง",
+      "dark": "มืด",
+      "system": "ระบบ"
+    }
+  },
+  "page": {
+    "login": {
+      "title": "ลงชื่อเข้าใช้",
+      "subtitle": "ลงชื่อเข้าใช้ด้วยบัญชี VRChat ของคุณ",
+      "welcomeTitle": "ยินดีต้อนรับกลับ",
+      "welcomeDescription": "กรอกข้อมูลประจำตัวของคุณเพื่อดำเนินการต่อ",
+      "placeholderEmail": "you@example.com",
+      "placeholderPassword": "••••••••",
+      "signingIn": "กำลังลงชื่อเข้าใช้...",
+      "signInButton": "ลงชื่อเข้าใช้",
+      "skip": "ข้ามการลงชื่อเข้าใช้"
+    },
+    "worlds": {
+      "title": "เวิลด์",
+      "description": "เรียกดูและจัดการเวิลด์ VRChat ที่คุณอัปโหลด",
+      "showingSingle": "แสดง {{count}} เวิลด์",
+      "showingMultiple": "แสดง {{count}} เวิลด์",
+      "refresh": {
+        "loading": "กำลังโหลด...",
+        "label": "รีเฟรช"
+      },
+      "error": {
+        "title": "ไม่สามารถโหลดเวิลด์ได้",
+        "tryAgain": "ลองอีกครั้ง"
+      },
+      "noItemsTitle": "ยังไม่มีเวิลด์",
+      "noItemsDescription": "ไม่พบเวิลด์ที่อัปโหลดสำหรับบัญชีนี้ อัปโหลดเวิลด์ไปยัง VRChat เพื่อให้ปรากฏที่นี่",
+      "noPreview": "ไม่มีตัวอย่าง",
+      "byAuthor": "โดย {{author}}",
+      "authorUnknown": "ผู้สร้างไม่ทราบ",
+      "labels": {
+        "visits": "ผู้เข้าชม",
+        "favorites": "บุ๊คมาร์ก",
+        "capacity": "ความจุ",
+        "updatedPrefix": "อัปเดต {{date}}"
+      }
+    },
+    "avatars": {
+      "title": "อวาตาร์",
+      "description": "เรียกดูและจัดการอวาตาร์ VRChat ที่คุณอัปโหลด",
+      "showingSingle": "แสดง {{count}} อวาตาร์",
+      "showingMultiple": "แสดง {{count}} อวาตาร์",
+      "refresh": {
+        "loading": "กำลังโหลด...",
+        "label": "รีเฟรช"
+      },
+      "error": {
+        "title": "ไม่สามารถโหลดอวาตาร์ได้",
+        "tryAgain": "ลองอีกครั้ง"
+      },
+      "noItemsTitle": "ยังไม่มีอวาตาร์",
+      "noItemsDescription": "ไม่พบอวาตาร์ที่อัปโหลดสำหรับบัญชีนี้ อัปโหลดอวาตาร์ไปยัง VRChat เพื่อให้ปรากฏที่นี่",
+      "noPreview": "ไม่มีตัวอย่าง",
+      "byAuthor": "โดย {{author}}",
+      "authorUnknown": "ผู้สร้างไม่ทราบ",
+      "labels": {
+        "performance": "ประสิทธิภาพ",
+        "release": "การปล่อย",
+        "updated": "อัปเดต",
+        "version": "เวอร์ชัน",
+        "style": "สไตล์",
+        "createdPrefix": "สร้างเมื่อ {{date}}",
+        "unknown": "ไม่ทราบ"
+      },
+      "status": {
+        "public": "สาธารณะ",
+        "private": "ส่วนตัว",
+        "hidden": "ซ่อน",
+        "all": "ทั้งหมด"
+      }
+    },
+    "verify2fa": {
+      "title": "การยืนยันแบบสองปัจจัย",
+      "authenticator": "แอปตัวตรวจสอบสิทธิ์",
+      "email": "รหัสทางอีเมล",
+      "enterCode": "ป้อนรหัสยืนยัน",
+      "appInstruction": "เปิดแอปตัวตรวจสอบสิทธิ์ของคุณแล้วป้อนรหัส 6 หลัก",
+      "emailInstruction": "ตรวจสอบอีเมลของคุณสำหรับรหัสแบบครั้งเดียวแล้วป้อนด้านล่าง",
+      "code": "รหัสยืนยัน",
+      "placeholder": "000000",
+      "verifying": "กำลังยืนยัน...",
+      "verify": "ยืนยัน",
+      "back": "กลับไปที่การเข้าสู่ระบบ",
+      "help": "ไม่สามารถลงชื่อเข้าใช้ได้หรือไม่? ติดต่อฝ่ายสนับสนุนหรือลองวิธีการลงชื่อเข้าใช้อื่น",
+      "invalid": "รหัสไม่ถูกต้อง กรุณาลองอีกครั้ง"
+    }
+  },
+  "common": {
+    "status": {
+      "active": "กำลังใช้งาน",
+      "joinMe": "เข้าร่วมฉัน",
+      "askMe": "ถามฉัน",
+      "busy": "ไม่ว่าง"
+    }
+  }
+}
