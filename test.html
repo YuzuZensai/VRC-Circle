@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        .box {
+            background: rgba(255,255,255,0.2);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>WebKitGTK Rendering Test</h1>
+    <div class="box">
+        <p>If you can see this text with styled colors and layout, WebKitGTK rendering is working!</p>
+        <p id="dynamic">JavaScript: <span style="color: yellow;">Testing...</span></p>
+    </div>
+    <script>
+        document.getElementById('dynamic').innerHTML = 'JavaScript: <span style="color: lime;">✓ Working!</span>';
+        console.log('Test page loaded successfully');
+    </script>
+</body>
+</html>
