@@ -1,0 +1,18 @@
+{
+  "title": "拡張機能",
+  "subtitle": "VRChat 体験をより快適にする任意の調整機能です。",
+  "loadError": "拡張機能を読み込めませんでした。",
+  "genericError": "問題が発生しました。",
+  "onlyAvailable": "{{platforms}} でのみ利用できます。",
+  "items": {
+    "linux-screenshot-symlink": {
+      "title": "スクリーンショットを ~/Pictures/VRChat へ",
+      "blurb": "Proton のスクリーンショットフォルダを ~/Pictures/VRChat にリンクします。既存の写真も移動されます。",
+      "detail": {
+        "linked": "{{path}} にリンク済み",
+        "protonFolder": "Proton フォルダ：{{path}}",
+        "noPrefix": "VRChat の Proton プレフィックスが見つかりません。"
+      }
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "title": "Enhancements",
+  "subtitle": "Optional quality-of-life tweaks for your VRChat experience.",
+  "loadError": "Couldn't load enhancements.",
+  "genericError": "Something went wrong.",
+  "onlyAvailable": "Only available on {{platforms}}.",
+  "items": {
+    "linux-screenshot-symlink": {
+      "title": "Screenshots to ~/Pictures/VRChat",
+      "blurb": "Links the Proton screenshot folder to ~/Pictures/VRChat. Existing photos are moved over.",
+      "detail": {
+        "linked": "Linked to {{path}}",
+        "protonFolder": "Proton folder: {{path}}",
+        "noPrefix": "No VRChat Proton prefix found."
+      }
+    }
+  }
+}

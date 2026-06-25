@@ -1,0 +1,148 @@
+{
+  "title": "Account Settings",
+  "subtitle": "Manage <0>{{name}}</0>’s identity, security, and privacy.",
+  "tabs": {
+    "account": "Account",
+    "security": "Security",
+    "privacy": "Privacy",
+    "data": "Data"
+  },
+  "common": {
+    "currentPassword": "Current password",
+    "genericError": "Something went wrong.",
+    "cancel": "Cancel"
+  },
+  "displayName": {
+    "title": "Display Name",
+    "descriptionSupporter": "As a VRC+ subscriber you can change your display name once every 30 days.",
+    "description": "You can change your display name once every 90 days, or every 30 days with VRC+",
+    "field": "Display name",
+    "save": "Save name",
+    "updated": "Display name updated.",
+    "reverted": "Display name reverted.",
+    "revertTo": "Revert to “{{name}}”",
+    "revertNeedsPassword": "Enter your current password to revert",
+    "enableRevertHint": "Enter your password to enable revert",
+    "lastChanged": {
+      "today": "Last changed: today",
+      "yesterday": "Last changed: yesterday",
+      "daysAgo": "Last changed: {{count}} days ago"
+    },
+    "revertModal": {
+      "title": "Revert display name?",
+      "confirm": "Revert",
+      "body": "This changes your display name back to <0>“{{name}}”</0> and <1>restarts the {{days}}-day timer</1> before you can change it again."
+    },
+    "cooldown": {
+      "agoToday": "today",
+      "agoDays_one": "{{count}} day ago",
+      "agoDays_other": "{{count}} days ago",
+      "heading": "You can’t change your display name yet",
+      "bodySupporter": "You last changed it on <0>{{date}}</0> ({{ago}}). Your VRC+ plan allows one change every <1>{{days}} days</1>, so it unlocks on <2>{{unlockDate}}</2> (about {{left}} from now).",
+      "body": "You last changed it on <0>{{date}}</0> ({{ago}}). Your plan allows one change every <1>{{days}} days</1>, so it unlocks on <2>{{unlockDate}}</2> (about {{left}} from now).",
+      "left_one": "{{count}} day",
+      "left_other": "{{count}} days",
+      "canRevert": "You can still revert your last change using the button below.",
+      "upsell": "Subscribe to VRC+ to shorten this to 30 days."
+    }
+  },
+  "email": {
+    "title": "Email",
+    "current": "Current: ",
+    "none": "-",
+    "unverified": " · unverified",
+    "pending": " · pending change to ",
+    "field": "New email",
+    "change": "Change email",
+    "confirmSent": "Check your inbox to confirm the new address."
+  },
+  "password": {
+    "title": "Password",
+    "description": "Use at least 8 characters.",
+    "generatedDescription": "This account signs in through a linked platform and has no password to change.",
+    "manageSignIn": "Manage sign-in on vrchat.com",
+    "new": "New password",
+    "confirm": "Confirm new password",
+    "mismatch": "Passwords do not match.",
+    "change": "Change password",
+    "changed": "Password changed."
+  },
+  "twoFactor": {
+    "title": "Two-Factor Authentication",
+    "description": "Protect your account with a time-based one-time code (TOTP) from an authenticator app.",
+    "enabled": "Enabled",
+    "disabled": "Disabled",
+    "since": "since {{date}}",
+    "showCodes": "Show recovery codes",
+    "disable": "Disable 2FA",
+    "recoveryCodes": "Recovery codes",
+    "download": "Download",
+    "alreadyUsed": "Already used",
+    "storeSafely": "Store these somewhere safe. Each code works once if you lose your authenticator.",
+    "disabledOk": "Two-factor disabled.",
+    "disableModal": {
+      "title": "Disable two-factor authentication?",
+      "confirm": "Disable 2FA",
+      "body": "Your account will be less secure without a second factor. You can re-enable it any time."
+    },
+    "qrAlt": "2FA QR code",
+    "scanHint": "Scan the QR with your authenticator, or enter this secret manually:",
+    "codeField": "Authenticator code",
+    "verifyEnable": "Verify & enable",
+    "incorrectCode": "Incorrect code, try again.",
+    "enable": "Enable 2FA"
+  },
+  "ageVerification": {
+    "title": "Age Verification",
+    "description": "Verify your age to access age-restricted content and the 18+ badge. Requires a VRC+ subscription.",
+    "verified18": "18+ Verified",
+    "verified": "Verified",
+    "notVerified": "Not verified",
+    "manage": "Manage verification",
+    "verify": "Verify your age"
+  },
+  "linkedAccounts": {
+    "title": "Linked Accounts",
+    "description": "Linking is done on vrchat.com. This shows your current connections.",
+    "manage": "Manage links on vrchat.com",
+    "linked": "Linked",
+    "notLinked": "Not linked"
+  },
+  "privacy": {
+    "title": "Privacy",
+    "description": "Control what connections others can see on your profile.",
+    "mutual": "Show Mutual Friend and Group Connections",
+    "mutualHint": "Lets others see friends and groups you have in common.",
+    "discord": "Show Discord Friend Connections",
+    "discordHint": "Lets others see Discord friends you have in common."
+  },
+  "contentGating": {
+    "title": "Content Gating",
+    "description": "Hide content you'd rather not see. These filters affect avatars and worlds across VRChat.",
+    "locked": "Filter settings are locked for this account.",
+    "filterLabel": "Filter {{label}}",
+    "filters": {
+      "content_sex": "Sexually Suggestive",
+      "content_adult": "Adult Language & Themes",
+      "content_violence": "Graphic Violence",
+      "content_gore": "Excessive Gore",
+      "content_horror": "Extreme Horror"
+    }
+  },
+  "userData": {
+    "title": "User Data",
+    "description": "Reset your saved user data in all worlds you've visited. To reset a specific world's data, visit that world's page.",
+    "confirmPrompt": "This can't be undone. Continue?",
+    "confirm": "Yes, reset all user data",
+    "reset": "Reset all user data",
+    "done": "User data reset across all worlds."
+  },
+  "dangerZone": {
+    "title": "Danger Zone",
+    "description": "Deleting your account is permanent. VRChat schedules deletion after a grace period.",
+    "scheduled": "Account deletion is scheduled for <0>{{date}}</0>. Sign in on vrchat.com before then to cancel it.",
+    "confirmField": "Type DELETE to confirm",
+    "delete": "Delete my account",
+    "scheduledOk": "Account deletion scheduled."
+  }
+}

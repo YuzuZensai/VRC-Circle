@@ -1,0 +1,18 @@
+{
+  "title": "ส่วนเสริม",
+  "subtitle": "การปรับแต่งเสริมเพื่อประสบการณ์ VRChat ที่ดีขึ้น",
+  "loadError": "โหลดส่วนเสริมไม่สำเร็จ",
+  "genericError": "เกิดข้อผิดพลาดบางอย่าง",
+  "onlyAvailable": "ใช้ได้เฉพาะบน {{platforms}} เท่านั้น",
+  "items": {
+    "linux-screenshot-symlink": {
+      "title": "ภาพหน้าจอไปยัง ~/Pictures/VRChat",
+      "blurb": "เชื่อมโยงโฟลเดอร์ภาพหน้าจอของ Proton ไปยัง ~/Pictures/VRChat รูปภาพที่มีอยู่จะถูกย้ายไปด้วย",
+      "detail": {
+        "linked": "เชื่อมโยงไปยัง {{path}} แล้ว",
+        "protonFolder": "โฟลเดอร์ Proton: {{path}}",
+        "noPrefix": "ไม่พบ Proton prefix ของ VRChat"
+      }
+    }
+  }
+}

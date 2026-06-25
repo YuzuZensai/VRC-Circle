@@ -1,0 +1,21 @@
+.boot {
+  height: 100%;
+  display: grid;
+  place-items: center;
+}
+.boot__mark {
+  font-size: 40px;
+  color: var(--accent);
+  animation: boot-pulse 1.4s ease-in-out infinite;
+}
+@keyframes boot-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.9);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}

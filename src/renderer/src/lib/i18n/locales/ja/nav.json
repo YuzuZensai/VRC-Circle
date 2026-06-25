@@ -1,0 +1,11 @@
+{
+  "search": "検索",
+  "gallery": "ギャラリー",
+  "enhancements": "拡張機能",
+  "account": "アカウント設定",
+  "settings": "設定",
+  "debug": "デバッグ",
+  "hideNav": "ナビゲーションを隠す",
+  "showNav": "ナビゲーションを表示",
+  "toggleNav": "ナビゲーションサイドバーの切り替え"
+}

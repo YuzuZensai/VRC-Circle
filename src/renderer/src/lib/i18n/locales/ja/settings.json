@@ -1,0 +1,62 @@
+{
+  "title": "VRC Circle 設定",
+  "subtitle": "アプリ自体の設定です。",
+  "tabs": {
+    "appearance": "外観",
+    "game": "ゲーム",
+    "about": "情報"
+  },
+  "appearance": {
+    "title": "外観",
+    "description": "ライトかダークを選ぶか、システムの設定に合わせます。",
+    "scheme": {
+      "auto": "自動",
+      "autoHint": "システムに合わせる",
+      "light": "ライト",
+      "lightHint": "常にライト",
+      "dark": "ダーク",
+      "darkHint": "常にダーク"
+    }
+  },
+  "accent": {
+    "title": "アクセントカラー",
+    "description": "アプリ全体のボタン、リンク、ハイライトに使われるアクセントカラーです。",
+    "custom": "カスタムカラー",
+    "pickCustom": "カスタムアクセントカラーを選択",
+    "reset": "デフォルトに戻す",
+    "default": "デフォルト",
+    "colors": {
+      "cyan": "シアン",
+      "iris": "アイリス",
+      "blue": "ブルー",
+      "emerald": "エメラルド",
+      "amber": "アンバー",
+      "rose": "ローズ",
+      "pink": "ピンク",
+      "violet": "バイオレット"
+    }
+  },
+  "language": {
+    "title": "言語",
+    "description": "アプリ全体で使用される言語。"
+  },
+  "game": {
+    "title": "ゲームのインストール先",
+    "description": "Steam または VRChat のインストール先です。空欄なら自動検出します。拡張機能がインストール先を見つけられないときに設定してください。",
+    "label": "インストールフォルダ",
+    "placeholder": "自動検出",
+    "browse": "参照",
+    "save": "保存",
+    "reset": "自動検出に戻す",
+    "saved": "パスを保存しました。",
+    "resetDone": "自動検出に戻しました。",
+    "error": "問題が発生しました。"
+  },
+  "about": {
+    "title": "情報",
+    "app": "アプリ",
+    "appName": "VRC Circle",
+    "version": "バージョン",
+    "disclaimer": "非公式です。VRChat Inc. とは提携しておらず、承認も受けていません。"
+  }
+}

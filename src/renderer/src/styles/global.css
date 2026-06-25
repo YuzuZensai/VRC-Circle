@@ -1,0 +1,155 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");
+@import "tailwindcss";
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-hover: var(--surface-hover);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-accent: var(--accent);
+  --color-accent-weak: var(--accent-weak);
+  --color-on-accent: var(--on-accent);
+  --color-danger: var(--danger);
+
+  --radius-sm: var(--radius-sm);
+  --radius-DEFAULT: var(--radius);
+  --radius-lg: var(--radius-lg);
+
+  --shadow-1: var(--shadow-1);
+  --shadow-2: var(--shadow-2);
+
+  --font-sans: var(--font-body);
+  --font-mono: var(--font-mono);
+
+  --ease-fluid: var(--ease);
+  --animate-pop: pop-in var(--dur) var(--ease-out) both;
+}
+
+:root {
+  color-scheme: dark;
+  --bg: #0e0e11;
+  --text: #f3f3f6;
+  --accent: #7c6cff;
+  --radius: 12px;
+  --font-body: "Inter", system-ui, sans-serif;
+
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur: 180ms;
+  --dur-lg: 320ms;
+}
+
+/* keep this layered, or it beats Tailwind spacing utilities */
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+@layer base {
+  body {
+    font-family: var(--font-body);
+    color: var(--text);
+    background: var(--bg);
+    background-image: var(--app-tint);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow: hidden;
+    transition: background-color var(--dur-lg) var(--ease);
+  }
+
+  button {
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+    color: inherit;
+    background: none;
+  }
+
+  input {
+    font-family: inherit;
+  }
+
+  a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  ::selection {
+    background: var(--accent-weak);
+  }
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 99px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+
+.titlebar {
+  -webkit-app-region: drag;
+  height: 38px;
+  width: 100%;
+}
+.titlebar :is(button, input, a) {
+  -webkit-app-region: no-drag;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes shimmer {
+  to {
+    background-position: 200% 0;
+  }
+}
+
+.animate-rise {
+  animation: rise-in var(--dur-lg) var(--ease-out) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

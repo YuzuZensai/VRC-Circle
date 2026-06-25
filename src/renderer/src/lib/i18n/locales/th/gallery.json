@@ -1,0 +1,32 @@
+{
+  "title": "แกลเลอรี",
+  "subtitle": "ภาพหน้าจอ VRChat ของคุณ",
+  "photoCount_other": "{{count}} รูปจาก VRChat",
+  "searchPlaceholder": "ค้นหาโลก ช่างภาพ หรือไฟล์…",
+  "rescan": "สแกนโฟลเดอร์อีกครั้ง",
+  "noMatch": "ไม่พบรูปภาพที่ตรงกับ “{{query}}”",
+  "selectedCount_other": "เลือกแล้ว {{count}} รูป",
+  "deselect": "ยกเลิกการเลือก",
+  "delete": "ลบ",
+  "selectMonth": "เลือกทั้งหมดใน {{month}}",
+  "selectPhoto": "เลือกรูปภาพ",
+  "empty": {
+    "title": "ยังไม่มีรูปภาพ",
+    "body": "ภาพหน้าจอที่คุณถ่ายใน VRChat จะปรากฏที่นี่โดยอัตโนมัติ เราจะค้นหาในโฟลเดอร์ <code>Pictures/VRChat</code> ของคุณ",
+    "scanning": "กำลังสแกน:"
+  },
+  "lightbox": {
+    "close": "ปิด",
+    "previous": "ก่อนหน้า",
+    "next": "ถัดไป",
+    "taken": "ถ่ายเมื่อ",
+    "resolution": "ความละเอียด",
+    "size": "ขนาด",
+    "photographer": "ช่างภาพ",
+    "world": "โลก",
+    "open": "เปิด",
+    "reveal": "แสดงตำแหน่งไฟล์",
+    "delete": "ลบ",
+    "counter": "{{current}} จาก {{total}}"
+  }
+}

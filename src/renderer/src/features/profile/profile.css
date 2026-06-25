@@ -1,0 +1,82 @@
+.profile__banner {
+  height: clamp(200px, 32vh, 340px);
+  flex: none;
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  background-color: var(--surface-2);
+}
+.profile__banner::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none; /* decorative; must not eat clicks on overlaid controls */
+  backdrop-filter: blur(40px) saturate(1.1);
+  -webkit-backdrop-filter: blur(40px) saturate(1.1);
+  background: linear-gradient(to bottom, transparent 30%, var(--surface));
+  -webkit-mask-image: linear-gradient(to bottom, transparent 20%, #000 85%);
+  mask-image: linear-gradient(to bottom, transparent 20%, #000 85%);
+}
+
+.profile__avatar {
+  --ring: var(--trust-user);
+  position: relative;
+  width: 124px;
+  height: 124px;
+  flex: none;
+  border-radius: 50%;
+  padding: 4px;
+  background: var(--ring);
+  box-shadow: 0 8px 24px var(--shadow-color);
+}
+.profile__avatar .avatar-fallback,
+.profile__avatar img {
+  width: 100%;
+  height: 100%;
+}
+.profile__avatar .avatar-fallback {
+  font-size: 44px;
+}
+.profile__status-dot {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 4px solid var(--surface);
+}
+
+.world__thumb {
+  position: relative;
+  width: 200px;
+  height: 132px;
+  flex: none;
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--surface-2);
+  border: 3px solid var(--surface);
+  box-shadow: 0 8px 24px var(--shadow-color);
+}
+.world__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.profile--skeleton .world__thumb {
+  border-color: var(--surface);
+}
+
+.profile--skeleton .profile__avatar {
+  background: var(--surface-2);
+}
+.sk {
+  background: linear-gradient(
+    100deg,
+    var(--surface-2) 30%,
+    var(--surface-hover) 50%,
+    var(--surface-2) 70%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.3s linear infinite;
+}

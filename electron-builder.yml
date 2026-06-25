@@ -1,0 +1,16 @@
+appId: cafe.kirameki.vrc-circle
+productName: VRC Circle
+directories:
+  output: dist
+  buildResources: resources
+files:
+  - out/**
+  - package.json
+linux:
+  target: [AppImage]
+  category: Network
+win:
+  target: [nsis]
+mac:
+  target: [dmg]
+  category: public.app-category.social-networking

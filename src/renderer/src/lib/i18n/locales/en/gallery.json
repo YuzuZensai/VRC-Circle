@@ -1,0 +1,34 @@
+{
+  "title": "Gallery",
+  "subtitle": "Your VRChat screenshots",
+  "photoCount_one": "{{count}} photo from VRChat",
+  "photoCount_other": "{{count}} photos from VRChat",
+  "searchPlaceholder": "Search world, photographer, file…",
+  "rescan": "Rescan folder",
+  "noMatch": "No photos match “{{query}}”.",
+  "selectedCount_one": "{{count}} selected",
+  "selectedCount_other": "{{count}} selected",
+  "deselect": "Deselect",
+  "delete": "Delete",
+  "selectMonth": "Select all in {{month}}",
+  "selectPhoto": "Select photo",
+  "empty": {
+    "title": "No photos yet",
+    "body": "Screenshots you take in VRChat show up here automatically. We look in your <code>Pictures/VRChat</code> folder.",
+    "scanning": "Scanning:"
+  },
+  "lightbox": {
+    "close": "Close",
+    "previous": "Previous",
+    "next": "Next",
+    "taken": "Taken",
+    "resolution": "Resolution",
+    "size": "Size",
+    "photographer": "Photographer",
+    "world": "World",
+    "open": "Open",
+    "reveal": "Reveal",
+    "delete": "Delete",
+    "counter": "{{current}} of {{total}}"
+  }
+}

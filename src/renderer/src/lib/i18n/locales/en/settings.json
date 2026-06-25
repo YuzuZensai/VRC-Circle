@@ -1,0 +1,62 @@
+{
+  "title": "VRC Circle Settings",
+  "subtitle": "Preferences for the app itself.",
+  "tabs": {
+    "appearance": "Appearance",
+    "game": "Game",
+    "about": "About"
+  },
+  "appearance": {
+    "title": "Appearance",
+    "description": "Choose light or dark, or follow whatever your system is set to.",
+    "scheme": {
+      "auto": "Auto",
+      "autoHint": "Match your system",
+      "light": "Light",
+      "lightHint": "Always light",
+      "dark": "Dark",
+      "darkHint": "Always dark"
+    }
+  },
+  "accent": {
+    "title": "Accent Color",
+    "description": "The single accent used for buttons, links, and highlights across the app.",
+    "custom": "Custom color",
+    "pickCustom": "Pick a custom accent color",
+    "reset": "Reset to default",
+    "default": "Default",
+    "colors": {
+      "cyan": "Cyan",
+      "iris": "Iris",
+      "blue": "Blue",
+      "emerald": "Emerald",
+      "amber": "Amber",
+      "rose": "Rose",
+      "pink": "Pink",
+      "violet": "Violet"
+    }
+  },
+  "language": {
+    "title": "Language",
+    "description": "The language used across the app."
+  },
+  "game": {
+    "title": "Game Install Path",
+    "description": "Where Steam or VRChat is installed. Leave empty to auto-detect. Set this if an enhancement can't find your install.",
+    "label": "Install folder",
+    "placeholder": "Auto-detect",
+    "browse": "Browse",
+    "save": "Save",
+    "reset": "Reset to auto-detect",
+    "saved": "Path saved.",
+    "resetDone": "Reset to auto-detect.",
+    "error": "Something went wrong."
+  },
+  "about": {
+    "title": "About",
+    "app": "App",
+    "appName": "VRC Circle",
+    "version": "Version",
+    "disclaimer": "Unofficial. Not affiliated with or endorsed by VRChat Inc."
+  }
+}

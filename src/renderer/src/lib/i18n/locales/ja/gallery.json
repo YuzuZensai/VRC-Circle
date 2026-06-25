@@ -1,0 +1,32 @@
+{
+  "title": "ギャラリー",
+  "subtitle": "VRChatのスクリーンショット",
+  "photoCount_other": "VRChatの写真{{count}}枚",
+  "searchPlaceholder": "ワールド・撮影者・ファイルを検索…",
+  "rescan": "フォルダーを再スキャン",
+  "noMatch": "「{{query}}」に一致する写真はありません。",
+  "selectedCount_other": "{{count}}件選択中",
+  "deselect": "選択解除",
+  "delete": "削除",
+  "selectMonth": "{{month}}をすべて選択",
+  "selectPhoto": "写真を選択",
+  "empty": {
+    "title": "まだ写真がありません",
+    "body": "VRChatで撮影したスクリーンショットはここに自動で表示されます。<code>Pictures/VRChat</code>フォルダーを参照します。",
+    "scanning": "スキャン中:"
+  },
+  "lightbox": {
+    "close": "閉じる",
+    "previous": "前へ",
+    "next": "次へ",
+    "taken": "撮影日時",
+    "resolution": "解像度",
+    "size": "サイズ",
+    "photographer": "撮影者",
+    "world": "ワールド",
+    "open": "開く",
+    "reveal": "場所を表示",
+    "delete": "削除",
+    "counter": "{{total}}枚中{{current}}枚目"
+  }
+}

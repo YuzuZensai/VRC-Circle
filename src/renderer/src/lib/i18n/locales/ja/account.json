@@ -1,0 +1,148 @@
+{
+  "title": "アカウント設定",
+  "subtitle": "<0>{{name}}</0> のプロフィール、セキュリティ、プライバシーを管理します。",
+  "tabs": {
+    "account": "アカウント",
+    "security": "セキュリティ",
+    "privacy": "プライバシー",
+    "data": "データ"
+  },
+  "common": {
+    "currentPassword": "現在のパスワード",
+    "genericError": "問題が発生しました。",
+    "cancel": "キャンセル"
+  },
+  "displayName": {
+    "title": "表示名",
+    "descriptionSupporter": "VRC+ 加入者は表示名を30日に1回変更できます。",
+    "description": "表示名は90日に1回（VRC+ なら30日に1回）変更できます。",
+    "field": "表示名",
+    "save": "名前を保存",
+    "updated": "表示名を更新しました。",
+    "reverted": "表示名を元に戻しました。",
+    "revertTo": "「{{name}}」に戻す",
+    "revertNeedsPassword": "元に戻すには現在のパスワードを入力してください",
+    "enableRevertHint": "元に戻すにはパスワードを入力してください",
+    "lastChanged": {
+      "today": "最終変更：今日",
+      "yesterday": "最終変更：昨日",
+      "daysAgo": "最終変更：{{count}}日前"
+    },
+    "revertModal": {
+      "title": "表示名を元に戻しますか？",
+      "confirm": "元に戻す",
+      "body": "表示名を <0>「{{name}}」</0> に戻し、<1>{{days}}日間のタイマーがリセットされます</1>。その間は再度変更できません。"
+    },
+    "cooldown": {
+      "agoToday": "今日",
+      "agoDays_one": "{{count}}日前",
+      "agoDays_other": "{{count}}日前",
+      "heading": "まだ表示名を変更できません",
+      "bodySupporter": "前回の変更は <0>{{date}}</0>（{{ago}}）でした。VRC+ プランでは <1>{{days}}日</1> ごとに1回変更でき、<2>{{unlockDate}}</2> に解除されます（あと約 {{left}}）。",
+      "body": "前回の変更は <0>{{date}}</0>（{{ago}}）でした。お使いのプランでは <1>{{days}}日</1> ごとに1回変更でき、<2>{{unlockDate}}</2> に解除されます（あと約 {{left}}）。",
+      "left_one": "{{count}}日",
+      "left_other": "{{count}}日",
+      "canRevert": "下のボタンから前回の変更を元に戻すこともできます。",
+      "upsell": "VRC+ に加入すると30日に短縮されます。"
+    }
+  },
+  "email": {
+    "title": "メールアドレス",
+    "current": "現在：",
+    "none": "-",
+    "unverified": " · 未確認",
+    "pending": " · 変更保留中：",
+    "field": "新しいメールアドレス",
+    "change": "メールアドレスを変更",
+    "confirmSent": "新しいアドレスを確認するため受信トレイをご確認ください。"
+  },
+  "password": {
+    "title": "パスワード",
+    "description": "8文字以上で入力してください。",
+    "generatedDescription": "このアカウントは連携プラットフォーム経由でサインインしており、変更するパスワードはありません。",
+    "manageSignIn": "vrchat.com でサインインを管理",
+    "new": "新しいパスワード",
+    "confirm": "新しいパスワード（確認）",
+    "mismatch": "パスワードが一致しません。",
+    "change": "パスワードを変更",
+    "changed": "パスワードを変更しました。"
+  },
+  "twoFactor": {
+    "title": "二段階認証",
+    "description": "認証アプリの時間ベースのワンタイムコード（TOTP）でアカウントを保護します。",
+    "enabled": "有効",
+    "disabled": "無効",
+    "since": "{{date}} から",
+    "showCodes": "リカバリーコードを表示",
+    "disable": "二段階認証を無効化",
+    "recoveryCodes": "リカバリーコード",
+    "download": "ダウンロード",
+    "alreadyUsed": "使用済み",
+    "storeSafely": "安全な場所に保管してください。各コードは認証アプリを紛失した際に1回だけ使用できます。",
+    "disabledOk": "二段階認証を無効化しました。",
+    "disableModal": {
+      "title": "二段階認証を無効にしますか？",
+      "confirm": "二段階認証を無効化",
+      "body": "第二の要素がないとアカウントの安全性が低下します。いつでも再度有効にできます。"
+    },
+    "qrAlt": "二段階認証 QR コード",
+    "scanHint": "認証アプリで QR を読み取るか、このシークレットを手動で入力してください：",
+    "codeField": "認証コード",
+    "verifyEnable": "確認して有効化",
+    "incorrectCode": "コードが正しくありません。もう一度お試しください。",
+    "enable": "二段階認証を有効化"
+  },
+  "ageVerification": {
+    "title": "年齢確認",
+    "description": "年齢制限コンテンツと 18+ バッジを利用するには年齢確認が必要です。VRC+ の加入が必要です。",
+    "verified18": "18+ 確認済み",
+    "verified": "確認済み",
+    "notVerified": "未確認",
+    "manage": "確認を管理",
+    "verify": "年齢を確認する"
+  },
+  "linkedAccounts": {
+    "title": "連携アカウント",
+    "description": "連携は vrchat.com で行います。現在の連携状況を表示しています。",
+    "manage": "vrchat.com で連携を管理",
+    "linked": "連携済み",
+    "notLinked": "未連携"
+  },
+  "privacy": {
+    "title": "プライバシー",
+    "description": "他のユーザーがプロフィールで見られる連携を管理します。",
+    "mutual": "共通のフレンドとグループの連携を表示",
+    "mutualHint": "共通のフレンドやグループを他のユーザーに表示します。",
+    "discord": "Discord フレンドの連携を表示",
+    "discordHint": "共通の Discord フレンドを他のユーザーに表示します。"
+  },
+  "contentGating": {
+    "title": "コンテンツ制限",
+    "description": "見たくないコンテンツを非表示にします。これらのフィルターは VRChat 全体のアバターとワールドに適用されます。",
+    "locked": "このアカウントではフィルター設定がロックされています。",
+    "filterLabel": "{{label}} をフィルター",
+    "filters": {
+      "content_sex": "性的に思わせる表現",
+      "content_adult": "成人向けの言葉・テーマ",
+      "content_violence": "過激な暴力",
+      "content_gore": "過度な流血表現",
+      "content_horror": "極端なホラー"
+    }
+  },
+  "userData": {
+    "title": "ユーザーデータ",
+    "description": "訪れたすべてのワールドの保存済みユーザーデータをリセットします。特定のワールドのデータをリセットするには、そのワールドのページにアクセスしてください。",
+    "confirmPrompt": "この操作は元に戻せません。続行しますか？",
+    "confirm": "はい、すべてのユーザーデータをリセット",
+    "reset": "すべてのユーザーデータをリセット",
+    "done": "すべてのワールドのユーザーデータをリセットしました。"
+  },
+  "dangerZone": {
+    "title": "危険な操作",
+    "description": "アカウントの削除は取り消せません。VRChat は猶予期間の後に削除を実行します。",
+    "scheduled": "アカウントの削除は <0>{{date}}</0> に予定されています。取り消すにはそれまでに vrchat.com にサインインしてください。",
+    "confirmField": "確認のため DELETE と入力",
+    "delete": "アカウントを削除",
+    "scheduledOk": "アカウントの削除を予約しました。"
+  }
+}
