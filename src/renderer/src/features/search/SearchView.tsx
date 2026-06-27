@@ -4,7 +4,7 @@ import type { UserProfile } from "../../../../shared/types/user";
 import type { World } from "../../../../shared/types/world";
 import { api } from "../../lib/api";
 import { compactNumber } from "../../lib/format";
-import { Avatar, Button, Field, Tabs, Tag } from "../../components/ui";
+import { Avatar, Button, Card, Field, HoverImage, Tabs, Tag } from "../../components/ui";
 import { useNav } from "../navigation/NavContext";
 import { avatarOf, trustMeta } from "../../lib/vrchat";
 
@@ -113,19 +113,9 @@ function UserResult({ user, onOpen }: { user: UserProfile; onOpen: () => void })
 function WorldResult({ world, onOpen }: { world: World; onOpen: () => void }) {
   const img = world.thumbnailImageUrl || world.imageUrl;
   return (
-    <button
-      onClick={onOpen}
-      className="group block overflow-hidden rounded-lg border border-border bg-surface text-left transition-colors hover:border-accent"
-    >
+    <Card onClick={onOpen}>
       <div className="relative aspect-video bg-surface-hover">
-        {img ? (
-          <img
-            src={img}
-            alt=""
-            loading="lazy"
-            className="size-full object-cover transition-transform duration-300 group-hover:scale-105"
-          />
-        ) : null}
+        {img ? <HoverImage src={img} loading="lazy" /> : null}
       </div>
       <div className="p-2.5">
         <div className="truncate text-[13px] font-semibold" title={world.name}>
@@ -152,6 +142,6 @@ function WorldResult({ world, onOpen }: { world: World; onOpen: () => void }) {
           </span>
         </div>
       </div>
-    </button>
+    </Card>
   );
 }

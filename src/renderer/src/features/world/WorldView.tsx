@@ -1,6 +1,6 @@
 import { Globe, Heart, Tag as TagIcon, Users } from "lucide-react";
 import type { World } from "../../../../shared/types/world";
-import { Banner, Fact, Section, StatTile, Tag } from "../../components/ui";
+import { Banner, Fact, Section, Skeleton, StatTile, Tag } from "../../components/ui";
 import { api } from "../../lib/api";
 import { useAsync } from "../../lib/useAsync";
 import { compactNumber, formatDate, prettyTag } from "../../lib/format";
@@ -160,15 +160,15 @@ function WorldSkeleton() {
     >
       <div className="profile__banner" />
       <div className={`${COL_WIDE} relative flex items-end gap-5`} style={{ marginTop: -64 }}>
-        <div className="world__thumb sk" />
+        <Skeleton className="world__thumb" />
         <div className="flex-1 pb-1">
-          <div className="sk h-[22px] w-2/5 rounded-lg" />
-          <div className="sk mt-3 h-3 w-1/4 rounded-lg" />
+          <Skeleton className="h-[22px] w-2/5 rounded-lg" />
+          <Skeleton className="mt-3 h-3 w-1/4 rounded-lg" />
         </div>
       </div>
       <div className={`${COL_WIDE} mt-6 grid grid-cols-4 gap-3`}>
         {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="sk h-[72px] rounded-xl" />
+          <Skeleton key={i} className="h-[72px] rounded-xl" />
         ))}
       </div>
     </div>

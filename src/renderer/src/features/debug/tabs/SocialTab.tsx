@@ -1,10 +1,9 @@
 import { useMemo, useState } from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import type { UserProfile } from "../../../../../shared/types/user";
-import { Badge, Panel, PresenceAvatar, Tag } from "../../../components/ui";
+import { Badge, CodeBlock, Panel, PresenceAvatar, Tag } from "../../../components/ui";
 import { statusMeta, trustMeta } from "../../../lib/vrchat";
 import { useSocial } from "../../../store/social";
-import { useCopied } from "../useDebug";
 import { Chip, Empty, Meta, SearchInput } from "../ui";
 
 type SocialFilter = "all" | "self" | "friends" | "other";
@@ -72,7 +71,6 @@ export function SocialTab() {
 
 function UserRow({ user, isSelf }: { user: UserProfile; isSelf: boolean }) {
   const [open, setOpen] = useState(false);
-  const [copied, copy] = useCopied();
   const status = statusMeta[user.status];
   const trust = trustMeta[user.trustRank];
 
@@ -111,17 +109,7 @@ function UserRow({ user, isSelf }: { user: UserProfile; isSelf: boolean }) {
           {user.statusDescription ? (
             <p className="mb-2 text-[12px] italic text-muted">“{user.statusDescription}”</p>
           ) : null}
-          <div className="relative">
-            <button
-              className="absolute right-2 top-2 rounded border border-border bg-surface px-2 py-0.5 text-[10.5px] font-semibold text-muted transition-colors hover:text-accent"
-              onClick={() => copy(JSON.stringify(user, null, 2))}
-            >
-              {copied ? "Copied!" : "Copy"}
-            </button>
-            <pre className="max-h-72 overflow-auto rounded-md border border-border bg-surface-2 p-3 font-mono text-[11px] leading-relaxed text-muted">
-              {JSON.stringify(user, null, 2)}
-            </pre>
-          </div>
+          <CodeBlock value={JSON.stringify(user, null, 2)} />
         </div>
       ) : null}
     </div>

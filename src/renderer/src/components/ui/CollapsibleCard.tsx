@@ -1,5 +1,6 @@
 import { useState, type ReactNode } from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
+import { LABEL_HEADING } from "./styles";
 
 export function CollapsibleCard({
   title,
@@ -17,9 +18,7 @@ export function CollapsibleCard({
     <section className="rounded-xl border border-border bg-surface-2 p-5 shadow-sm">
       <button
         onClick={() => setOpen((v) => !v)}
-        className={`flex w-full items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-faint ${
-          open ? "mb-3" : ""
-        }`}
+        className={`flex w-full items-center gap-1.5 ${LABEL_HEADING} ${open ? "mb-3" : ""}`}
       >
         <span className="text-faint">
           {open ? <ChevronDown size={14} /> : <ChevronRight size={14} />}

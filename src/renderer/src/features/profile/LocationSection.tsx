@@ -1,5 +1,6 @@
 import { ChevronRight, Globe, MapPin, Users } from "lucide-react";
 import { parseLocation, type Location } from "../../../../shared/types/user";
+import { HoverImage } from "../../components/ui";
 import { useWorld } from "../../store/worlds";
 import { useNav } from "../navigation/NavContext";
 import { locationLabel, regionLabels } from "../../lib/vrchat";
@@ -35,13 +36,7 @@ export function LocationSection({ location }: { location?: Location }) {
           className="group flex w-full items-center gap-3.5 rounded-lg p-1 text-left transition-colors hover:bg-surface-hover"
         >
           <div className="size-16 shrink-0 overflow-hidden rounded-lg bg-surface-hover">
-            {img ? (
-              <img
-                src={img}
-                alt=""
-                className="size-full object-cover transition-transform duration-300 group-hover:scale-105"
-              />
-            ) : null}
+            {img ? <HoverImage src={img} /> : null}
           </div>
           <div className="min-w-0 flex-1">
             <div className="truncate text-[16px] font-semibold leading-tight" title={world.name}>

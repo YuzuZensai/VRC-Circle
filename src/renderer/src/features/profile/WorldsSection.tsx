@@ -1,6 +1,6 @@
 import { Circle, Star, Users } from "lucide-react";
 import type { World } from "../../../../shared/types/world";
-import { CollapsibleCard, SkeletonGrid, Tag } from "../../components/ui";
+import { Card, CollapsibleCard, HoverImage, SkeletonGrid, Tag } from "../../components/ui";
 import { compactNumber } from "../../lib/format";
 import { useNav } from "../navigation/NavContext";
 import { useUserWorlds } from "./useUserWorlds";
@@ -103,19 +103,9 @@ function WorldCard({ world }: { world: World }) {
   const { openWorld } = useNav();
   const img = world.thumbnailImageUrl || world.imageUrl;
   return (
-    <button
-      onClick={() => openWorld(world.id)}
-      className="group block overflow-hidden rounded-lg border border-border bg-surface text-left transition-colors hover:border-accent"
-    >
+    <Card onClick={() => openWorld(world.id)}>
       <div className="relative aspect-video bg-surface-hover">
-        {img ? (
-          <img
-            src={img}
-            alt=""
-            loading="lazy"
-            className="size-full object-cover transition-transform duration-300 group-hover:scale-105"
-          />
-        ) : null}
+        {img ? <HoverImage src={img} loading="lazy" /> : null}
         {world.releaseStatus !== "public" ? (
           <span className="absolute right-1.5 top-1.5">
             <Tag color="var(--status-ask)">{world.releaseStatus}</Tag>
@@ -147,6 +137,6 @@ function WorldCard({ world }: { world: World }) {
           </span>
         </div>
       </div>
-    </button>
+    </Card>
   );
 }

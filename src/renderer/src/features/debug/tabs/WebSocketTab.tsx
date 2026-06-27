@@ -1,8 +1,7 @@
 import { useMemo, useState } from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import type { WsEvent } from "../../../../../shared/types/debug";
-import { Badge, Button, Panel } from "../../../components/ui";
-import { useCopied } from "../useDebug";
+import { Badge, Button, CodeBlock, Panel } from "../../../components/ui";
 import { Chip, Empty, SearchInput, formatTime } from "../ui";
 
 export function WsTab({ ws, onClear }: { ws: WsEvent[]; onClear: () => void }) {
@@ -49,7 +48,6 @@ export function WsTab({ ws, onClear }: { ws: WsEvent[]; onClear: () => void }) {
 
 function WsRow({ event }: { event: WsEvent }) {
   const [open, setOpen] = useState(false);
-  const [copied, copy] = useCopied();
   return (
     <div className="border-b border-border last:border-b-0">
       <button
@@ -65,17 +63,7 @@ function WsRow({ event }: { event: WsEvent }) {
       </button>
       {open ? (
         <div className="px-4 pb-3 pl-[2.4rem]">
-          <div className="relative">
-            <button
-              className="absolute right-2 top-2 rounded border border-border bg-surface px-2 py-0.5 text-[10.5px] font-semibold text-muted transition-colors hover:text-accent"
-              onClick={() => copy(JSON.stringify(event.content, null, 2))}
-            >
-              {copied ? "Copied!" : "Copy"}
-            </button>
-            <pre className="max-h-72 overflow-auto rounded-md border border-border bg-surface-2 p-3 font-mono text-[11px] leading-relaxed text-muted">
-              {JSON.stringify(event.content, null, 2)}
-            </pre>
-          </div>
+          <CodeBlock value={JSON.stringify(event.content, null, 2)} />
         </div>
       ) : null}
     </div>

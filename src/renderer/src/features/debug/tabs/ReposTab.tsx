@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { ChevronDown, ChevronRight, Trash2 } from "lucide-react";
 import type { RepoStats, StoredEntity } from "../../../../../shared/types/repository";
-import { Button, Panel, Stat } from "../../../components/ui";
+import { Button, CodeBlock, Panel, Stat } from "../../../components/ui";
 import { api } from "../../../lib/api";
-import { useCopied, useNow } from "../useDebug";
+import { useNow } from "../useDebug";
 import {
   Empty,
   Meta,
@@ -192,7 +192,6 @@ function RepoInspector({ name, onBack, now }: { name: string; onBack: () => void
 
 function EntityRow({ entity, now }: { entity: StoredEntity<{ id: string }>; now: number }) {
   const [open, setOpen] = useState(false);
-  const [copied, copy] = useCopied();
   const data = entity.data as Record<string, unknown>;
   const label = (data.name ?? data.displayName ?? data.id) as string;
   const fieldNames = Object.keys(entity.meta.fields).sort();
@@ -255,17 +254,10 @@ function EntityRow({ entity, now }: { entity: StoredEntity<{ id: string }>; now:
             <Meta label="Last read" value={relativeAge(now, entity.meta.lastRead)} />
             <Meta label="Last fetch" value={relativeAge(now, entity.meta.lastFetch)} />
           </dl>
-          <div className="relative">
-            <button
-              className="absolute right-2 top-2 rounded border border-border bg-surface px-2 py-0.5 text-[10.5px] font-semibold text-muted transition-colors hover:text-accent"
-              onClick={() => copy(JSON.stringify(entity, null, 2))}
-            >
-              {copied ? "Copied!" : "Copy"}
-            </button>
-            <pre className="max-h-72 overflow-auto rounded-md border border-border bg-surface-2 p-3 font-mono text-[11px] leading-relaxed text-muted">
-              {JSON.stringify(entity.data, null, 2)}
-            </pre>
-          </div>
+          <CodeBlock
+            value={JSON.stringify(entity.data, null, 2)}
+            copyValue={JSON.stringify(entity, null, 2)}
+          />
         </div>
       ) : null}
     </div>

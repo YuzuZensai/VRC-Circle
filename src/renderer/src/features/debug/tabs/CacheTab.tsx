@@ -1,8 +1,8 @@
 import { useMemo, useState } from "react";
 import { ChevronDown, ChevronRight, X } from "lucide-react";
 import type { CacheEntryInfo, CacheStats } from "../../../../../shared/types/debug";
-import { Badge, Button, Panel, Stat } from "../../../components/ui";
-import { useCopied, useNow } from "../useDebug";
+import { Badge, Button, CodeBlock, Panel, Stat } from "../../../components/ui";
+import { useNow } from "../useDebug";
 import {
   Chip,
   Empty,
@@ -155,7 +155,6 @@ function CacheRow({
   onInvalidate: () => void;
 }) {
   const [open, setOpen] = useState(false);
-  const [copied, copy] = useCopied();
   const remaining = entry.expiresAt - now;
   const total = entry.expiresAt - entry.createdAt;
   const pct = total > 0 ? Math.max(0, Math.min(100, (remaining / total) * 100)) : 0;
@@ -214,17 +213,7 @@ function CacheRow({
               value={entry.lastAccess ? formatTime(entry.lastAccess) : "never"}
             />
           </dl>
-          <div className="relative">
-            <button
-              className="absolute right-2 top-2 rounded border border-border bg-surface px-2 py-0.5 text-[10.5px] font-semibold text-muted transition-colors hover:text-accent"
-              onClick={() => copy(JSON.stringify(entry.value, null, 2))}
-            >
-              {copied ? "Copied!" : "Copy"}
-            </button>
-            <pre className="max-h-72 overflow-auto rounded-md border border-border bg-surface-2 p-3 font-mono text-[11px] leading-relaxed text-muted">
-              {JSON.stringify(entry.value, null, 2)}
-            </pre>
-          </div>
+          <CodeBlock value={JSON.stringify(entry.value, null, 2)} />
         </div>
       ) : null}
     </div>

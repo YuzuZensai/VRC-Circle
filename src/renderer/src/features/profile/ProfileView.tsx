@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { type UserProfile } from "../../../../shared/types/user";
-import { Avatar, Banner, Fact, LinkPill, Section, Tabs, Tag } from "../../components/ui";
+import { Avatar, Banner, Fact, LinkPill, Section, Skeleton, Tabs, Tag } from "../../components/ui";
 import {
   avatarOf,
   bannerOf,
@@ -266,14 +266,14 @@ function ProfileSkeleton() {
     >
       <div className="profile__banner" />
       <div className={`${COL_WIDE} relative flex items-end gap-6`} style={{ marginTop: -72 }}>
-        <div className="profile__avatar sk" />
+        <Skeleton className="profile__avatar" />
         <div className="flex-1 pb-2">
-          <div className="sk h-[22px] w-3/5 rounded-lg" />
-          <div className="sk mt-3 h-3 w-2/5 rounded-lg" />
+          <Skeleton className="h-[22px] w-3/5 rounded-lg" />
+          <Skeleton className="mt-3 h-3 w-2/5 rounded-lg" />
         </div>
       </div>
-      <div className={`${COL} sk mt-[18px] h-3.5 rounded-lg`} />
-      <div className={`${COL} sk mt-[18px] h-3.5 w-2/5 rounded-lg`} />
+      <Skeleton className={`${COL} mt-[18px] h-3.5 rounded-lg`} />
+      <Skeleton className={`${COL} mt-[18px] h-3.5 w-2/5 rounded-lg`} />
     </div>
   );
 }

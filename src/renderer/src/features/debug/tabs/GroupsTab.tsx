@@ -1,9 +1,8 @@
 import { useMemo, useState } from "react";
 import { ChevronDown, ChevronRight, Users } from "lucide-react";
 import type { Group } from "../../../../../shared/types/group";
-import { Avatar, Badge, Panel } from "../../../components/ui";
+import { Avatar, Badge, CodeBlock, Panel } from "../../../components/ui";
 import { useAllGroups, useGroups } from "../../../store/groups";
-import { useCopied } from "../useDebug";
 import { Empty, SearchInput } from "../ui";
 
 export function GroupStorePanel() {
@@ -45,7 +44,6 @@ export function GroupStorePanel() {
 
 function GroupStoreRow({ group }: { group: Group }) {
   const [open, setOpen] = useState(false);
-  const [copied, copy] = useCopied();
   return (
     <div className="border-b border-border last:border-b-0">
       <button
@@ -67,17 +65,7 @@ function GroupStoreRow({ group }: { group: Group }) {
       </button>
       {open ? (
         <div className="px-4 pb-3 pl-[2.4rem]">
-          <div className="relative">
-            <button
-              className="absolute right-2 top-2 rounded border border-border bg-surface px-2 py-0.5 text-[10.5px] font-semibold text-muted transition-colors hover:text-accent"
-              onClick={() => copy(JSON.stringify(group, null, 2))}
-            >
-              {copied ? "Copied!" : "Copy"}
-            </button>
-            <pre className="max-h-72 overflow-auto rounded-md border border-border bg-surface-2 p-3 font-mono text-[11px] leading-relaxed text-muted">
-              {JSON.stringify(group, null, 2)}
-            </pre>
-          </div>
+          <CodeBlock value={JSON.stringify(group, null, 2)} />
         </div>
       ) : null}
     </div>

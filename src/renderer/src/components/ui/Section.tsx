@@ -1,7 +1,6 @@
 import { useState, type ReactNode } from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
-
-const HEADING = "text-[11px] font-semibold uppercase tracking-wide text-faint";
+import { LABEL_HEADING as HEADING } from "./styles";
 
 export function Section({
   title,

@@ -1,6 +1,6 @@
 import { BadgeCheck, Globe, Users, UserCheck } from "lucide-react";
 import type { Group } from "../../../../shared/types/group";
-import { Avatar, Banner, Fact, Section, StatTile, Tag } from "../../components/ui";
+import { Avatar, Banner, Fact, Section, Skeleton, StatTile, Tag } from "../../components/ui";
 import { api } from "../../lib/api";
 import { useAsync } from "../../lib/useAsync";
 import { compactNumber, formatDate, prettyTag } from "../../lib/format";
@@ -132,15 +132,15 @@ function GroupSkeleton() {
     >
       <div className="profile__banner" />
       <div className={`${COL_WIDE} relative flex items-end gap-5`} style={{ marginTop: -64 }}>
-        <div className="sk size-[112px] rounded-2xl" />
+        <Skeleton className="size-[112px] rounded-2xl" />
         <div className="flex-1 pb-1">
-          <div className="sk h-[22px] w-2/5 rounded-lg" />
-          <div className="sk mt-3 h-3 w-1/4 rounded-lg" />
+          <Skeleton className="h-[22px] w-2/5 rounded-lg" />
+          <Skeleton className="mt-3 h-3 w-1/4 rounded-lg" />
         </div>
       </div>
       <div className={`${COL_WIDE} mt-6 grid grid-cols-3 gap-3`}>
         {Array.from({ length: 3 }).map((_, i) => (
-          <div key={i} className="sk h-[72px] rounded-xl" />
+          <Skeleton key={i} className="h-[72px] rounded-xl" />
         ))}
       </div>
     </div>

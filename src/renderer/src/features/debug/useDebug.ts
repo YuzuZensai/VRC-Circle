@@ -1,7 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import type { CacheEntryInfo, CacheStats, LogEntry, WsEvent } from "../../../../shared/types/debug";
 import type { RepoStats } from "../../../../shared/types/repository";
 import { api, events } from "../../lib/api";
+
+export { useCopied } from "../../lib/useCopied";
 
 const MAX_LOGS = 500;
 
@@ -12,19 +14,6 @@ export function useNow(ms = 1000): number {
     return () => clearInterval(id);
   }, [ms]);
   return now;
-}
-
-export function useCopied(): [boolean, (text: string) => void] {
-  const [copied, setCopied] = useState(false);
-  const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
-  const copy = (text: string): void => {
-    void navigator.clipboard.writeText(text).then(() => {
-      setCopied(true);
-      clearTimeout(timer.current);
-      timer.current = setTimeout(() => setCopied(false), 1200);
-    });
-  };
-  return [copied, copy];
 }
 
 export function useDebug() {

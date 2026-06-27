@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { LABEL_HEADING } from "./styles";
 
 export function StatTile({
   icon,
@@ -13,7 +14,7 @@ export function StatTile({
 }) {
   return (
     <div className="rounded-xl border border-border bg-surface-2 p-4 shadow-sm">
-      <div className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-faint">
+      <div className={`flex items-center gap-1.5 ${LABEL_HEADING}`}>
         {icon} {label}
       </div>
       <div
