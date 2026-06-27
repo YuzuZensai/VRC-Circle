@@ -4,6 +4,7 @@ import type {
   FavoritedWorld,
   LimitedUserGroups,
   RepresentedGroup,
+  Group as SdkGroup,
   User,
   CurrentUser,
   LimitedUserFriend,
@@ -205,6 +206,29 @@ export function toGroup(raw: LimitedUserGroups | RepresentedGroup): Group {
     memberCount: raw.memberCount,
     privacy: raw.privacy ?? undefined,
     isRepresenting: raw.isRepresenting ?? undefined,
+  };
+}
+
+export function toGroupDetail(raw: SdkGroup): Group {
+  return {
+    id: raw.id ?? "",
+    detailed: true,
+    name: raw.name ?? "",
+    shortCode: raw.shortCode ?? undefined,
+    description: raw.description || undefined,
+    iconUrl: raw.iconUrl ?? undefined,
+    bannerUrl: raw.bannerUrl ?? undefined,
+    ownerId: raw.ownerId ?? undefined,
+    memberCount: raw.memberCount,
+    privacy: raw.privacy ?? undefined,
+    onlineMemberCount: raw.onlineMemberCount,
+    joinState: raw.joinState ?? undefined,
+    isVerified: raw.isVerified ?? undefined,
+    rules: raw.rules || undefined,
+    languages: raw.languages ?? undefined,
+    links: raw.links ?? undefined,
+    tags: raw.tags ?? undefined,
+    createdAt: toIso(raw.createdAt as unknown as string),
   };
 }
 

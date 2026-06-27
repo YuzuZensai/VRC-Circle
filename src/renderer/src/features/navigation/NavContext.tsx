@@ -3,6 +3,7 @@ import { createContext, useContext, useMemo, useState } from "react";
 export type View =
   | { kind: "user"; id: "me" | string }
   | { kind: "world"; id: string }
+  | { kind: "group"; id: string }
   | { kind: "account" }
   | { kind: "settings" }
   | { kind: "enhancements" }
@@ -14,6 +15,7 @@ interface Nav {
   canBack: boolean;
   openUser: (id: "me" | string) => void;
   openWorld: (id: string) => void;
+  openGroup: (id: string) => void;
   openAccount: () => void;
   openSettings: () => void;
   openEnhancements: () => void;
@@ -42,6 +44,7 @@ export function NavProvider({ children }: { children: React.ReactNode }) {
       canBack: stack.length > 1,
       openUser: (id) => push({ kind: "user", id }),
       openWorld: (id) => push({ kind: "world", id }),
+      openGroup: (id) => push({ kind: "group", id }),
       openAccount: () => root({ kind: "account" }),
       openSettings: () => root({ kind: "settings" }),
       openEnhancements: () => root({ kind: "enhancements" }),
@@ -59,6 +62,7 @@ function sameView(a: View, b: View): boolean {
   if (a.kind !== b.kind) return false;
   if (a.kind === "user" && b.kind === "user") return a.id === b.id;
   if (a.kind === "world" && b.kind === "world") return a.id === b.id;
+  if (a.kind === "group" && b.kind === "group") return a.id === b.id;
   return true;
 }
 

@@ -10,7 +10,7 @@ import type { FavoriteWorldFolder, World, WorldSnapshot } from "./types/world";
 import type { Avatar } from "./types/avatar";
 import type { RepoStats, StoredEntity } from "./types/repository";
 import type { AccountSettings, ContentFilterKey, Pending2Fa, RecoveryCode } from "./types/settings";
-import type { Group } from "./types/group";
+import type { Group, GroupSnapshot } from "./types/group";
 import type { EnhancementId, EnhancementsSnapshot } from "./types/enhancements";
 import type { GallerySnapshot, Photo, ThumbCacheStats } from "./types/gallery";
 import type { AppConfig } from "./types/appConfig";
@@ -51,6 +51,8 @@ export interface IpcRequests {
 
   "group:byUser": (userId: string) => IpcResult<Group[]>;
   "group:represented": (userId: string) => IpcResult<Group | null>;
+  "group:get": (groupId: string) => IpcResult<Group>;
+  "group:snapshot": () => IpcResult<GroupSnapshot>;
 
   "social:snapshot": () => IpcResult<SocialSnapshot>;
 
@@ -119,6 +121,8 @@ export interface IpcEvents {
   "social:upsert": UserProfile;
   "world:seed": WorldSnapshot;
   "world:upsert": World;
+  "group:seed": GroupSnapshot;
+  "group:upsert": Group;
   "world:favoriteFolders": { userId: string; folders: FavoriteWorldFolder[]; done: boolean };
   "game:changed": GameStatus;
   "gallery:added": Photo;

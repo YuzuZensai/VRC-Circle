@@ -62,6 +62,8 @@ export const api = {
   group: {
     byUser: (userId: string) => call("group:byUser", userId),
     represented: (userId: string) => call("group:represented", userId),
+    get: (groupId: string) => call("group:get", groupId),
+    snapshot: () => call("group:snapshot"),
   },
   social: {
     snapshot: () => call("social:snapshot"),

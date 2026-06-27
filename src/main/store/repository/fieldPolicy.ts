@@ -82,3 +82,11 @@ export const avatarFieldPolicy = table<import("../../../shared/types/avatar").Av
   },
   { identity: 30 * DAY, stat: 6 * HOUR, live: 1 * MIN },
 );
+
+export const groupFieldPolicy = table<import("../../../shared/types/group").Group>(
+  {
+    memberCount: "stat",
+    onlineMemberCount: "live",
+  },
+  { identity: 30 * DAY, stat: 6 * HOUR, live: 2 * MIN },
+);

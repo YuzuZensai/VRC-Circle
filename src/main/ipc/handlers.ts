@@ -16,6 +16,7 @@ import * as appConfig from "../config/appConfig";
 import * as game from "../game/launch";
 import { socialSnapshot } from "../store/social";
 import { worldStore } from "../store/worldStore";
+import { groupStore } from "../store/groupStore";
 import { openDebugWindow } from "../windows";
 
 const handlers = {
@@ -50,6 +51,8 @@ const handlers = {
 
   "group:byUser": (userId) => guard(() => groups.getUserGroups(userId)),
   "group:represented": (userId) => guard(() => groups.getRepresentedGroup(userId)),
+  "group:get": (groupId) => guard(() => groups.getGroup(groupId)),
+  "group:snapshot": () => guard(async () => groupStore.snapshot()),
 
   "social:snapshot": () => guard(async () => socialSnapshot()),
 

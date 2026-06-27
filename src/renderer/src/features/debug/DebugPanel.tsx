@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useSocial } from "../../store/social";
 import { useWorlds } from "../../store/worlds";
+import { useGroups } from "../../store/groups";
 import { useCopied, useDebug } from "./useDebug";
 import { Count, TabButton } from "./ui";
 import { CacheTab } from "./tabs/CacheTab";
@@ -8,10 +9,11 @@ import { ReposTab } from "./tabs/ReposTab";
 import { ThumbnailsTab } from "./tabs/ThumbnailsTab";
 import { SocialTab } from "./tabs/SocialTab";
 import { WorldStorePanel } from "./tabs/WorldsTab";
+import { GroupStorePanel } from "./tabs/GroupsTab";
 import { WsTab } from "./tabs/WebSocketTab";
 import { LogsTab } from "./tabs/LogsTab";
 
-type Tab = "cache" | "repos" | "thumbnails" | "social" | "worlds" | "ws" | "logs";
+type Tab = "cache" | "repos" | "thumbnails" | "social" | "worlds" | "groups" | "ws" | "logs";
 
 export function DebugPanel() {
   const { cache, stats, logs, ws, repoStats, invalidate, clear, clearLogs, clearWs } = useDebug();
@@ -19,6 +21,7 @@ export function DebugPanel() {
 
   const friendCount = useSocial((s) => Object.values(s.users).filter((u) => u.isFriend).length);
   const worldCount = useWorlds((s) => Object.keys(s.worlds).length);
+  const groupCount = useGroups((s) => Object.keys(s.groups).length);
   const repoCount = repoStats.reduce((sum, r) => sum + r.count, 0);
   const [exported, exportSnapshot] = useCopied();
 
@@ -30,7 +33,13 @@ export function DebugPanel() {
           platform: window.api?.platform,
           cacheStats: stats,
           repoStats,
-          counts: { friends: friendCount, worlds: worldCount, ws: ws.length, logs: logs.length },
+          counts: {
+            friends: friendCount,
+            worlds: worldCount,
+            groups: groupCount,
+            ws: ws.length,
+            logs: logs.length,
+          },
           logs,
           ws,
         },
@@ -58,6 +67,9 @@ export function DebugPanel() {
         <TabButton active={tab === "worlds"} onClick={() => setTab("worlds")}>
           Worlds <Count n={worldCount} />
         </TabButton>
+        <TabButton active={tab === "groups"} onClick={() => setTab("groups")}>
+          Groups <Count n={groupCount} />
+        </TabButton>
         <TabButton active={tab === "ws"} onClick={() => setTab("ws")}>
           WebSocket <Count n={ws.length} />
         </TabButton>
@@ -83,6 +95,8 @@ export function DebugPanel() {
         <SocialTab />
       ) : tab === "worlds" ? (
         <WorldStorePanel />
+      ) : tab === "groups" ? (
+        <GroupStorePanel />
       ) : tab === "ws" ? (
         <WsTab ws={ws} onClear={clearWs} />
       ) : (

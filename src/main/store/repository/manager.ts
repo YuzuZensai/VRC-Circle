@@ -4,6 +4,7 @@ import { rmSync } from "node:fs";
 import type { World } from "../../../shared/types/world";
 import type { UserProfile } from "../../../shared/types/user";
 import type { Avatar } from "../../../shared/types/avatar";
+import type { Group } from "../../../shared/types/group";
 import type { RepoStats, StoredEntity } from "../../../shared/types/repository";
 
 interface InspectableRepo {
@@ -13,12 +14,18 @@ interface InspectableRepo {
 }
 import { Repository } from "./repository";
 import { JsonlBackend } from "./backend";
-import { avatarFieldPolicy, userFieldPolicy, worldFieldPolicy } from "./fieldPolicy";
+import {
+  avatarFieldPolicy,
+  groupFieldPolicy,
+  userFieldPolicy,
+  worldFieldPolicy,
+} from "./fieldPolicy";
 
 export interface AccountRepos {
   worlds: Repository<World>;
   users: Repository<UserProfile>;
   avatars: Repository<Avatar>;
+  groups: Repository<Group>;
 }
 
 function dbDir(): string {
@@ -53,6 +60,11 @@ class RepositoryManager {
         policy: avatarFieldPolicy,
         backend: new JsonlBackend<Avatar>(fileFor(accountId, "avatars")),
       }),
+      groups: new Repository<Group>({
+        name: "groups",
+        policy: groupFieldPolicy,
+        backend: new JsonlBackend<Group>(fileFor(accountId, "groups")),
+      }),
     };
     this.accounts.set(accountId, repos);
     return repos;
@@ -78,6 +90,7 @@ class RepositoryManager {
       repos.worlds.flush();
       repos.users.flush();
       repos.avatars.flush();
+      repos.groups.flush();
     }
   }
 
@@ -87,9 +100,10 @@ class RepositoryManager {
       repos.worlds.flush();
       repos.users.flush();
       repos.avatars.flush();
+      repos.groups.flush();
       this.accounts.delete(accountId);
     }
-    for (const type of ["worlds", "users", "avatars"]) {
+    for (const type of ["worlds", "users", "avatars", "groups"]) {
       const base = fileFor(accountId, type);
       rmSync(`${base}.json`, { force: true });
       rmSync(`${base}.log`, { force: true });
@@ -100,7 +114,7 @@ class RepositoryManager {
   stats(): RepoStats[] {
     if (!this.activeId) return [];
     const repos = this.open(this.activeId);
-    return [repos.worlds.stats(), repos.users.stats(), repos.avatars.stats()];
+    return [repos.worlds.stats(), repos.users.stats(), repos.avatars.stats(), repos.groups.stats()];
   }
 
   private repoByName(name: string): InspectableRepo | null {
@@ -109,6 +123,7 @@ class RepositoryManager {
     if (name === "worlds") return r.worlds;
     if (name === "users") return r.users;
     if (name === "avatars") return r.avatars;
+    if (name === "groups") return r.groups;
     return null;
   }
 

@@ -8,6 +8,7 @@ import { WS_STRING_FIELDS } from "./repository/fieldPolicy";
 import { activeId } from "../accounts/store";
 import { entityStore, type SocialSnapshot } from "./entityStore";
 import { worldStore } from "./worldStore";
+import { groupStore } from "./groupStore";
 import { repos } from "./repository/manager";
 import { broadcast } from "../windows";
 import { logger } from "../debug/logger";
@@ -170,12 +171,14 @@ export async function seedActiveAccount(force = false): Promise<void> {
   repos.setActive(id);
   if (!id) {
     worldStore.reset();
+    groupStore.reset();
     entityStore.reset();
     return;
   }
   if (!force && alreadyActive) return;
 
   worldStore.reset();
+  groupStore.reset();
   entityStore.reset();
 
   const vrc = getActiveClient();
@@ -203,5 +206,10 @@ export function startSocialBridge(): void {
   worldStore.onChange((c) => {
     if (c.type === "seed") broadcast("world:seed", c.snapshot);
     else broadcast("world:upsert", c.world);
+  });
+
+  groupStore.onChange((c) => {
+    if (c.type === "seed") broadcast("group:seed", c.snapshot);
+    else broadcast("group:upsert", c.group);
   });
 }

@@ -15,6 +15,7 @@ import {
 import type { LucideIcon } from "lucide-react";
 import { ProfileView } from "../features/profile/ProfileView";
 import { WorldView } from "../features/world/WorldView";
+import { GroupView } from "../features/group/GroupView";
 import { AccountSettingsView } from "../features/account/AccountSettingsView";
 import { SearchView } from "../features/search/SearchView";
 import { SettingsView } from "../features/settings/SettingsView";
@@ -98,7 +99,7 @@ function Shell() {
 
   const openProfile = (id: "me" | string) => nav.openUser(id);
   const stageKey =
-    nav.current.kind === "user" || nav.current.kind === "world"
+    nav.current.kind === "user" || nav.current.kind === "world" || nav.current.kind === "group"
       ? `${nav.current.kind}:${nav.current.id}`
       : nav.current.kind;
 
@@ -163,6 +164,8 @@ function Shell() {
           <div key={stageKey} className="stage__inner animate-rise">
             {nav.current.kind === "world" ? (
               <WorldView worldId={nav.current.id} />
+            ) : nav.current.kind === "group" ? (
+              <GroupView groupId={nav.current.id} />
             ) : nav.current.kind === "account" ? (
               <AccountSettingsView />
             ) : nav.current.kind === "settings" ? (

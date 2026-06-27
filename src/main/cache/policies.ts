@@ -13,6 +13,7 @@ export const policies = {
   avatarFavorites: { ttl: 15 * 60_000, staleWhileRevalidate: 60 * 60_000 },
   userGroups: { ttl: 15 * 60_000, staleWhileRevalidate: 60 * 60_000 },
   representedGroup: { ttl: 15 * 60_000, staleWhileRevalidate: 60 * 60_000 },
+  group: { ttl: 30 * 60_000, staleWhileRevalidate: 2 * 60 * 60_000 },
 } satisfies Record<string, CachePolicy>;
 
 export const cacheKeys = {
@@ -29,4 +30,5 @@ export const cacheKeys = {
   avatarFavorites: () => "avatar:favorites",
   userGroups: (id: string) => `user:groups:${id}`,
   representedGroup: (id: string) => `user:group:represented:${id}`,
+  group: (id: string) => `group:${id}`,
 };

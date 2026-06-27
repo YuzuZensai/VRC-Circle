@@ -1,6 +1,7 @@
 import { Star, Users } from "lucide-react";
 import type { Group } from "../../../../shared/types/group";
 import { Avatar, CollapsibleCard, SkeletonGrid } from "../../components/ui";
+import { useNav } from "../navigation/NavContext";
 import { useUserGroups } from "./useUserGroups";
 
 export function GroupsSection({ userId }: { userId: string }) {
@@ -40,9 +41,11 @@ export function GroupsSection({ userId }: { userId: string }) {
 }
 
 function FeaturedGroup({ group }: { group: Group }) {
+  const { openGroup } = useNav();
   return (
-    <div
-      className="relative overflow-hidden rounded-lg border border-accent/40 bg-surface p-3.5"
+    <button
+      onClick={() => openGroup(group.id)}
+      className="relative block w-full overflow-hidden rounded-lg border border-accent/40 bg-surface p-3.5 text-left transition-colors hover:border-accent"
       style={{ "--ring": "var(--accent)" } as React.CSSProperties}
     >
       {group.bannerUrl ? (
@@ -67,13 +70,17 @@ function FeaturedGroup({ group }: { group: Group }) {
           <GroupMeta group={group} />
         </div>
       </div>
-    </div>
+    </button>
   );
 }
 
 function GroupRow({ group }: { group: Group }) {
+  const { openGroup } = useNav();
   return (
-    <div className="flex items-center gap-3 rounded-lg border border-border bg-surface p-2.5">
+    <button
+      onClick={() => openGroup(group.id)}
+      className="flex w-full items-center gap-3 rounded-lg border border-border bg-surface p-2.5 text-left transition-colors hover:border-accent"
+    >
       <Avatar src={group.iconUrl} name={group.name} size={40} className="!rounded-lg" />
       <div className="min-w-0 flex-1">
         <div className="truncate text-[13.5px] font-semibold" title={group.name}>
@@ -81,7 +88,7 @@ function GroupRow({ group }: { group: Group }) {
         </div>
         <GroupMeta group={group} />
       </div>
-    </div>
+    </button>
   );
 }
 
