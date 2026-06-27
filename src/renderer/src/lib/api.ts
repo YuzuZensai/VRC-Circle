@@ -55,6 +55,9 @@ export const api = {
     get: (worldId: string) => call("world:get", worldId),
     snapshot: () => call("world:snapshot"),
   },
+  instance: {
+    get: (worldId: string, instanceId: string) => call("instance:get", { worldId, instanceId }),
+  },
   avatar: {
     get: (avatarId: string) => call("avatar:get", avatarId),
     favorites: () => call("avatar:favorites"),

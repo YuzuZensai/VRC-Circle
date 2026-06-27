@@ -7,6 +7,7 @@ import type {
 } from "./types/auth";
 import type { SocialSnapshot, UserProfile, UserStatus } from "./types/user";
 import type { FavoriteWorldFolder, World, WorldSnapshot } from "./types/world";
+import type { Instance } from "./types/instance";
 import type { Avatar } from "./types/avatar";
 import type { RepoStats, StoredEntity } from "./types/repository";
 import type { AccountSettings, ContentFilterKey, Pending2Fa, RecoveryCode } from "./types/settings";
@@ -45,6 +46,8 @@ export interface IpcRequests {
   "world:favorites": (userId: string) => IpcResult<FavoriteWorldFolder[]>;
   "world:get": (worldId: string) => IpcResult<World>;
   "world:snapshot": () => IpcResult<WorldSnapshot>;
+
+  "instance:get": (location: { worldId: string; instanceId: string }) => IpcResult<Instance>;
 
   "avatar:get": (avatarId: string) => IpcResult<Avatar>;
   "avatar:favorites": () => IpcResult<Avatar[]>;

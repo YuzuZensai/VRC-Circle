@@ -5,6 +5,7 @@ import * as auth from "../vrchat/authService";
 import * as users from "../vrchat/userService";
 import * as friends from "../vrchat/friendsService";
 import * as worlds from "../vrchat/worldService";
+import * as instances from "../vrchat/instanceService";
 import * as avatars from "../vrchat/avatarService";
 import * as groups from "../vrchat/groupService";
 import * as settings from "../vrchat/settingsService";
@@ -45,6 +46,9 @@ const handlers = {
   "world:search": (query) => guard(() => worlds.searchWorlds(query)),
   "world:get": (worldId) => guard(() => worlds.getWorld(worldId)),
   "world:snapshot": () => guard(async () => worldStore.snapshot()),
+
+  "instance:get": ({ worldId, instanceId }) =>
+    guard(() => instances.getInstance(worldId, instanceId)),
 
   "avatar:get": (avatarId) => guard(() => avatars.getAvatar(avatarId)),
   "avatar:favorites": () => guard(() => avatars.getFavoritedAvatars()),

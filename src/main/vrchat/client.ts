@@ -1,4 +1,5 @@
 import { app } from "electron";
+import { readFileSync } from "node:fs";
 import { KeyvFile } from "keyv-file";
 import { VRChat } from "vrchat";
 import { activeId, pendingFile, sessionFile } from "../accounts/store";
@@ -59,10 +60,33 @@ export function closeClients(): void {
   loginClient?.pipeline.close();
 }
 
+interface SessionCookie {
+  name: string;
+  value: string;
+}
+
+function readAuthCookieFromSession(filename: string): string | null {
+  try {
+    const raw = JSON.parse(readFileSync(filename, "utf8")) as {
+      cache?: [string, { value?: string }][];
+    };
+    const entry = raw.cache?.find(([k]) => k === "keyv:cookies")?.[1];
+    if (!entry?.value) return null;
+    const outer = JSON.parse(entry.value) as { value?: SessionCookie[] };
+    const auth = outer.value?.find((c) => c.name === "auth");
+    return auth?.value ?? null;
+  } catch {
+    return null;
+  }
+}
+
 export async function getPipelineAuthToken(vrc: VRChat): Promise<string | null> {
-  const getCookies = (
-    vrc as unknown as { getCookies?: () => Promise<{ name: string; value: string }[]> }
-  ).getCookies;
+  const id = activeId();
+  if (id) {
+    const fromDisk = readAuthCookieFromSession(sessionFile(id));
+    if (fromDisk) return fromDisk;
+  }
+  const getCookies = (vrc as unknown as { getCookies?: () => Promise<SessionCookie[]> }).getCookies;
   const cookies = (await getCookies?.()) ?? [];
   return cookies.find((c) => c.name === "auth")?.value ?? null;
 }

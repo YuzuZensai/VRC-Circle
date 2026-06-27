@@ -8,12 +8,14 @@ import type {
   User,
   CurrentUser,
   LimitedUserFriend,
+  Instance as SdkInstance,
 } from "vrchat";
 import type { TrustRank, UserProfile, UserStatus } from "../../shared/types/user";
 import type { CurrentUserSummary } from "../../shared/types/auth";
 import type { ReleaseStatus, World, WorldPlatforms } from "../../shared/types/world";
 import type { Avatar } from "../../shared/types/avatar";
 import type { Group } from "../../shared/types/group";
+import type { Instance } from "../../shared/types/instance";
 
 interface RawUser {
   id: string;
@@ -191,6 +193,24 @@ export function toWorld(raw: RawWorld): World {
     platforms,
     publicOccupants: "publicOccupants" in raw ? raw.publicOccupants : undefined,
     privateOccupants: "privateOccupants" in raw ? raw.privateOccupants : undefined,
+  };
+}
+
+export function toInstance(raw: SdkInstance): Instance {
+  return {
+    id: raw.id,
+    location: raw.location,
+    worldId: raw.worldId,
+    instanceId: raw.instanceId,
+    type: raw.type,
+    region: raw.region ?? undefined,
+    ownerId: raw.ownerId ?? undefined,
+    userCount: raw.userCount ?? 0,
+    capacity: raw.capacity ?? raw.recommendedCapacity ?? 0,
+    recommendedCapacity: raw.recommendedCapacity,
+    full: raw.full ?? false,
+    queueEnabled: raw.queueEnabled ?? false,
+    queueSize: raw.queueSize ?? 0,
   };
 }
 

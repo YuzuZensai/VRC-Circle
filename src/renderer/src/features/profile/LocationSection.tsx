@@ -1,14 +1,21 @@
-import { ChevronRight, Globe, MapPin, Users } from "lucide-react";
+import { ChevronRight, Globe, Hash, MapPin, Users } from "lucide-react";
 import { parseLocation, type Location } from "../../../../shared/types/user";
 import { HoverImage } from "../../components/ui";
 import { useWorld } from "../../store/worlds";
 import { useNav } from "../navigation/NavContext";
+import { api } from "../../lib/api";
+import { useAsync } from "../../lib/useAsync";
 import { locationLabel, regionLabels } from "../../lib/vrchat";
 
 export function LocationSection({ location }: { location?: Location }) {
   const { openWorld } = useNav();
   const parsed = parseLocation(location);
   const world = useWorld(parsed?.worldId);
+  const instance = useAsync(
+    () => (parsed ? api.instance.get(parsed.worldId, parsed.instance) : Promise.resolve(null)),
+    [parsed?.worldId, parsed?.instance],
+  );
+  const inInstance = instance.status === "ready" ? instance.data : null;
 
   if (parsed && !world) {
     return (
@@ -44,17 +51,26 @@ export function LocationSection({ location }: { location?: Location }) {
             </div>
             <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] text-faint">
               <span className="truncate">by {world.authorName}</span>
+              <span className="inline-flex items-center gap-1" title="Instance">
+                <Hash size={11} />
+                {parsed.instanceId}
+              </span>
               {region ? (
                 <span className="inline-flex items-center gap-1">
                   <Globe size={11} /> {region}
                 </span>
               ) : null}
-              {world.occupants > 0 ? (
+              {inInstance ? (
                 <span
                   className="inline-flex items-center gap-1"
                   style={{ color: "var(--status-active)" }}
                 >
-                  <Users size={11} /> {world.occupants} here
+                  <Users size={11} /> {inInstance.userCount} in instance
+                </span>
+              ) : null}
+              {world.occupants > 0 ? (
+                <span className="inline-flex items-center gap-1">
+                  <Users size={11} /> {world.occupants} in world
                 </span>
               ) : null}
             </div>

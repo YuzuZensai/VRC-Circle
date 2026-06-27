@@ -14,6 +14,7 @@ export const policies = {
   userGroups: { ttl: 15 * 60_000, staleWhileRevalidate: 60 * 60_000 },
   representedGroup: { ttl: 15 * 60_000, staleWhileRevalidate: 60 * 60_000 },
   group: { ttl: 30 * 60_000, staleWhileRevalidate: 2 * 60 * 60_000 },
+  instance: { ttl: 30_000, staleWhileRevalidate: 60_000 },
 } satisfies Record<string, CachePolicy>;
 
 export const cacheKeys = {
@@ -31,4 +32,5 @@ export const cacheKeys = {
   userGroups: (id: string) => `user:groups:${id}`,
   representedGroup: (id: string) => `user:group:represented:${id}`,
   group: (id: string) => `group:${id}`,
+  instance: (location: string) => `instance:${location}`,
 };

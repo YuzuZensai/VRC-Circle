@@ -17,6 +17,7 @@ export type Location = "offline" | "private" | "traveling" | "" | string;
 export interface ParsedLocation {
   worldId: string;
   instanceId: string;
+  instance: string;
   region?: string;
 }
 
@@ -26,7 +27,7 @@ export function parseLocation(loc?: string): ParsedLocation | null {
   if (!worldId?.startsWith("wrld_") || !rest) return null;
   const instanceId = rest.split("~")[0];
   const region = /~region\(([^)]+)\)/.exec(rest)?.[1];
-  return { worldId, instanceId, region };
+  return { worldId, instanceId, instance: rest, region };
 }
 
 export interface Badge {
