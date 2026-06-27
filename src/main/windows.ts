@@ -3,6 +3,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { IpcEventChannel, IpcEvents } from "../shared/ipc";
 import { TRAFFIC_LIGHT_INSET } from "../shared/window";
+import { restoreBounds, trackBounds } from "./windowState";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const isDev = !app.isPackaged;
@@ -25,9 +26,11 @@ function load(win: BrowserWindow, hash = ""): void {
 }
 
 export function createMainWindow(): BrowserWindow {
+  const restored = restoreBounds();
   mainWindow = new BrowserWindow({
     width: 1180,
     height: 760,
+    ...restored.bounds,
     minWidth: 940,
     minHeight: 600,
     show: false,
@@ -42,6 +45,9 @@ export function createMainWindow(): BrowserWindow {
       sandbox: false,
     },
   });
+
+  if (restored.maximized) mainWindow.maximize();
+  trackBounds(mainWindow);
 
   mainWindow.once("ready-to-show", () => mainWindow?.show());
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {

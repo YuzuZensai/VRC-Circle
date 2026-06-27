@@ -108,7 +108,9 @@ const handlers = {
   "debug:repoFlush": (name) => guard(async () => debug.repoFlush(name)),
   "debug:openWindow": () => guard(async () => openDebugWindow()),
 } satisfies {
-  [C in IpcRequestChannel]: (...args: Parameters<IpcRequests[C]>) => Promise<ReturnType<IpcRequests[C]>>;
+  [C in IpcRequestChannel]: (
+    ...args: Parameters<IpcRequests[C]>
+  ) => Promise<ReturnType<IpcRequests[C]>>;
 };
 
 export function registerIpcHandlers(): void {
@@ -121,7 +123,5 @@ function register<C extends IpcRequestChannel>(channel: C): void {
   const handler = handlers[channel] as (
     ...args: Parameters<IpcRequests[C]>
   ) => Promise<ReturnType<IpcRequests[C]>>;
-  ipcMain.handle(channel, (_event, ...args) =>
-    handler(...(args as Parameters<IpcRequests[C]>)),
-  );
+  ipcMain.handle(channel, (_event, ...args) => handler(...(args as Parameters<IpcRequests[C]>)));
 }
