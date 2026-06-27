@@ -32,10 +32,8 @@ export function AccountSwitcher() {
       {open ? <div className="fixed inset-0 z-40" onClick={close} /> : null}
 
       <button
-        className={`acct__current group/trigger flex w-full items-center gap-2.5 rounded-DEFAULT border bg-surface-2 py-1.5 pl-1.5 pr-2.5 transition-[background,border-color,box-shadow] duration-[var(--dur)] ease-[var(--ease)] hover:border-border-strong hover:bg-surface-hover ${
-          open
-            ? "border-accent bg-surface-hover shadow-[0_0_0_3px_var(--accent-weak)]"
-            : "border-border"
+        className={`acct__current group/trigger flex w-full items-center gap-2.5 rounded-DEFAULT py-1.5 pl-1.5 pr-2.5 transition-[background,color] duration-[var(--dur)] ease-[var(--ease)] hover:bg-surface-2 ${
+          open ? "bg-surface-2" : ""
         }`}
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
@@ -44,9 +42,9 @@ export function AccountSwitcher() {
           <Avatar src={active?.userIcon} name={active?.displayName} size={32} />
           <StatusDot
             color={statusMeta[status].color}
-            ring="var(--surface-2)"
+            ring="var(--surface)"
             title={statusMeta[status].label}
-            className="absolute -bottom-px -right-px transition-[border-color] duration-[var(--dur)] group-hover/trigger:border-[var(--surface-hover)] group-aria-expanded/trigger:border-[var(--surface-hover)]"
+            className="absolute -bottom-px -right-px transition-[border-color] duration-[var(--dur)] group-hover/trigger:border-[var(--surface-2)] group-aria-expanded/trigger:border-[var(--surface-2)]"
           />
         </span>
         <span className="acct__current-text flex min-w-0 flex-1 flex-col">
