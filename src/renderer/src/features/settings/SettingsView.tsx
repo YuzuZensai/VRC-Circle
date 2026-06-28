@@ -1,6 +1,9 @@
 import { useEffect, useState, type ReactNode } from "react";
 import {
+  AlertTriangle,
+  Boxes,
   Check,
+  Download,
   Droplet,
   FolderOpen,
   Gamepad2,
@@ -9,19 +12,23 @@ import {
   Monitor,
   Moon,
   Palette,
+  Search,
   Sun,
+  X,
 } from "lucide-react";
 import { useTheme } from "../../lib/ThemeContext";
 import { useI18n } from "../../lib/i18n";
 import { ACCENT_PRESETS, DEFAULT_ACCENT, type SchemeMode } from "../../lib/theme";
 import type { AppConfig } from "../../../../shared/types/appConfig";
+import type { UnityStatus } from "../../../../shared/types/unity";
 import { api, errorMessage } from "../../lib/api";
+import { useAsync } from "../../lib/useAsync";
 import { Button, Field, Tabs } from "../../components/ui";
 
 const SHELL = "mx-auto flex w-full max-w-[760px] flex-col gap-[18px] px-12 pb-16 pt-10";
 const SECTIONS = "animate-rise flex flex-col gap-[18px]";
 
-type SettingsTab = "appearance" | "game" | "about";
+type SettingsTab = "appearance" | "game" | "creator" | "about";
 
 export function SettingsView() {
   const { t } = useI18n();
@@ -37,6 +44,7 @@ export function SettingsView() {
         tabs={[
           { id: "appearance", label: t("settings:tabs.appearance") },
           { id: "game", label: t("settings:tabs.game") },
+          { id: "creator", label: t("settings:tabs.creator") },
           { id: "about", label: t("settings:tabs.about") },
         ]}
         active={tab}
@@ -54,6 +62,12 @@ export function SettingsView() {
       {tab === "game" ? (
         <div className={SECTIONS}>
           <GameSection />
+        </div>
+      ) : null}
+
+      {tab === "creator" ? (
+        <div className={SECTIONS}>
+          <UnitySection />
         </div>
       ) : null}
 
@@ -312,6 +326,29 @@ function GameSection() {
           {t("settings:game.browse")}
         </Button>
       </div>
+
+      <div className="mt-3 flex items-center gap-2 text-[12.5px] text-muted">
+        <Search size={13} className="shrink-0 text-faint" />
+        <span className="shrink-0 font-semibold">{t("settings:game.detected")}:</span>
+        {config?.detectedGamePath ? (
+          <>
+            <span className="truncate font-mono text-[12px]" title={config.detectedGamePath}>
+              {config.detectedGamePath}
+            </span>
+            {config.detectedGamePath !== path.trim() ? (
+              <button
+                type="button"
+                onClick={() => setPath(config.detectedGamePath ?? "")}
+                className="ml-auto shrink-0 font-semibold text-accent hover:underline"
+              >
+                {t("settings:game.useDetected")}
+              </button>
+            ) : null}
+          </>
+        ) : (
+          <span className="text-faint">{t("settings:game.detectedNone")}</span>
+        )}
+      </div>
       <div className="mt-3 flex flex-wrap items-center gap-2.5">
         <Button
           onClick={() =>
@@ -342,6 +379,73 @@ function Notice({ error, ok }: { error?: string | null; ok?: string | null }) {
   if (ok) return <p className="mt-3 text-[12.5px] text-[var(--status-active)]">{ok}</p>;
   return null;
 }
+
+function UnitySection() {
+  const { t } = useI18n();
+  const status = useAsync(() => api.unity.status(), [], t("settings:unity.error"));
+
+  return (
+    <Section
+      title={t("settings:unity.title")}
+      icon={<Boxes size={16} />}
+      description={t("settings:unity.description")}
+    >
+      {status.status === "loading" ? (
+        <p className="text-[13px] text-muted">{t("settings:unity.loading")}</p>
+      ) : status.status === "error" ? (
+        <p className="text-[12.5px] text-[var(--danger)]">{status.message}</p>
+      ) : (
+        <UnityStatusBody status={status.data} />
+      )}
+    </Section>
+  );
+}
+
+function UnityStatusBody({ status }: { status: UnityStatus }) {
+  const { t } = useI18n();
+  const verdict = MATCH_META[status.match];
+  return (
+    <div className="flex flex-col gap-2 text-[13px]">
+      <Row
+        label={t("settings:unity.hub")}
+        value={status.hubInstalled ? t("settings:unity.installed") : t("settings:unity.notFound")}
+      />
+      <Row label={t("settings:unity.required")} value={status.requiredVersion ?? "—"} />
+      <Row
+        label={t("settings:unity.installedVersions")}
+        value={status.installedVersions.length ? status.installedVersions.join(", ") : "—"}
+      />
+      <div className="flex items-center justify-between py-2">
+        <span className="text-muted">{t("settings:unity.status")}</span>
+        <span
+          className="inline-flex items-center gap-1.5 font-semibold"
+          style={{ color: verdict.color }}
+        >
+          <verdict.icon size={15} />
+          {t(verdict.key)}
+        </span>
+      </div>
+      {status.match !== "ok" && status.installUrl ? (
+        <div className="mt-1">
+          <Button onClick={() => void api.unity.install(status.installUrl as string)}>
+            <Download size={14} />
+            {t("settings:unity.install", { version: status.requiredVersion ?? "" })}
+          </Button>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+const MATCH_META: Record<
+  UnityStatus["match"],
+  { key: string; icon: typeof Check; color: string }
+> = {
+  ok: { key: "settings:unity.match.ok", icon: Check, color: "var(--status-active)" },
+  missing: { key: "settings:unity.match.missing", icon: AlertTriangle, color: "var(--status-ask)" },
+  "no-editor": { key: "settings:unity.match.noEditor", icon: X, color: "var(--danger)" },
+  unknown: { key: "settings:unity.match.unknown", icon: AlertTriangle, color: "var(--muted)" },
+};
 
 function AboutSection() {
   const { t } = useI18n();

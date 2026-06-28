@@ -1,7 +1,7 @@
 import { homedir } from "node:os";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 import { existsSync, readFileSync } from "node:fs";
-import { getConfig } from "../config/appConfig";
+import { gamePathOverride } from "../config/appConfig";
 
 export const VRCHAT_APPID = "438100";
 
@@ -29,7 +29,7 @@ export function steamLibraries(): string[] {
   const bases = platformBases();
   const libs = new Set<string>();
 
-  const override = getConfig().gamePath;
+  const override = gamePathOverride();
   if (override) {
     if (existsSync(join(override, "steamapps"))) libs.add(join(override, "steamapps"));
     if (existsSync(join(override, "compatdata"))) libs.add(override);
@@ -57,6 +57,14 @@ export function vrchatPrefix(): string | null {
   for (const lib of steamLibraries()) {
     const prefix = join(lib, "compatdata", VRCHAT_APPID);
     if (existsSync(prefix)) return prefix;
+  }
+  return null;
+}
+
+export function detectedGamePath(): string | null {
+  for (const lib of steamLibraries()) {
+    const manifest = join(lib, `appmanifest_${VRCHAT_APPID}.acf`);
+    if (existsSync(manifest)) return dirname(lib);
   }
   return null;
 }

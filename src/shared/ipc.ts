@@ -8,6 +8,7 @@ import type {
 import type { SocialSnapshot, UserProfile, UserStatus } from "./types/user";
 import type { FavoriteWorldFolder, World, WorldSnapshot } from "./types/world";
 import type { Instance } from "./types/instance";
+import type { UnityStatus } from "./types/unity";
 import type { Avatar } from "./types/avatar";
 import type { RepoStats, StoredEntity } from "./types/repository";
 import type { AccountSettings, ContentFilterKey, Pending2Fa, RecoveryCode } from "./types/settings";
@@ -90,6 +91,9 @@ export interface IpcRequests {
   "config:get": () => IpcResult<AppConfig>;
   "config:setGamePath": (p: { gamePath: string | null }) => IpcResult<AppConfig>;
   "config:pickGamePath": () => IpcResult<AppConfig>;
+
+  "unity:status": () => IpcResult<UnityStatus>;
+  "unity:install": (url: string) => IpcResult<void>;
 
   "game:status": () => IpcResult<GameStatus>;
   "game:launch": () => IpcResult<GameStatus>;

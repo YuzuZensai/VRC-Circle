@@ -6,6 +6,7 @@ import * as users from "../vrchat/userService";
 import * as friends from "../vrchat/friendsService";
 import * as worlds from "../vrchat/worldService";
 import * as instances from "../vrchat/instanceService";
+import * as unity from "../vrchat/unityService";
 import * as avatars from "../vrchat/avatarService";
 import * as groups from "../vrchat/groupService";
 import * as settings from "../vrchat/settingsService";
@@ -88,6 +89,13 @@ const handlers = {
       });
       if (res.canceled || !res.filePaths[0]) return appConfig.getConfig();
       return appConfig.setGamePath(res.filePaths[0]);
+    }),
+
+  "unity:status": () => guard(() => unity.unityStatus()),
+  "unity:install": (url) =>
+    guard(async () => {
+      if (!url.startsWith("unityhub://")) throw new Error("Invalid Unity Hub link");
+      await shell.openExternal(url);
     }),
 
   "game:status": () => guard(() => game.status()),

@@ -4,6 +4,7 @@
   "tabs": {
     "appearance": "外観",
     "game": "ゲーム",
+    "creator": "クリエイター",
     "about": "情報"
   },
   "appearance": {
@@ -41,16 +42,38 @@
     "description": "アプリ全体で使用される言語。"
   },
   "game": {
-    "title": "ゲームのインストール先",
-    "description": "Steam または VRChat のインストール先です。空欄なら自動検出します。拡張機能がインストール先を見つけられないときに設定してください。",
-    "label": "インストールフォルダ",
+    "title": "Steam のパス",
+    "description": "VRChat が入っている Steam ライブラリフォルダです。空欄なら自動検出します。拡張機能がインストール先を見つけられないときに設定してください。",
+    "label": "Steam フォルダ",
     "placeholder": "自動検出",
     "browse": "参照",
     "save": "保存",
     "reset": "自動検出に戻す",
     "saved": "パスを保存しました。",
     "resetDone": "自動検出に戻しました。",
-    "error": "問題が発生しました。"
+    "error": "問題が発生しました。",
+    "detected": "自動検出",
+    "detectedNone": "VRChat を含む Steam ライブラリを自動で見つけられませんでした。",
+    "useDetected": "これを使う"
+  },
+  "unity": {
+    "title": "Unity",
+    "description": "VRChat が使用している Unity エディターのバージョンと、Unity Hub でインストール済みかどうかを表示します。",
+    "loading": "Unity のインストールを確認中…",
+    "error": "Unity のインストールを確認できませんでした。",
+    "hub": "Unity Hub",
+    "installed": "インストール済み",
+    "notFound": "見つかりません",
+    "required": "VRChat の Unity バージョン",
+    "installedVersions": "インストール済みエディター",
+    "status": "状態",
+    "install": "Unity Hub で {{version}} をインストール",
+    "match": {
+      "ok": "一致",
+      "missing": "そのバージョンが未インストール",
+      "noEditor": "エディター未インストール",
+      "unknown": "確認するにはサインイン"
+    }
   },
   "about": {
     "title": "情報",

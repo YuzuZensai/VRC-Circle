@@ -4,6 +4,7 @@
   "tabs": {
     "appearance": "Appearance",
     "game": "Game",
+    "creator": "Creator",
     "about": "About"
   },
   "appearance": {
@@ -41,16 +42,38 @@
     "description": "The language used across the app."
   },
   "game": {
-    "title": "Game Install Path",
-    "description": "Where Steam or VRChat is installed. Leave empty to auto-detect. Set this if an enhancement can't find your install.",
-    "label": "Install folder",
+    "title": "Steam Path",
+    "description": "Your Steam library folder that contains VRChat. Leave empty to auto-detect. Set this if an enhancement can't find your install.",
+    "label": "Steam folder",
     "placeholder": "Auto-detect",
     "browse": "Browse",
     "save": "Save",
     "reset": "Reset to auto-detect",
     "saved": "Path saved.",
     "resetDone": "Reset to auto-detect.",
-    "error": "Something went wrong."
+    "error": "Something went wrong.",
+    "detected": "Auto-detected",
+    "detectedNone": "No Steam library with VRChat found automatically.",
+    "useDetected": "Use this"
+  },
+  "unity": {
+    "title": "Unity",
+    "description": "The Unity Editor version VRChat uses, and whether you have it installed via Unity Hub.",
+    "loading": "Checking your Unity install…",
+    "error": "Couldn't check your Unity install.",
+    "hub": "Unity Hub",
+    "installed": "Installed",
+    "notFound": "Not found",
+    "required": "VRChat's Unity version",
+    "installedVersions": "Installed editors",
+    "status": "Status",
+    "install": "Install {{version}} in Unity Hub",
+    "match": {
+      "ok": "Match",
+      "missing": "Version not installed",
+      "noEditor": "No editor installed",
+      "unknown": "Sign in to check"
+    }
   },
   "about": {
     "title": "About",

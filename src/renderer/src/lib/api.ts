@@ -100,6 +100,10 @@ export const api = {
     setGamePath: (gamePath: string | null) => call("config:setGamePath", { gamePath }),
     pickGamePath: () => call("config:pickGamePath"),
   },
+  unity: {
+    status: () => call("unity:status"),
+    install: (url: string) => call("unity:install", url),
+  },
   game: {
     status: () => call("game:status"),
     launch: () => call("game:launch"),

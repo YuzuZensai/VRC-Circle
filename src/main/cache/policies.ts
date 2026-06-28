@@ -15,6 +15,8 @@ export const policies = {
   representedGroup: { ttl: 15 * 60_000, staleWhileRevalidate: 60 * 60_000 },
   group: { ttl: 30 * 60_000, staleWhileRevalidate: 2 * 60 * 60_000 },
   instance: { ttl: 30_000, staleWhileRevalidate: 60_000 },
+  apiConfig: { ttl: 6 * 60 * 60_000, staleWhileRevalidate: 24 * 60 * 60_000 },
+  unityChangeset: { ttl: 30 * 24 * 60 * 60_000 },
 } satisfies Record<string, CachePolicy>;
 
 export const cacheKeys = {
@@ -33,4 +35,6 @@ export const cacheKeys = {
   representedGroup: (id: string) => `user:group:represented:${id}`,
   group: (id: string) => `group:${id}`,
   instance: (location: string) => `instance:${location}`,
+  apiConfig: () => "api:config",
+  unityChangeset: (version: string) => `unity:changeset:${version}`,
 };
