@@ -18,6 +18,7 @@
     "format": "prettier --check .",
     "format:fix": "prettier --write .",
     "package": "pnpm run build && electron-builder --dir",
+    "package:run": "pnpm run package && open dist/mac*/'VRC Circle.app'",
     "dist": "pnpm run build && electron-builder"
   },
   "dependencies": {

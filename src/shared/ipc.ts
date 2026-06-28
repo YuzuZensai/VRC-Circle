@@ -143,6 +143,7 @@ export interface IpcEvents {
   "group:upsert": Group;
   "world:favoriteFolders": { userId: string; folders: FavoriteWorldFolder[]; done: boolean };
   "game:changed": GameStatus;
+  "instance:open": { worldId: string; instanceId: string; location: string };
   "gallery:added": Photo;
   "debug:log": LogEntry;
   "debug:cache": CacheUpdate;

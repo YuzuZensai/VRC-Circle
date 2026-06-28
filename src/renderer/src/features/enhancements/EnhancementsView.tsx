@@ -27,7 +27,7 @@ const CATALOG: Meta[] = [
   {
     id: "vrchat-protocol-handler",
     icon: <Link2 size={18} />,
-    platforms: ["linux", "win32"], // TODO: add darwin with the in-app instance page
+    platforms: ["linux", "win32", "darwin"],
   },
 ];
 

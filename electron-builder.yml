@@ -14,3 +14,6 @@ win:
 mac:
   target: [dmg]
   category: public.app-category.social-networking
+  protocols:
+    - name: VRChat
+      schemes: [vrchat]

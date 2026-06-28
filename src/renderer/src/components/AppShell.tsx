@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ArrowLeft,
   ChevronLeft,
@@ -27,7 +27,7 @@ import { AccountSwitcher } from "../features/auth/AccountSwitcher";
 import { LaunchButton } from "../features/game/LaunchButton";
 import { NavProvider, useNav, type View } from "../features/navigation/NavContext";
 import { useI18n } from "../lib/i18n";
-import { api } from "../lib/api";
+import { api, events } from "../lib/api";
 import "../styles/app-shell.css";
 
 export function AppShell() {
@@ -52,6 +52,14 @@ function Shell() {
   const { t } = useI18n();
   const [leftOpen, setLeftOpen] = useState(true);
   const [friendsOpen, setFriendsOpen] = useState(true);
+
+  useEffect(
+    () =>
+      events.on("instance:open", ({ worldId, instanceId, location }) =>
+        nav.openInstance(worldId, instanceId, location),
+      ),
+    [nav],
+  );
 
   const navItems: NavItem[] = [
     {

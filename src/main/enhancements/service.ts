@@ -41,11 +41,25 @@ function screenshotState(): EnhancementState {
 
 function protocolState(): EnhancementState {
   const s = protocol.status();
+  // isDefaultProtocolClient stays true after disabling on macOS/Windows; trust the pref instead
+  if (platform() !== "linux") {
+    const pref = readPrefs()["vrchat-protocol-handler"];
+    const enabled = pref ?? s.registered;
+    return {
+      id: "vrchat-protocol-handler",
+      enabled,
+      detail: { key: enabled ? "registered" : "notRegistered" },
+    };
+  }
   return { id: "vrchat-protocol-handler", enabled: s.registered, detail: s.detail };
 }
 
 export function snapshot(): EnhancementsSnapshot {
   return { platform: platform(), states: [screenshotState(), protocolState()] };
+}
+
+export function isEnabled(id: EnhancementId): boolean {
+  return readPrefs()[id] ?? false;
 }
 
 export async function setEnabled(

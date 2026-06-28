@@ -56,7 +56,6 @@ export async function joinInstance(url: string): Promise<JoinResult> {
   const running = await isRunning();
 
   if (process.platform === "darwin") {
-    // TODO: no VRChat on macOS; show the instance in an in-app page instead
     return { launched: false, alreadyRunning: false, unsupported: true };
   }
 

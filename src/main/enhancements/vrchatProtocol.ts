@@ -5,10 +5,14 @@ import { exec } from "node:child_process";
 import { promisify } from "node:util";
 import { existsSync, mkdirSync, rmSync } from "node:fs";
 import { writeFileAtomicSync } from "../lib/atomicFile";
+import { logger } from "../debug/logger";
 import type { EnhancementDetail } from "../../shared/types/enhancements";
 
 const sh = promisify(exec);
 const SCHEME = "vrchat";
+
+// macOS keys the scheme off the bundled Info.plist, so dev has nothing to register or remove
+const isMacDev = process.platform === "darwin" && process.defaultApp;
 
 const DESKTOP_DIR = join(homedir(), ".local", "share", "applications");
 const DESKTOP_FILE = join(DESKTOP_DIR, "vrc-circle-vrchat-url.desktop");
@@ -27,6 +31,7 @@ function execPath(): string {
 }
 
 export function status(): ProtocolStatus {
+  if (isMacDev) return { registered: false, detail: { key: "notRegistered" } };
   if (process.platform !== "linux") {
     const registered = app.isDefaultProtocolClient(SCHEME);
     return {
@@ -41,8 +46,20 @@ export function status(): ProtocolStatus {
 }
 
 export async function enable(): Promise<ProtocolStatus> {
+  if (isMacDev) {
+    logger.info(
+      "enhancements",
+      "vrchat protocol registration skipped; macOS dev needs a packaged build",
+    );
+    return status();
+  }
   if (process.platform !== "linux") {
-    app.setAsDefaultProtocolClient(SCHEME);
+    // in dev the bare electron binary has no project context, so pass the entry script
+    if (process.defaultApp && process.argv[1]) {
+      app.setAsDefaultProtocolClient(SCHEME, process.execPath, [resolve(process.argv[1])]);
+    } else {
+      app.setAsDefaultProtocolClient(SCHEME);
+    }
     return status();
   }
 
@@ -65,8 +82,19 @@ export async function enable(): Promise<ProtocolStatus> {
 }
 
 export async function disable(): Promise<ProtocolStatus> {
+  if (isMacDev) {
+    logger.info(
+      "enhancements",
+      "vrchat protocol removal skipped; macOS dev has nothing registered",
+    );
+    return status();
+  }
   if (process.platform !== "linux") {
-    app.removeAsDefaultProtocolClient(SCHEME);
+    if (process.defaultApp && process.argv[1]) {
+      app.removeAsDefaultProtocolClient(SCHEME, process.execPath, [resolve(process.argv[1])]);
+    } else {
+      app.removeAsDefaultProtocolClient(SCHEME);
+    }
     return status();
   }
   rmSync(DESKTOP_FILE, { force: true });

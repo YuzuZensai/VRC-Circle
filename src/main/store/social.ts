@@ -127,10 +127,10 @@ function subscribe(vrc: VRChat & Pipeline): void {
     if (p) entityStore.upsert(state ? { ...p, state } : p);
   };
 
-  vrc.on("friend-update", (d) => patch(d, undefined, true));
-  vrc.on("user-update", (d) => patch(d, undefined, true));
-  vrc.on("friend-online", (d) => patch(d, "online"));
-  vrc.on("friend-active", (d) => patch(d, "active"));
+  vrc.on("friend-update", (d: unknown) => patch(d, undefined, true));
+  vrc.on("user-update", (d: unknown) => patch(d, undefined, true));
+  vrc.on("friend-online", (d: unknown) => patch(d, "online"));
+  vrc.on("friend-active", (d: unknown) => patch(d, "active"));
 
   const location = (data: unknown) => {
     if (!active()) return;
@@ -143,13 +143,13 @@ function subscribe(vrc: VRChat & Pipeline): void {
   vrc.on("friend-location", location);
   vrc.on("user-location", location);
 
-  vrc.on("friend-offline", (data) => {
+  vrc.on("friend-offline", (data: unknown) => {
     if (!active()) return;
     const id = (asRecord(data).userId ?? userOf(data).id) as string | undefined;
     if (id) entityStore.upsert({ id, state: "offline", location: "offline" });
   });
 
-  vrc.on("friend-add", async (data) => {
+  vrc.on("friend-add", async (data: unknown) => {
     if (!active()) return;
     const id = (asRecord(data).userId ?? userOf(data).id) as string | undefined;
     if (!id) return;
@@ -158,7 +158,7 @@ function subscribe(vrc: VRChat & Pipeline): void {
     } catch {}
   });
 
-  vrc.on("friend-delete", (data) => {
+  vrc.on("friend-delete", (data: unknown) => {
     if (!active()) return;
     const id = (asRecord(data).userId ?? userOf(data).id) as string | undefined;
     if (id) entityStore.removeFriend(id);

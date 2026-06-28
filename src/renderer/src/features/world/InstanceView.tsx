@@ -158,6 +158,8 @@ function JoinActions({ instance }: { instance: Instance }) {
     }
   };
 
+  const canLaunch = window.api.platform !== "darwin";
+
   return (
     <div className="mb-1 ml-auto flex shrink-0 flex-col items-end gap-1.5">
       <div className="flex gap-1.5">
@@ -165,10 +167,12 @@ function JoinActions({ instance }: { instance: Instance }) {
           {inviteSent ? <Check size={15} /> : <Send size={15} />}
           {inviteSent ? t("world:instance.inviteSent") : t("world:instance.inviteMe")}
         </Button>
-        <Button variant="primary" onClick={join} loading={joining}>
-          {!joining ? <Play size={15} /> : null}
-          {joining ? t("world:instance.joining") : t("world:instance.join")}
-        </Button>
+        {canLaunch ? (
+          <Button variant="primary" onClick={join} loading={joining}>
+            {!joining ? <Play size={15} /> : null}
+            {joining ? t("world:instance.joining") : t("world:instance.join")}
+          </Button>
+        ) : null}
       </div>
       {joinError ? <span className="text-[12px] text-danger">{joinError}</span> : null}
       {inviteError ? <span className="text-[12px] text-danger">{inviteError}</span> : null}

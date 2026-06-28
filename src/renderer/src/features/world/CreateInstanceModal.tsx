@@ -212,17 +212,21 @@ function ResultView({ instance }: { instance: Instance }) {
     }
   };
 
+  const canLaunch = window.api.platform !== "darwin";
+
   return (
     <div className="flex flex-col gap-4">
       <p className="text-text">{t("world:create.ready")}</p>
 
-      <div className="flex flex-col gap-1.5">
-        <Button variant="primary" onClick={launch} loading={launching} block>
-          {!launching ? <Play size={15} /> : null}
-          {launching ? t("world:create.launching") : t("world:create.launch")}
-        </Button>
-        {launchError ? <span className="text-[12px] text-danger">{launchError}</span> : null}
-      </div>
+      {canLaunch ? (
+        <div className="flex flex-col gap-1.5">
+          <Button variant="primary" onClick={launch} loading={launching} block>
+            {!launching ? <Play size={15} /> : null}
+            {launching ? t("world:create.launching") : t("world:create.launch")}
+          </Button>
+          {launchError ? <span className="text-[12px] text-danger">{launchError}</span> : null}
+        </div>
+      ) : null}
 
       <div className="flex flex-col gap-1.5">
         <Button variant="ghost" onClick={selfInvite} disabled={inviteSent} block>
