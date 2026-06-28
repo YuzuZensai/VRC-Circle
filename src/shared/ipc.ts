@@ -7,7 +7,7 @@ import type {
 } from "./types/auth";
 import type { SocialSnapshot, UserProfile, UserStatus } from "./types/user";
 import type { FavoriteWorldFolder, World, WorldSnapshot } from "./types/world";
-import type { Instance } from "./types/instance";
+import type { CreateInstanceInput, Instance, InstanceRegion } from "./types/instance";
 import type { UnityStatus } from "./types/unity";
 import type { Avatar } from "./types/avatar";
 import type { RepoStats, StoredEntity } from "./types/repository";
@@ -15,7 +15,7 @@ import type { AccountSettings, ContentFilterKey, Pending2Fa, RecoveryCode } from
 import type { Group, GroupSnapshot } from "./types/group";
 import type { EnhancementId, EnhancementsSnapshot } from "./types/enhancements";
 import type { GallerySnapshot, Photo, ThumbCacheStats } from "./types/gallery";
-import type { AppConfig } from "./types/appConfig";
+import type { AppConfig, PreferredRegion, RegionPing } from "./types/appConfig";
 import type { GameStatus } from "./types/game";
 import type { IpcResult } from "./types/result";
 import type { CacheEntryInfo, CacheStats, DebugSnapshot, LogEntry, WsEvent } from "./types/debug";
@@ -53,6 +53,8 @@ export interface IpcRequests {
   "world:snapshot": () => IpcResult<WorldSnapshot>;
 
   "instance:get": (location: { worldId: string; instanceId: string }) => IpcResult<Instance>;
+  "instance:create": (input: CreateInstanceInput) => IpcResult<Instance>;
+  "instance:inviteSelf": (p: { worldId: string; instanceId: string }) => IpcResult<void>;
 
   "avatar:get": (avatarId: string) => IpcResult<Avatar>;
   "avatar:favorites": () => IpcResult<Avatar[]>;
@@ -95,12 +97,17 @@ export interface IpcRequests {
   "config:get": () => IpcResult<AppConfig>;
   "config:setGamePath": (p: { gamePath: string | null }) => IpcResult<AppConfig>;
   "config:pickGamePath": () => IpcResult<AppConfig>;
+  "config:setPreferredRegion": (p: { region: PreferredRegion }) => IpcResult<AppConfig>;
+
+  "region:detect": () => IpcResult<InstanceRegion>;
+  "region:ping": () => IpcResult<RegionPing[]>;
 
   "unity:status": () => IpcResult<UnityStatus>;
   "unity:install": (url: string) => IpcResult<void>;
 
   "game:status": () => IpcResult<GameStatus>;
   "game:launch": () => IpcResult<GameStatus>;
+  "game:join": (p: { location: string }) => IpcResult<void>;
 
   "gallery:snapshot": () => IpcResult<GallerySnapshot>;
   "gallery:reveal": (path: string) => IpcResult<void>;

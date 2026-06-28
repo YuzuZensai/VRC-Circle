@@ -1,0 +1,36 @@
+{
+  "createInstance": "インスタンスを作成",
+  "create": {
+    "title": "インスタンスを作成",
+    "type": "アクセス",
+    "region": "リージョン",
+    "submit": "作成",
+    "creating": "作成中…",
+    "detecting": "最適なリージョンを検出中…",
+    "autoDetected": "自動: {{region}}",
+    "types": {
+      "public": "パブリック",
+      "friends+": "フレンド+",
+      "friends": "フレンド",
+      "invite": "インバイト",
+      "invite+": "インバイト+"
+    },
+    "regions": {
+      "us": "米国西部",
+      "use": "米国東部",
+      "eu": "ヨーロッパ",
+      "jp": "日本"
+    },
+    "ready": "インスタンスを作成しました。",
+    "launch": "VRChatを起動",
+    "launching": "起動中…",
+    "selfInvite": "自分を招待",
+    "selfInviteSent": "招待を送信しました。VRChatを確認してください",
+    "lockedLink": "ロック付きリンク",
+    "lockedHint": "インスタンスのルールに従います。共有しても安全です。",
+    "unlockedLink": "ロックなしリンク",
+    "unlockedHint": "インスタンスのルールを無視します。リンクを持つ誰でも参加できます。推奨しません。",
+    "copy": "コピー",
+    "copied": "コピーしました"
+  }
+}

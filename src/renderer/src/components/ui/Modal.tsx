@@ -2,6 +2,7 @@ import { useEffect, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 import { Button } from "./Button";
+import { useT } from "../../lib/i18n";
 
 type ModalProps = {
   open: boolean;
@@ -25,11 +26,12 @@ export function Modal({
   children,
   danger,
   confirmLabel,
-  cancelLabel = "Cancel",
+  cancelLabel,
   onConfirm,
   confirmLoading,
   confirmDisabled,
 }: ModalProps) {
+  const t = useT();
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
@@ -78,7 +80,7 @@ export function Modal({
         {onConfirm ? (
           <div className="mt-5 flex justify-end gap-2.5">
             <Button variant="ghost" onClick={onClose} disabled={confirmLoading}>
-              {cancelLabel}
+              {cancelLabel ?? t("common:cancel")}
             </Button>
             <Button
               variant={danger ? "danger" : "primary"}

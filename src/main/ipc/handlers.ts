@@ -16,6 +16,7 @@ import * as gallery from "../gallery/service";
 import { thumbStats, clearThumbnails } from "../gallery/thumbnails";
 import * as appConfig from "../config/appConfig";
 import * as game from "../game/launch";
+import * as region from "../game/region";
 import { socialSnapshot } from "../store/social";
 import { worldStore } from "../store/worldStore";
 import { groupStore } from "../store/groupStore";
@@ -54,6 +55,9 @@ const handlers = {
 
   "instance:get": ({ worldId, instanceId }) =>
     guard(() => instances.getInstance(worldId, instanceId)),
+  "instance:create": (input) => guard(() => instances.createInstance(input)),
+  "instance:inviteSelf": ({ worldId, instanceId }) =>
+    guard(() => instances.inviteSelf(worldId, instanceId)),
 
   "avatar:get": (avatarId) => guard(() => avatars.getAvatar(avatarId)),
   "avatar:favorites": () => guard(() => avatars.getFavoritedAvatars()),
@@ -94,6 +98,19 @@ const handlers = {
       if (res.canceled || !res.filePaths[0]) return appConfig.getConfig();
       return appConfig.setGamePath(res.filePaths[0]);
     }),
+  "config:setPreferredRegion": (p) =>
+    guard(async () => {
+      const next = appConfig.setPreferredRegion(p.region);
+      if (p.region === "auto") void region.detectBestRegion();
+      return next;
+    }),
+
+  "region:detect": () => guard(() => region.detectBestRegion()),
+  "region:ping": () =>
+    guard(() => {
+      region.invalidateRegionCache();
+      return region.pingRegions();
+    }),
 
   "unity:status": () => guard(() => unity.unityStatus()),
   "unity:install": (url) =>
@@ -105,6 +122,10 @@ const handlers = {
 
   "game:status": () => guard(() => game.status()),
   "game:launch": () => guard(() => game.launch()),
+  "game:join": ({ location }) =>
+    guard(async () => {
+      await game.joinInstance(`vrchat://launch?ref=vrchat.com&id=${location}`);
+    }),
 
   "gallery:snapshot": () => guard(async () => gallery.snapshot()),
   "gallery:reveal": (path) => guard(async () => void shell.showItemInFolder(path)),

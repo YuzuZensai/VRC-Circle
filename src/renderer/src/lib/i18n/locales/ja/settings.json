@@ -82,5 +82,16 @@
     "appName": "VRC Circle",
     "version": "バージョン",
     "disclaimer": "非公式です。VRChat Inc. とは提携しておらず、承認も受けていません。"
+  },
+  "region": {
+    "title": "インスタンスのリージョン",
+    "description": "作成する新しいインスタンスのホスト地域です。自動を選ぶと、接続に最も遅延の少ないリージョンが選ばれます。",
+    "auto": "自動",
+    "autoHint": "最適なリージョンを検出",
+    "saved": "リージョンを保存しました。",
+    "test": "遅延をテスト",
+    "testing": "リージョンをping中…",
+    "unreachable": "接続不可",
+    "best": "最適"
   }
 }

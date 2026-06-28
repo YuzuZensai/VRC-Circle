@@ -2,13 +2,13 @@ import { app } from "electron";
 import { join } from "node:path";
 import { existsSync, readFileSync } from "node:fs";
 import { writeFileAtomicSync } from "../lib/atomicFile";
-import type { AppConfig } from "../../shared/types/appConfig";
+import type { AppConfig, PreferredRegion } from "../../shared/types/appConfig";
 import { detectedGamePath } from "../game/steam";
 
 const path = () => join(app.getPath("userData"), "app-config.json");
 
 type StoredConfig = Omit<AppConfig, "version" | "detectedGamePath">;
-const DEFAULTS: StoredConfig = { gamePath: null };
+const DEFAULTS: StoredConfig = { gamePath: null, preferredRegion: "auto" };
 
 function readStored(): StoredConfig {
   try {
@@ -24,6 +24,16 @@ function withDerived(stored: StoredConfig): AppConfig {
 
 export function gamePathOverride(): string | null {
   return readStored().gamePath;
+}
+
+export function preferredRegion(): PreferredRegion {
+  return readStored().preferredRegion;
+}
+
+export function setPreferredRegion(region: PreferredRegion): AppConfig {
+  const next: StoredConfig = { ...readStored(), preferredRegion: region };
+  writeFileAtomicSync(path(), JSON.stringify(next, null, 2));
+  return withDerived(next);
 }
 
 export function getConfig(): AppConfig {

@@ -7,6 +7,8 @@ import {
   Droplet,
   FolderOpen,
   Gamepad2,
+  Gauge,
+  Globe2,
   Info,
   Languages,
   Monitor,
@@ -19,10 +21,11 @@ import {
 import { useTheme } from "../../lib/ThemeContext";
 import { useI18n } from "../../lib/i18n";
 import { ACCENT_PRESETS, DEFAULT_ACCENT, type SchemeMode } from "../../lib/theme";
-import type { AppConfig } from "../../../../shared/types/appConfig";
+import type { AppConfig, PreferredRegion, RegionPing } from "../../../../shared/types/appConfig";
 import type { UnityStatus } from "../../../../shared/types/unity";
 import { api, errorMessage } from "../../lib/api";
 import { useAsync } from "../../lib/useAsync";
+import { regionFlag, regionLabels } from "../../lib/vrchat";
 import { Button, Field, Tabs } from "../../components/ui";
 
 const SHELL = "mx-auto flex w-full max-w-[760px] flex-col gap-[18px] px-12 pb-16 pt-10";
@@ -62,6 +65,7 @@ export function SettingsView() {
       {tab === "game" ? (
         <div className={SECTIONS}>
           <GameSection />
+          <RegionSection />
         </div>
       ) : null}
 
@@ -378,6 +382,112 @@ function Notice({ error, ok }: { error?: string | null; ok?: string | null }) {
   if (error) return <p className="mt-3 text-[12.5px] text-[var(--danger)]">{error}</p>;
   if (ok) return <p className="mt-3 text-[12.5px] text-[var(--status-active)]">{ok}</p>;
   return null;
+}
+
+const REGION_OPTIONS: PreferredRegion[] = ["auto", "us", "use", "eu", "jp"];
+
+function RegionSection() {
+  const { t } = useI18n();
+  const [region, setRegion] = useState<PreferredRegion>("auto");
+  const [ok, setOk] = useState<string | null>(null);
+  const [pings, setPings] = useState<RegionPing[] | null>(null);
+  const [testing, setTesting] = useState(false);
+
+  useEffect(() => {
+    api.config.get().then((c) => setRegion(c.preferredRegion));
+  }, []);
+
+  const choose = async (r: PreferredRegion) => {
+    setRegion(r);
+    setOk(null);
+    const next = await api.config.setPreferredRegion(r);
+    setRegion(next.preferredRegion);
+    setOk(t("settings:region.saved"));
+  };
+
+  const test = async () => {
+    setTesting(true);
+    setPings(null);
+    try {
+      setPings(await api.region.ping());
+    } finally {
+      setTesting(false);
+    }
+  };
+
+  const best = pings
+    ?.filter((p): p is RegionPing & { ms: number } => p.ms !== null)
+    .reduce<(RegionPing & { ms: number }) | null>((a, b) => (!a || b.ms < a.ms ? b : a), null);
+
+  const label = (r: PreferredRegion) =>
+    r === "auto"
+      ? t("settings:region.auto")
+      : `${regionFlag(r) ?? ""} ${regionLabels[r] ?? r.toUpperCase()}`.trim();
+
+  return (
+    <Section
+      title={t("settings:region.title")}
+      icon={<Globe2 size={16} />}
+      description={t("settings:region.description")}
+    >
+      <div className="flex flex-wrap gap-2">
+        {REGION_OPTIONS.map((r) => {
+          const active = r === region;
+          return (
+            <button
+              key={r}
+              type="button"
+              onClick={() => void choose(r)}
+              aria-pressed={active}
+              className={`rounded-lg border px-4 py-2.5 text-[13.5px] font-semibold transition-colors ${
+                active
+                  ? "border-accent bg-[color-mix(in_srgb,var(--accent)_8%,var(--surface-2))]"
+                  : "border-border bg-surface-2 hover:border-accent"
+              }`}
+            >
+              {label(r)}
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="mt-4 flex items-center gap-2.5">
+        <Button variant="ghost" onClick={() => void test()} loading={testing}>
+          <Gauge size={14} />
+          {testing ? t("settings:region.testing") : t("settings:region.test")}
+        </Button>
+      </div>
+
+      {pings ? (
+        <div className="mt-3 flex flex-col gap-1.5">
+          {pings.map((p) => (
+            <div key={p.region} className="flex items-center gap-2 text-[13px]">
+              <span className="w-28 shrink-0 text-muted">
+                {regionFlag(p.region) ?? ""} {regionLabels[p.region] ?? p.region.toUpperCase()}
+              </span>
+              {p.ms === null ? (
+                <span className="text-faint">{t("settings:region.unreachable")}</span>
+              ) : (
+                <span
+                  className="font-mono font-semibold"
+                  style={best?.region === p.region ? { color: "var(--status-active)" } : undefined}
+                >
+                  {p.ms} ms
+                </span>
+              )}
+              {best?.region === p.region ? (
+                <span className="text-[11px] font-semibold text-[var(--status-active)]">
+                  {t("settings:region.best")}
+                </span>
+              ) : null}
+            </div>
+          ))}
+        </div>
+      ) : null}
+
+      <Notice ok={ok} />
+    </Section>
+  );
 }
 
 function UnitySection() {

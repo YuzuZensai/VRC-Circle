@@ -1,12 +1,15 @@
-import { Globe, Heart, Tag as TagIcon, Users } from "lucide-react";
+import { useState } from "react";
+import { Globe, Heart, Plus, Tag as TagIcon, Users } from "lucide-react";
 import type { World } from "../../../../shared/types/world";
-import { Banner, Fact, Section, Skeleton, StatTile, Tag } from "../../components/ui";
+import { Banner, Button, Fact, Section, Skeleton, StatTile, Tag } from "../../components/ui";
 import { api } from "../../lib/api";
 import { useAsync } from "../../lib/useAsync";
 import { compactNumber, formatDate, prettyTag } from "../../lib/format";
 import { useWorlds } from "../../store/worlds";
 import { useNav } from "../navigation/NavContext";
+import { useT } from "../../lib/i18n";
 import { COL_WIDE } from "../../lib/layout";
+import { CreateInstanceModal } from "./CreateInstanceModal";
 import "../profile/profile.css";
 
 export function WorldView({ worldId }: { worldId: string }) {
@@ -22,6 +25,8 @@ export function WorldView({ worldId }: { worldId: string }) {
 
 function WorldCard({ world }: { world: World }) {
   const { openUser } = useNav();
+  const t = useT();
+  const [createOpen, setCreateOpen] = useState(false);
   const banner = world.imageUrl || world.thumbnailImageUrl;
   const players = world.occupants;
 
@@ -57,7 +62,17 @@ function WorldCard({ world }: { world: World }) {
             {world.platforms?.android ? <Tag color="var(--status-join)">Quest</Tag> : null}
           </div>
         </div>
+        <Button className="mb-1 ml-auto shrink-0" onClick={() => setCreateOpen(true)}>
+          <Plus size={15} />
+          {t("world:createInstance")}
+        </Button>
       </div>
+
+      <CreateInstanceModal
+        worldId={world.id}
+        open={createOpen}
+        onClose={() => setCreateOpen(false)}
+      />
 
       <div className={`${COL_WIDE} mt-6 flex flex-col gap-5`}>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">

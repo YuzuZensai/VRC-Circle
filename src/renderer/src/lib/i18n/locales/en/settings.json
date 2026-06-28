@@ -82,5 +82,16 @@
     "appName": "VRC Circle",
     "version": "Version",
     "disclaimer": "Unofficial. Not affiliated with or endorsed by VRChat Inc."
+  },
+  "region": {
+    "title": "Instance Region",
+    "description": "The region new instances you create are hosted in. Auto picks the lowest-latency region for your connection.",
+    "auto": "Auto",
+    "autoHint": "Detect the best region",
+    "saved": "Region saved.",
+    "test": "Test latency",
+    "testing": "Pinging regions…",
+    "unreachable": "unreachable",
+    "best": "Best"
   }
 }

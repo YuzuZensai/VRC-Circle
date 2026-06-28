@@ -5,6 +5,7 @@ import { reconcile as reconcileEnhancements } from "./enhancements/service";
 import { registerGalleryScheme, registerGalleryProtocol } from "./gallery/protocol";
 import { startSocialBridge } from "./store/social";
 import { startWatcher as startGameWatcher, joinInstance } from "./game/launch";
+import { startRegionDetection } from "./game/region";
 import { startGalleryWatch, stopGalleryWatch } from "./gallery/watcher";
 import { startDebugBridge } from "./debug/bridge";
 import { logger } from "./debug/logger";
@@ -73,6 +74,7 @@ function start(): void {
     startDebugBridge();
     startGameWatcher();
     startGalleryWatch();
+    startRegionDetection();
     createMainWindow();
 
     handleVrchatUrl(vrchatUrlFromArgv(process.argv));

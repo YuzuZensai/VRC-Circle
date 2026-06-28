@@ -64,6 +64,17 @@ export const regionLabels: Record<string, string> = {
   jp: "Japan",
 };
 
+export const regionFlags: Record<string, string> = {
+  us: "🇺🇸",
+  use: "🇺🇸",
+  eu: "🇪🇺",
+  jp: "🇯🇵",
+};
+
+export function regionFlag(region?: string): string | undefined {
+  return region ? regionFlags[region.toLowerCase()] : undefined;
+}
+
 const languageNames: Record<string, string> = {
   eng: "English",
   kor: "Korean",

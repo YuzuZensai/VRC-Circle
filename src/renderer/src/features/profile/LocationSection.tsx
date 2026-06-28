@@ -5,7 +5,7 @@ import { useWorld } from "../../store/worlds";
 import { useNav } from "../navigation/NavContext";
 import { api } from "../../lib/api";
 import { useAsync } from "../../lib/useAsync";
-import { locationLabel, regionLabels } from "../../lib/vrchat";
+import { locationLabel, regionLabels, regionFlag } from "../../lib/vrchat";
 
 export function LocationSection({ location }: { location?: Location }) {
   const { openWorld } = useNav();
@@ -36,6 +36,7 @@ export function LocationSection({ location }: { location?: Location }) {
     const region = parsed.region
       ? (regionLabels[parsed.region] ?? parsed.region.toUpperCase())
       : null;
+    const flag = regionFlag(parsed.region);
     return (
       <Wrap>
         <button
@@ -57,7 +58,12 @@ export function LocationSection({ location }: { location?: Location }) {
               </span>
               {region ? (
                 <span className="inline-flex items-center gap-1">
-                  <Globe size={11} /> {region}
+                  {flag ? (
+                    <span className="text-[13px] leading-none">{flag}</span>
+                  ) : (
+                    <Globe size={11} />
+                  )}{" "}
+                  {region}
                 </span>
               ) : null}
               {inInstance ? (

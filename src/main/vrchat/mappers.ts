@@ -211,6 +211,8 @@ export function toInstance(raw: SdkInstance): Instance {
     full: raw.full ?? false,
     queueEnabled: raw.queueEnabled ?? false,
     queueSize: raw.queueSize ?? 0,
+    secureName: raw.secureName ?? undefined,
+    shortName: raw.shortName ?? undefined,
   };
 }
 

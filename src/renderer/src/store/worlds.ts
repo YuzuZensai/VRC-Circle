@@ -21,8 +21,32 @@ export const useWorlds = create<WorldState>((set) => ({
   upsert: (w) => set((st) => ({ worlds: { ...st.worlds, [w.id]: w } })),
 }));
 
+
+let pending: World[] = [];
+let flushScheduled = false;
+
+function flushUpserts(): void {
+  flushScheduled = false;
+  if (pending.length === 0) return;
+  const batch = pending;
+  pending = [];
+  useWorlds.setState((st) => {
+    const worlds = { ...st.worlds };
+    for (const w of batch) worlds[w.id] = w;
+    return { worlds };
+  });
+}
+
+function queueUpsert(w: World): void {
+  pending.push(w);
+  if (!flushScheduled) {
+    flushScheduled = true;
+    requestAnimationFrame(flushUpserts);
+  }
+}
+
 events.on("world:seed", (s) => useWorlds.getState().seed(s));
-events.on("world:upsert", (w) => useWorlds.getState().upsert(w));
+events.on("world:upsert", queueUpsert);
 api.world
   .snapshot()
   .then((s) => useWorlds.getState().seed(s))

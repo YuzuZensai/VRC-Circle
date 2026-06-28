@@ -1,0 +1,36 @@
+{
+  "createInstance": "Create Instance",
+  "create": {
+    "title": "Create Instance",
+    "type": "Access",
+    "region": "Region",
+    "submit": "Create",
+    "creating": "Creating…",
+    "detecting": "Detecting best region…",
+    "autoDetected": "Auto: {{region}}",
+    "types": {
+      "public": "Public",
+      "friends+": "Friends+",
+      "friends": "Friends",
+      "invite": "Invite",
+      "invite+": "Invite+"
+    },
+    "regions": {
+      "us": "US West",
+      "use": "US East",
+      "eu": "Europe",
+      "jp": "Japan"
+    },
+    "ready": "Instance created.",
+    "launch": "Launch VRChat",
+    "launching": "Launching…",
+    "selfInvite": "Invite myself",
+    "selfInviteSent": "Invite sent. Check VRChat.",
+    "lockedLink": "locked link",
+    "lockedHint": "Follows the instance rules. Safe to share.",
+    "unlockedLink": "unlocked link",
+    "unlockedHint": "Bypasses the instance rules. Anyone with it can join. Not recommended.",
+    "copy": "Copy",
+    "copied": "Copied"
+  }
+}
