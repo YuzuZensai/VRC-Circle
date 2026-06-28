@@ -1,0 +1,20 @@
+{
+  "ownedByPrefix": "owned by",
+  "ownerUnknown": "Unknown owner",
+  "stats": {
+    "members": "Members",
+    "online": "Online",
+    "languages": "Languages"
+  },
+  "sections": {
+    "about": "About",
+    "rules": "Rules",
+    "details": "Details",
+    "tags": "Tags"
+  },
+  "facts": {
+    "joining": "Joining",
+    "created": "Created",
+    "groupId": "Group ID"
+  }
+}

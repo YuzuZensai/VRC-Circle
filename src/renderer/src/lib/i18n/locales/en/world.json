@@ -37,6 +37,34 @@
     "copy": "Copy",
     "copied": "Copied"
   },
+  "detail": {
+    "byPrefix": "by",
+    "stats": {
+      "playersNow": "Players now",
+      "favorites": "Favorites",
+      "visits": "Visits",
+      "capacity": "Capacity"
+    },
+    "sections": {
+      "description": "Description",
+      "trailer": "Trailer",
+      "details": "Details",
+      "tags": "Tags"
+    },
+    "facts": {
+      "recommended": "Recommended",
+      "popularity": "Popularity",
+      "heat": "Heat",
+      "version": "Version",
+      "published": "Published",
+      "communityLabs": "Community Labs",
+      "created": "Created",
+      "updated": "Updated",
+      "worldId": "World ID"
+    },
+    "recommendedValue": "{{count}} players",
+    "noAuthorTags": "No author tags"
+  },
   "instance": {
     "title": "Instance",
     "unavailable": "This instance is no longer available.",

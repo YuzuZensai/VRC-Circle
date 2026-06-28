@@ -37,6 +37,34 @@
     "copy": "コピー",
     "copied": "コピーしました"
   },
+  "detail": {
+    "byPrefix": "作者:",
+    "stats": {
+      "playersNow": "現在のプレイヤー",
+      "favorites": "お気に入り",
+      "visits": "訪問数",
+      "capacity": "定員"
+    },
+    "sections": {
+      "description": "説明",
+      "trailer": "トレーラー",
+      "details": "詳細",
+      "tags": "タグ"
+    },
+    "facts": {
+      "recommended": "推奨人数",
+      "popularity": "人気度",
+      "heat": "ヒート",
+      "version": "バージョン",
+      "published": "公開日",
+      "communityLabs": "Community Labs",
+      "created": "作成日",
+      "updated": "更新日",
+      "worldId": "ワールドID"
+    },
+    "recommendedValue": "{{count}} 人",
+    "noAuthorTags": "作者タグはありません"
+  },
   "instance": {
     "title": "インスタンス",
     "unavailable": "このインスタンスはもう利用できません。",

@@ -29,6 +29,18 @@ export function prettyTag(tag: string, prefix = ""): string {
   return label.charAt(0).toUpperCase() + label.slice(1);
 }
 
+export function tagsWithPrefix(tags: readonly string[], prefix: string): string[] {
+  return tags.filter((t) => t.startsWith(prefix));
+}
+
+export function prettyLink(url: string): string {
+  try {
+    return new URL(url).hostname.replace(/^www\./, "");
+  } catch {
+    return url;
+  }
+}
+
 export function platformLabel(p: string): string {
   if (p === "standalonewindows") return "PC (Windows)";
   if (p === "android") return "Quest / Android";

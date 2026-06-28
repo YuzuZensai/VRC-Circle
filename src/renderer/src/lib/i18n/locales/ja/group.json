@@ -1,0 +1,20 @@
+{
+  "ownedByPrefix": "オーナー:",
+  "ownerUnknown": "不明なオーナー",
+  "stats": {
+    "members": "メンバー",
+    "online": "オンライン",
+    "languages": "言語"
+  },
+  "sections": {
+    "about": "概要",
+    "rules": "ルール",
+    "details": "詳細",
+    "tags": "タグ"
+  },
+  "facts": {
+    "joining": "参加方法",
+    "created": "作成日",
+    "groupId": "グループID"
+  }
+}

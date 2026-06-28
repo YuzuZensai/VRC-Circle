@@ -1,0 +1,20 @@
+{
+  "ownedByPrefix": "เจ้าของโดย",
+  "ownerUnknown": "ไม่ทราบเจ้าของ",
+  "stats": {
+    "members": "สมาชิก",
+    "online": "ออนไลน์",
+    "languages": "ภาษา"
+  },
+  "sections": {
+    "about": "เกี่ยวกับ",
+    "rules": "กฎ",
+    "details": "รายละเอียด",
+    "tags": "แท็ก"
+  },
+  "facts": {
+    "joining": "การเข้าร่วม",
+    "created": "สร้างเมื่อ",
+    "groupId": "ไอดีกลุ่ม"
+  }
+}

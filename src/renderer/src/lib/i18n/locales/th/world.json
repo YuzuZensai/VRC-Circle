@@ -37,6 +37,34 @@
     "copy": "คัดลอก",
     "copied": "คัดลอกแล้ว"
   },
+  "detail": {
+    "byPrefix": "โดย",
+    "stats": {
+      "playersNow": "ผู้เล่นตอนนี้",
+      "favorites": "รายการโปรด",
+      "visits": "การเข้าชม",
+      "capacity": "ความจุ"
+    },
+    "sections": {
+      "description": "คำอธิบาย",
+      "trailer": "ตัวอย่าง",
+      "details": "รายละเอียด",
+      "tags": "แท็ก"
+    },
+    "facts": {
+      "recommended": "แนะนำ",
+      "popularity": "ความนิยม",
+      "heat": "ความฮอต",
+      "version": "เวอร์ชัน",
+      "published": "เผยแพร่เมื่อ",
+      "communityLabs": "Community Labs",
+      "created": "สร้างเมื่อ",
+      "updated": "อัปเดตเมื่อ",
+      "worldId": "ไอดีเวิลด์"
+    },
+    "recommendedValue": "{{count}} คน",
+    "noAuthorTags": "ไม่มีแท็กผู้สร้าง"
+  },
   "instance": {
     "title": "อินสแตนซ์",
     "unavailable": "อินสแตนซ์นี้ไม่สามารถใช้งานได้แล้ว",
