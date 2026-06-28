@@ -15,6 +15,7 @@ import {
 import type { LucideIcon } from "lucide-react";
 import { ProfileView } from "../features/profile/ProfileView";
 import { WorldView } from "../features/world/WorldView";
+import { InstanceView } from "../features/world/InstanceView";
 import { GroupView } from "../features/group/GroupView";
 import { AccountSettingsView } from "../features/account/AccountSettingsView";
 import { SearchView } from "../features/search/SearchView";
@@ -164,6 +165,8 @@ function Shell() {
           <div key={stageKey} className="stage__inner animate-rise">
             {nav.current.kind === "world" ? (
               <WorldView worldId={nav.current.id} />
+            ) : nav.current.kind === "instance" ? (
+              <InstanceView worldId={nav.current.worldId} instanceId={nav.current.instanceId} />
             ) : nav.current.kind === "group" ? (
               <GroupView groupId={nav.current.id} />
             ) : nav.current.kind === "account" ? (

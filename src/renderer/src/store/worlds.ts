@@ -21,7 +21,6 @@ export const useWorlds = create<WorldState>((set) => ({
   upsert: (w) => set((st) => ({ worlds: { ...st.worlds, [w.id]: w } })),
 }));
 
-
 let pending: World[] = [];
 let flushScheduled = false;
 

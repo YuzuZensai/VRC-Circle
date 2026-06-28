@@ -1,6 +1,7 @@
 import { Star, Users } from "lucide-react";
 import type { Group } from "../../../../shared/types/group";
 import { Avatar, CollapsibleCard, SkeletonGrid } from "../../components/ui";
+import { useT } from "../../lib/i18n";
 import { useNav } from "../navigation/NavContext";
 import { useUserGroups } from "./useUserGroups";
 
@@ -41,6 +42,7 @@ export function GroupsSection({ userId }: { userId: string }) {
 }
 
 function FeaturedGroup({ group }: { group: Group }) {
+  const t = useT();
   const { openGroup } = useNav();
   return (
     <button
@@ -62,7 +64,7 @@ function FeaturedGroup({ group }: { group: Group }) {
         <Avatar src={group.iconUrl} name={group.name} size={52} className="!rounded-xl" />
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-accent">
-            <Star size={12} fill="currentColor" /> Featured group
+            <Star size={12} fill="currentColor" /> {t("profile:groups.featured")}
           </div>
           <div className="mt-0.5 truncate text-[15px] font-semibold" title={group.name}>
             {group.name}
@@ -106,8 +108,9 @@ function GroupMeta({ group }: { group: Group }) {
 }
 
 function Wrap({ count, children }: { count: number | string; children: React.ReactNode }) {
+  const t = useT();
   return (
-    <CollapsibleCard title="Groups" count={count}>
+    <CollapsibleCard title={t("profile:groups.title")} count={count}>
       {children}
     </CollapsibleCard>
   );

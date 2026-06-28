@@ -25,7 +25,7 @@ import type { AppConfig, PreferredRegion, RegionPing } from "../../../../shared/
 import type { UnityStatus } from "../../../../shared/types/unity";
 import { api, errorMessage } from "../../lib/api";
 import { useAsync } from "../../lib/useAsync";
-import { regionFlag, regionLabels } from "../../lib/vrchat";
+import { regionFlag, regionLabel } from "../../lib/vrchat";
 import { Button, Field, Tabs } from "../../components/ui";
 
 const SHELL = "mx-auto flex w-full max-w-[760px] flex-col gap-[18px] px-12 pb-16 pt-10";
@@ -420,9 +420,7 @@ function RegionSection() {
     .reduce<(RegionPing & { ms: number }) | null>((a, b) => (!a || b.ms < a.ms ? b : a), null);
 
   const label = (r: PreferredRegion) =>
-    r === "auto"
-      ? t("settings:region.auto")
-      : `${regionFlag(r) ?? ""} ${regionLabels[r] ?? r.toUpperCase()}`.trim();
+    r === "auto" ? t("settings:region.auto") : `${regionFlag(r) ?? ""} ${regionLabel(t, r)}`.trim();
 
   return (
     <Section
@@ -463,7 +461,7 @@ function RegionSection() {
           {pings.map((p) => (
             <div key={p.region} className="flex items-center gap-2 text-[13px]">
               <span className="w-28 shrink-0 text-muted">
-                {regionFlag(p.region) ?? ""} {regionLabels[p.region] ?? p.region.toUpperCase()}
+                {regionFlag(p.region) ?? ""} {regionLabel(t, p.region)}
               </span>
               {p.ms === null ? (
                 <span className="text-faint">{t("settings:region.unreachable")}</span>

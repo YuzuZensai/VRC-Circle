@@ -1,5 +1,21 @@
 {
   "createInstance": "インスタンスを作成",
+  "regions": {
+    "us": "米国西部",
+    "use": "米国東部",
+    "eu": "ヨーロッパ",
+    "jp": "日本"
+  },
+  "accessTypes": {
+    "public": "パブリック",
+    "hidden": "フレンド+",
+    "friends": "フレンド",
+    "private": "インバイト",
+    "inviteRequest": "インバイト+",
+    "group": "グループ",
+    "groupPlus": "グループ+",
+    "groupPublic": "グループパブリック"
+  },
   "create": {
     "title": "インスタンスを作成",
     "type": "アクセス",
@@ -8,19 +24,6 @@
     "creating": "作成中…",
     "detecting": "最適なリージョンを検出中…",
     "autoDetected": "自動: {{region}}",
-    "types": {
-      "public": "パブリック",
-      "friends+": "フレンド+",
-      "friends": "フレンド",
-      "invite": "インバイト",
-      "invite+": "インバイト+"
-    },
-    "regions": {
-      "us": "米国西部",
-      "use": "米国東部",
-      "eu": "ヨーロッパ",
-      "jp": "日本"
-    },
     "ready": "インスタンスを作成しました。",
     "launch": "VRChatを起動",
     "launching": "起動中…",
@@ -32,5 +35,20 @@
     "unlockedHint": "インスタンスのルールを無視します。リンクを持つ誰でも参加できます。推奨しません。",
     "copy": "コピー",
     "copied": "コピーしました"
+  },
+  "instance": {
+    "title": "インスタンス",
+    "unavailable": "このインスタンスはもう利用できません。",
+    "players": "プレイヤー",
+    "capacity": "定員",
+    "region": "リージョン",
+    "access": "アクセス",
+    "queue": "待機列",
+    "join": "VRChatで参加",
+    "joining": "起動中…",
+    "inviteMe": "自分を招待",
+    "inviteSent": "招待を送信しました。VRChatを確認してください",
+    "worldDetails": "ワールドの詳細を見る",
+    "instanceId": "インスタンスID"
   }
 }

@@ -56,7 +56,9 @@ function ProfileCard({ profile }: { profile: UserProfile }) {
   const status = statusMeta[profile.status];
   const presenceStatus = online ? status : statusMeta.offline;
   const statusLabel =
-    !online && profile.status !== "offline" ? `Offline (${status.label})` : status.label;
+    !online && profile.status !== "offline"
+      ? t("profile:status.offlineWas", { status: status.label })
+      : status.label;
   const avatar = avatarOf(profile);
   const banner = bannerOf(profile);
   const devLabel = profile.developerType ? developerLabels[profile.developerType] : undefined;
@@ -83,12 +85,14 @@ function ProfileCard({ profile }: { profile: UserProfile }) {
         <div className="min-w-0 flex-1 pb-2">
           <div className="flex flex-wrap items-center gap-2.5">
             <h2 className="text-[32px] font-bold tracking-[-0.6px]">{profile.displayName}</h2>
-            {profile.isSelf ? <Tag color="var(--accent)">You</Tag> : null}
+            {profile.isSelf ? <Tag color="var(--accent)">{t("profile:badge.you")}</Tag> : null}
             {profile.isFriend && !profile.isSelf ? (
-              <Tag color="var(--status-join)">Friend</Tag>
+              <Tag color="var(--status-join)">{t("profile:badge.friend")}</Tag>
             ) : null}
             {devLabel ? <Tag color="var(--accent)">{devLabel}</Tag> : null}
-            {profile.ageVerified ? <Tag color="var(--trust-trusted)">18+ Verified</Tag> : null}
+            {profile.ageVerified ? (
+              <Tag color="var(--trust-trusted)">{t("profile:badge.ageVerified")}</Tag>
+            ) : null}
           </div>
           <div className="mt-2.5 flex flex-wrap items-center gap-3">
             <Tag color={trust.color}>{trust.label}</Tag>
@@ -142,10 +146,10 @@ function ProfileCard({ profile }: { profile: UserProfile }) {
 
         <Tabs
           tabs={[
-            { id: "overview", label: "Overview" },
-            { id: "worlds", label: "Worlds" },
-            { id: "favorites", label: "Favorite Worlds" },
-            { id: "groups", label: "Groups" },
+            { id: "overview", label: t("profile:tabs.overview") },
+            { id: "worlds", label: t("profile:tabs.worlds") },
+            { id: "favorites", label: t("profile:tabs.favorites") },
+            { id: "groups", label: t("profile:tabs.groups") },
           ]}
           active={tab}
           onChange={setTab}
@@ -154,7 +158,7 @@ function ProfileCard({ profile }: { profile: UserProfile }) {
         {tab === "overview" ? (
           <div className="flex flex-col gap-5 rise-in">
             {profile.note ? (
-              <Section title="Your note">
+              <Section title={t("profile:sections.note")}>
                 <p className="text-[14px] leading-relaxed whitespace-pre-wrap text-text">
                   {profile.note}
                 </p>
@@ -162,7 +166,7 @@ function ProfileCard({ profile }: { profile: UserProfile }) {
             ) : null}
 
             {profile.statusDescription || profile.bio || bioLinks.length ? (
-              <Section title="About">
+              <Section title={t("profile:sections.about")}>
                 {profile.statusDescription ? (
                   <p className="text-[15px] italic text-text">“{profile.statusDescription}”</p>
                 ) : null}
@@ -184,27 +188,41 @@ function ProfileCard({ profile }: { profile: UserProfile }) {
             ) : null}
 
             <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-2">
-              <Section title="Details">
+              <Section title={t("profile:sections.details")}>
                 <dl className="grid grid-cols-2 gap-x-6 gap-y-3">
                   {profile.dateJoined ? (
-                    <Fact label="Joined" value={formatDate(profile.dateJoined)} />
+                    <Fact
+                      label={t("profile:facts.joined")}
+                      value={formatDate(profile.dateJoined)}
+                    />
                   ) : null}
                   {profile.lastLogin ? (
-                    <Fact label="Last login" value={formatDateTime(profile.lastLogin)} />
+                    <Fact
+                      label={t("profile:facts.lastLogin")}
+                      value={formatDateTime(profile.lastLogin)}
+                    />
                   ) : null}
                   {profile.lastActivity ? (
-                    <Fact label="Last activity" value={formatDateTime(profile.lastActivity)} />
+                    <Fact
+                      label={t("profile:facts.lastActivity")}
+                      value={formatDateTime(profile.lastActivity)}
+                    />
                   ) : null}
                   {profile.lastPlatform ? (
-                    <Fact label="Platform" value={platformLabel(profile.lastPlatform)} />
+                    <Fact
+                      label={t("profile:facts.platform")}
+                      value={platformLabel(profile.lastPlatform)}
+                    />
                   ) : null}
-                  {profile.state ? <Fact label="State" value={stateLabel(profile.state)} /> : null}
-                  <Fact label="User ID" value={profile.id} mono />
+                  {profile.state ? (
+                    <Fact label={t("profile:facts.state")} value={stateLabel(profile.state, t)} />
+                  ) : null}
+                  <Fact label={t("profile:facts.userId")} value={profile.id} mono />
                 </dl>
               </Section>
 
               {profile.languages?.length ? (
-                <Section title="Languages">
+                <Section title={t("profile:sections.languages")}>
                   <div className="flex flex-wrap gap-1.5">
                     {profile.languages.map((code) => (
                       <Tag key={code}>{languageLabel(code)}</Tag>
@@ -214,7 +232,7 @@ function ProfileCard({ profile }: { profile: UserProfile }) {
               ) : null}
 
               {profile.currentAvatarTags?.length ? (
-                <Section title="Avatar tags">
+                <Section title={t("profile:sections.avatarTags")}>
                   <div className="flex flex-wrap gap-1.5">
                     {profile.currentAvatarTags.map((t) => (
                       <Tag key={t}>{prettyTag(t, "content_")}</Tag>
@@ -224,7 +242,7 @@ function ProfileCard({ profile }: { profile: UserProfile }) {
               ) : null}
 
               {profile.badges?.length ? (
-                <Section title="Badges">
+                <Section title={t("profile:sections.badges")}>
                   <div className="flex flex-wrap gap-2.5">
                     {[...profile.badges]
                       .sort((a, b) => Number(b.showcased) - Number(a.showcased))
@@ -250,7 +268,7 @@ function ProfileCard({ profile }: { profile: UserProfile }) {
             </div>
 
             {profile.pastDisplayNames?.length ? (
-              <Section title="Former names" collapsible>
+              <Section title={t("profile:sections.formerNames")} collapsible>
                 <div className="flex flex-wrap gap-2">
                   {profile.pastDisplayNames.map((p) => (
                     <span
@@ -261,7 +279,7 @@ function ProfileCard({ profile }: { profile: UserProfile }) {
                       {p.updatedAt ? (
                         <em className="text-xs not-italic text-faint">
                           {" "}
-                          · until {formatDate(p.updatedAt)}
+                          · {t("profile:formerName.until", { date: formatDate(p.updatedAt) })}
                         </em>
                       ) : null}
                     </span>
@@ -315,6 +333,7 @@ interface AddFriend {
 }
 
 function useAddFriend(userId: string): AddFriend {
+  const t = useT();
   const [state, setState] = useState<AddFriendState>("idle");
   const [error, setError] = useState<string>();
 
@@ -325,10 +344,10 @@ function useAddFriend(userId: string): AddFriend {
       .add(userId)
       .then(() => setState("sent"))
       .catch((err) => {
-        setError(errorMessage(err, "Couldn't send friend request."));
+        setError(errorMessage(err, t("profile:addFriendError")));
         setState("idle");
       });
-  }, [userId]);
+  }, [userId, t]);
 
   return { state, error, send };
 }
@@ -386,8 +405,8 @@ function prettyLink(url: string): string {
   }
 }
 
-function stateLabel(state: NonNullable<UserProfile["state"]>): string {
-  if (state === "online") return "In VRChat";
-  if (state === "active") return "On website / mobile";
-  return "Offline";
+function stateLabel(state: NonNullable<UserProfile["state"]>, t: ReturnType<typeof useT>): string {
+  if (state === "online") return t("profile:state.online");
+  if (state === "active") return t("profile:state.active");
+  return t("profile:state.offline");
 }

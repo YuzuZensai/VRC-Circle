@@ -57,13 +57,6 @@ export const developerLabels: Record<string, string> = {
   moderator: "VRChat Moderator",
 };
 
-export const regionLabels: Record<string, string> = {
-  us: "US West",
-  use: "US East",
-  eu: "Europe",
-  jp: "Japan",
-};
-
 export const regionFlags: Record<string, string> = {
   us: "🇺🇸",
   use: "🇺🇸",
@@ -73,6 +66,31 @@ export const regionFlags: Record<string, string> = {
 
 export function regionFlag(region?: string): string | undefined {
   return region ? regionFlags[region.toLowerCase()] : undefined;
+}
+
+type TFunc = (key: string, opts?: Record<string, unknown>) => string;
+
+export function regionLabel(t: TFunc, region?: string): string | null {
+  if (!region) return null;
+  const key = `world:regions.${region.toLowerCase()}`;
+  const label = t(key);
+  return label === key ? region.toUpperCase() : label;
+}
+
+const createTypeToAccess: Record<string, string> = {
+  public: "public",
+  "friends+": "hidden",
+  friends: "friends",
+  invite: "private",
+  "invite+": "inviteRequest",
+};
+
+export function accessLabel(t: TFunc, type?: string): string {
+  if (!type) return t("world:instance.title");
+  const sdkType = createTypeToAccess[type] ?? type;
+  const key = `world:accessTypes.${sdkType}`;
+  const label = t(key);
+  return label === key ? type : label;
 }
 
 const languageNames: Record<string, string> = {

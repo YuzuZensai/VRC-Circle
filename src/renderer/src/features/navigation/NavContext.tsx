@@ -3,6 +3,7 @@ import { createContext, useContext, useMemo, useState } from "react";
 export type View =
   | { kind: "user"; id: "me" | string }
   | { kind: "world"; id: string }
+  | { kind: "instance"; worldId: string; instanceId: string; location: string }
   | { kind: "group"; id: string }
   | { kind: "account" }
   | { kind: "settings" }
@@ -15,6 +16,7 @@ interface Nav {
   canBack: boolean;
   openUser: (id: "me" | string) => void;
   openWorld: (id: string) => void;
+  openInstance: (worldId: string, instanceId: string, location: string) => void;
   openGroup: (id: string) => void;
   openAccount: () => void;
   openSettings: () => void;
@@ -44,6 +46,8 @@ export function NavProvider({ children }: { children: React.ReactNode }) {
       canBack: stack.length > 1,
       openUser: (id) => push({ kind: "user", id }),
       openWorld: (id) => push({ kind: "world", id }),
+      openInstance: (worldId, instanceId, location) =>
+        push({ kind: "instance", worldId, instanceId, location }),
       openGroup: (id) => push({ kind: "group", id }),
       openAccount: () => root({ kind: "account" }),
       openSettings: () => root({ kind: "settings" }),
@@ -62,6 +66,7 @@ function sameView(a: View, b: View): boolean {
   if (a.kind !== b.kind) return false;
   if (a.kind === "user" && b.kind === "user") return a.id === b.id;
   if (a.kind === "world" && b.kind === "world") return a.id === b.id;
+  if (a.kind === "instance" && b.kind === "instance") return a.location === b.location;
   if (a.kind === "group" && b.kind === "group") return a.id === b.id;
   return true;
 }

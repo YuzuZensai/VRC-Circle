@@ -1,0 +1,64 @@
+{
+  "badge": {
+    "you": "You",
+    "friend": "Friend",
+    "ageVerified": "18+ Verified"
+  },
+  "status": {
+    "offlineWas": "Offline ({{status}})"
+  },
+  "addFriendError": "Couldn't send friend request.",
+  "tabs": {
+    "overview": "Overview",
+    "worlds": "Worlds",
+    "favorites": "Favorite Worlds",
+    "groups": "Groups"
+  },
+  "sections": {
+    "note": "Your note",
+    "about": "About",
+    "details": "Details",
+    "languages": "Languages",
+    "avatarTags": "Avatar tags",
+    "badges": "Badges",
+    "formerNames": "Former names"
+  },
+  "facts": {
+    "joined": "Joined",
+    "lastLogin": "Last login",
+    "lastActivity": "Last activity",
+    "platform": "Platform",
+    "state": "State",
+    "userId": "User ID"
+  },
+  "formerName": {
+    "until": "until {{date}}"
+  },
+  "state": {
+    "online": "In VRChat",
+    "active": "On website / mobile",
+    "offline": "Offline"
+  },
+  "worlds": {
+    "title": "Worlds",
+    "favorites": "Favorite worlds",
+    "tip": {
+      "favorites": "favorites",
+      "online": "players online now",
+      "visits": "visits",
+      "capacity": "capacity"
+    },
+    "visitsCount": "{{formattedCount}} visits"
+  },
+  "groups": {
+    "title": "Groups",
+    "featured": "Featured group"
+  },
+  "location": {
+    "title": "Currently in",
+    "by": "by {{author}}",
+    "instance": "Instance",
+    "inInstance": "{{n}} in instance",
+    "inWorld": "{{n}} in world"
+  }
+}

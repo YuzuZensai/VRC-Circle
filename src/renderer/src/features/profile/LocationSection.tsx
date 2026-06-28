@@ -5,10 +5,12 @@ import { useWorld } from "../../store/worlds";
 import { useNav } from "../navigation/NavContext";
 import { api } from "../../lib/api";
 import { useAsync } from "../../lib/useAsync";
-import { locationLabel, regionLabels, regionFlag } from "../../lib/vrchat";
+import { useT } from "../../lib/i18n";
+import { locationLabel, regionLabel, regionFlag } from "../../lib/vrchat";
 
 export function LocationSection({ location }: { location?: Location }) {
-  const { openWorld } = useNav();
+  const t = useT();
+  const { openInstance } = useNav();
   const parsed = parseLocation(location);
   const world = useWorld(parsed?.worldId);
   const instance = useAsync(
@@ -33,14 +35,12 @@ export function LocationSection({ location }: { location?: Location }) {
 
   if (parsed && world) {
     const img = world.thumbnailImageUrl || world.imageUrl;
-    const region = parsed.region
-      ? (regionLabels[parsed.region] ?? parsed.region.toUpperCase())
-      : null;
+    const region = regionLabel(t, parsed.region);
     const flag = regionFlag(parsed.region);
     return (
       <Wrap>
         <button
-          onClick={() => openWorld(world.id)}
+          onClick={() => openInstance(parsed.worldId, parsed.instance, location as string)}
           className="group flex w-full items-center gap-3.5 rounded-lg p-1 text-left transition-colors hover:bg-surface-hover"
         >
           <div className="size-16 shrink-0 overflow-hidden rounded-lg bg-surface-hover">
@@ -51,8 +51,13 @@ export function LocationSection({ location }: { location?: Location }) {
               {world.name}
             </div>
             <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] text-faint">
-              <span className="truncate">by {world.authorName}</span>
-              <span className="inline-flex items-center gap-1" title="Instance">
+              <span className="truncate">
+                {t("profile:location.by", { author: world.authorName })}
+              </span>
+              <span
+                className="inline-flex items-center gap-1"
+                title={t("profile:location.instance")}
+              >
                 <Hash size={11} />
                 {parsed.instanceId}
               </span>
@@ -71,12 +76,13 @@ export function LocationSection({ location }: { location?: Location }) {
                   className="inline-flex items-center gap-1"
                   style={{ color: "var(--status-active)" }}
                 >
-                  <Users size={11} /> {inInstance.userCount} in instance
+                  <Users size={11} />{" "}
+                  {t("profile:location.inInstance", { n: inInstance.userCount })}
                 </span>
               ) : null}
               {world.occupants > 0 ? (
                 <span className="inline-flex items-center gap-1">
-                  <Users size={11} /> {world.occupants} in world
+                  <Users size={11} /> {t("profile:location.inWorld", { n: world.occupants })}
                 </span>
               ) : null}
             </div>
@@ -103,10 +109,11 @@ export function LocationSection({ location }: { location?: Location }) {
 }
 
 function Wrap({ children }: { children: React.ReactNode }) {
+  const t = useT();
   return (
     <section className="rounded-xl border border-border bg-surface-2 p-4 shadow-sm">
       <h3 className="mb-2.5 flex items-center gap-1.5 px-1 text-[11px] font-semibold uppercase tracking-wide text-faint">
-        <MapPin size={12} /> Currently in
+        <MapPin size={12} /> {t("profile:location.title")}
       </h3>
       {children}
     </section>

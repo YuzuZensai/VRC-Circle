@@ -2,22 +2,32 @@ import { Circle, Star, Users } from "lucide-react";
 import type { World } from "../../../../shared/types/world";
 import { Card, CollapsibleCard, HoverImage, SkeletonGrid, Tag } from "../../components/ui";
 import { compactNumber } from "../../lib/format";
+import { useT } from "../../lib/i18n";
 import { useNav } from "../navigation/NavContext";
 import { useUserWorlds } from "./useUserWorlds";
 import { useFavoriteWorlds } from "./useFavoriteWorlds";
 
 export function WorldsSection({ userId }: { userId: string }) {
+  const t = useT();
   const { status, worlds, message } = useUserWorlds(userId);
-  return <WorldGrid title="Worlds" status={status} worlds={worlds} message={message} />;
+  return (
+    <WorldGrid
+      title={t("profile:worlds.title")}
+      status={status}
+      worlds={worlds}
+      message={message}
+    />
+  );
 }
 
 export function FavoriteWorldsSection({ userId }: { userId: string }) {
+  const t = useT();
   const { status, folders } = useFavoriteWorlds(userId);
   const loading = status === "loading";
 
   if (loading && !folders.length) {
     return (
-      <CollapsibleCard title="Favorite worlds" count="…">
+      <CollapsibleCard title={t("profile:worlds.favorites")} count="…">
         <SkeletonGrid count={3} />
       </CollapsibleCard>
     );
@@ -100,6 +110,7 @@ function Wrap({
 }
 
 function WorldCard({ world }: { world: World }) {
+  const t = useT();
   const { openWorld } = useNav();
   const img = world.thumbnailImageUrl || world.imageUrl;
   return (
@@ -117,22 +128,27 @@ function WorldCard({ world }: { world: World }) {
           {world.name}
         </div>
         <div className="mt-1 flex flex-wrap items-center gap-3 text-[11px] tabular-nums text-faint">
-          <span className="inline-flex items-center gap-1" title="favorites">
+          <span
+            className="inline-flex items-center gap-1"
+            title={t("profile:worlds.tip.favorites")}
+          >
             <Star size={12} /> {compactNumber(world.favorites)}
           </span>
           {world.occupants > 0 ? (
             <span
               className="inline-flex items-center gap-1"
-              title="players online now"
+              title={t("profile:worlds.tip.online")}
               style={{ color: "var(--status-active)" }}
             >
               <Circle size={9} fill="currentColor" /> {compactNumber(world.occupants)}
             </span>
           ) : null}
           {world.visits > 0 ? (
-            <span title="visits">{compactNumber(world.visits)} visits</span>
+            <span title={t("profile:worlds.tip.visits")}>
+              {t("profile:worlds.visitsCount", { formattedCount: compactNumber(world.visits) })}
+            </span>
           ) : null}
-          <span className="inline-flex items-center gap-1" title="capacity">
+          <span className="inline-flex items-center gap-1" title={t("profile:worlds.tip.capacity")}>
             <Users size={12} /> {world.capacity}
           </span>
         </div>

@@ -1,0 +1,64 @@
+{
+  "badge": {
+    "you": "คุณ",
+    "friend": "เพื่อน",
+    "ageVerified": "ยืนยันอายุ 18+"
+  },
+  "status": {
+    "offlineWas": "ออฟไลน์ ({{status}})"
+  },
+  "addFriendError": "ส่งคำขอเป็นเพื่อนไม่สำเร็จ",
+  "tabs": {
+    "overview": "ภาพรวม",
+    "worlds": "เวิลด์",
+    "favorites": "เวิลด์ที่ชื่นชอบ",
+    "groups": "กลุ่ม"
+  },
+  "sections": {
+    "note": "บันทึกของคุณ",
+    "about": "เกี่ยวกับ",
+    "details": "รายละเอียด",
+    "languages": "ภาษา",
+    "avatarTags": "แท็กอวตาร",
+    "badges": "เหรียญตรา",
+    "formerNames": "ชื่อเดิม"
+  },
+  "facts": {
+    "joined": "เข้าร่วมเมื่อ",
+    "lastLogin": "เข้าสู่ระบบล่าสุด",
+    "lastActivity": "กิจกรรมล่าสุด",
+    "platform": "แพลตฟอร์ม",
+    "state": "สถานะ",
+    "userId": "รหัสผู้ใช้"
+  },
+  "formerName": {
+    "until": "จนถึง {{date}}"
+  },
+  "state": {
+    "online": "อยู่ใน VRChat",
+    "active": "บนเว็บ / มือถือ",
+    "offline": "ออฟไลน์"
+  },
+  "worlds": {
+    "title": "เวิลด์",
+    "favorites": "เวิลด์ที่ชื่นชอบ",
+    "tip": {
+      "favorites": "รายการโปรด",
+      "online": "ผู้เล่นออนไลน์ตอนนี้",
+      "visits": "การเข้าชม",
+      "capacity": "ความจุ"
+    },
+    "visitsCount": "เข้าชม {{formattedCount}} ครั้ง"
+  },
+  "groups": {
+    "title": "กลุ่ม",
+    "featured": "กลุ่มที่นำเสนอ"
+  },
+  "location": {
+    "title": "อยู่ที่",
+    "by": "โดย {{author}}",
+    "instance": "อินสแตนซ์",
+    "inInstance": "{{n}} คนในอินสแตนซ์",
+    "inWorld": "{{n}} คนในเวิลด์"
+  }
+}

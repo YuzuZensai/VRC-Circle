@@ -3,7 +3,7 @@ import { Check, Copy, Globe, Play, Send, Sparkles } from "lucide-react";
 import { Banner, Button, Modal } from "../../components/ui";
 import { api, errorMessage } from "../../lib/api";
 import { useCopied } from "../../lib/useCopied";
-import { regionFlag } from "../../lib/vrchat";
+import { accessLabel, regionFlag, regionLabel } from "../../lib/vrchat";
 import { useT } from "../../lib/i18n";
 import type {
   CreateInstanceInput,
@@ -116,14 +116,14 @@ export function CreateInstanceModal({
             value={type}
             options={TYPES}
             onChange={setType}
-            render={(v) => t(`world:create.types.${v}`)}
+            render={(v) => accessLabel(t, v)}
           />
           <Picker
             label={t("world:create.region")}
             value={region}
             options={REGIONS}
             onChange={pickRegion}
-            render={(v) => `${regionFlag(v) ?? ""} ${t(`world:create.regions.${v}`)}`.trim()}
+            render={(v) => `${regionFlag(v) ?? ""} ${regionLabel(t, v)}`.trim()}
             hint={
               detecting ? (
                 <span className="inline-flex items-center gap-1.5 text-accent">
@@ -134,7 +134,7 @@ export function CreateInstanceModal({
                 <span className="inline-flex items-center gap-1.5 text-faint">
                   <Sparkles size={11} />
                   {t("world:create.autoDetected", {
-                    region: t(`world:create.regions.${region}`),
+                    region: regionLabel(t, region),
                   })}
                 </span>
               ) : undefined

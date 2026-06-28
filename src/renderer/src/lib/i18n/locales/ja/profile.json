@@ -1,0 +1,64 @@
+{
+  "badge": {
+    "you": "あなた",
+    "friend": "フレンド",
+    "ageVerified": "18歳以上確認済み"
+  },
+  "status": {
+    "offlineWas": "オフライン（{{status}}）"
+  },
+  "addFriendError": "フレンド申請を送信できませんでした。",
+  "tabs": {
+    "overview": "概要",
+    "worlds": "ワールド",
+    "favorites": "お気に入りのワールド",
+    "groups": "グループ"
+  },
+  "sections": {
+    "note": "あなたのメモ",
+    "about": "自己紹介",
+    "details": "詳細",
+    "languages": "言語",
+    "avatarTags": "アバタータグ",
+    "badges": "バッジ",
+    "formerNames": "以前の名前"
+  },
+  "facts": {
+    "joined": "登録日",
+    "lastLogin": "最終ログイン",
+    "lastActivity": "最終アクティビティ",
+    "platform": "プラットフォーム",
+    "state": "状態",
+    "userId": "ユーザーID"
+  },
+  "formerName": {
+    "until": "{{date}}まで"
+  },
+  "state": {
+    "online": "VRChat内",
+    "active": "ウェブ／モバイル",
+    "offline": "オフライン"
+  },
+  "worlds": {
+    "title": "ワールド",
+    "favorites": "お気に入りのワールド",
+    "tip": {
+      "favorites": "お気に入り数",
+      "online": "現在のオンラインプレイヤー",
+      "visits": "訪問数",
+      "capacity": "定員"
+    },
+    "visitsCount": "{{formattedCount}} 回訪問"
+  },
+  "groups": {
+    "title": "グループ",
+    "featured": "代表グループ"
+  },
+  "location": {
+    "title": "現在地",
+    "by": "作者: {{author}}",
+    "instance": "インスタンス",
+    "inInstance": "インスタンスに{{n}}人",
+    "inWorld": "ワールドに{{n}}人"
+  }
+}

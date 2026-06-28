@@ -1,5 +1,21 @@
 {
   "createInstance": "Create Instance",
+  "regions": {
+    "us": "US West",
+    "use": "US East",
+    "eu": "Europe",
+    "jp": "Japan"
+  },
+  "accessTypes": {
+    "public": "Public",
+    "hidden": "Friends+",
+    "friends": "Friends",
+    "private": "Invite",
+    "inviteRequest": "Invite+",
+    "group": "Group",
+    "groupPlus": "Group+",
+    "groupPublic": "Group Public"
+  },
   "create": {
     "title": "Create Instance",
     "type": "Access",
@@ -8,19 +24,6 @@
     "creating": "Creating…",
     "detecting": "Detecting best region…",
     "autoDetected": "Auto: {{region}}",
-    "types": {
-      "public": "Public",
-      "friends+": "Friends+",
-      "friends": "Friends",
-      "invite": "Invite",
-      "invite+": "Invite+"
-    },
-    "regions": {
-      "us": "US West",
-      "use": "US East",
-      "eu": "Europe",
-      "jp": "Japan"
-    },
     "ready": "Instance created.",
     "launch": "Launch VRChat",
     "launching": "Launching…",
@@ -32,5 +35,20 @@
     "unlockedHint": "Bypasses the instance rules. Anyone with it can join. Not recommended.",
     "copy": "Copy",
     "copied": "Copied"
+  },
+  "instance": {
+    "title": "Instance",
+    "unavailable": "This instance is no longer available.",
+    "players": "Players",
+    "capacity": "Capacity",
+    "region": "Region",
+    "access": "Access",
+    "queue": "In queue",
+    "join": "Join in VRChat",
+    "joining": "Launching…",
+    "inviteMe": "Invite me",
+    "inviteSent": "Invite sent. Check VRChat.",
+    "worldDetails": "View world details",
+    "instanceId": "Instance ID"
   }
 }
