@@ -49,10 +49,13 @@ export async function getUser(userId: string): Promise<UserProfile> {
 export async function getUserByName(username: string): Promise<UserProfile> {
   const vrc = requireActiveClient();
   const self = await selfId();
-  return userCache.get(cacheKeys.userByName(username), policies.user, async () => {
+  const key = cacheKeys.userByName(username);
+  const profile = await userCache.get(key, policies.user, async () => {
     const { data } = await vrc.getUserByName({ path: { username }, throwOnError: true });
     return toUserProfile(data, self);
   });
+  refreshStore(profile, key);
+  return profile;
 }
 
 export async function searchUsers(query: string): Promise<UserProfile[]> {

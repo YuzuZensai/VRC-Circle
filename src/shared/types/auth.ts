@@ -5,17 +5,14 @@ export type AuthStatus =
   | { state: "awaiting2fa"; methods: TwoFactorMethod[] }
   | { state: "authenticated"; user: CurrentUserSummary };
 
-export interface CurrentUserSummary {
-  id: string;
-  displayName: string;
-  userIcon: string;
-  currentAvatarThumbnailImageUrl: string;
-}
-
 export interface Account {
   id: string;
   displayName: string;
   userIcon: string;
+}
+
+export interface CurrentUserSummary extends Account {
+  currentAvatarThumbnailImageUrl: string;
 }
 
 export interface AccountsState {

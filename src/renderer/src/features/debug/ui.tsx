@@ -1,6 +1,8 @@
 import { X } from "lucide-react";
 import type { CacheEntryInfo, CacheStatus } from "../../../../shared/types/debug";
 
+export { formatBytes } from "../../lib/format";
+
 export const statusTone = {
   fresh: "success",
   stale: "warn",
@@ -42,12 +44,6 @@ export function relativeAge(now: number, ts: number): string {
 
 export function cacheStatus(e: CacheEntryInfo, now: number): CacheStatus {
   return now < e.expiresAt ? "fresh" : now < e.hardExpiresAt ? "stale" : "expired";
-}
-
-export function formatBytes(n: number): string {
-  if (n < 1024) return `${n} B`;
-  if (n < 1024 * 1024) return `${(n / 1024).toFixed(1)} KB`;
-  return `${(n / (1024 * 1024)).toFixed(1)} MB`;
 }
 
 export function formatDuration(s: number): string {

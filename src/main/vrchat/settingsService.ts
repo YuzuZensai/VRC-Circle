@@ -8,6 +8,7 @@ import type {
 import type { TwoFactorMethod } from "../../shared/types/auth";
 import type { UserStatus } from "../../shared/types/user";
 import { requireActiveClient } from "./client";
+import { toIso } from "./mappers";
 import { userCache } from "./userService";
 import { cacheKeys } from "../cache/policies";
 import { entityStore } from "../store/entityStore";
@@ -19,12 +20,6 @@ const CONTENT_FILTER_KEYS: ContentFilterKey[] = [
   "content_gore",
   "content_horror",
 ];
-
-function toIso(d?: Date | string | null): string | undefined {
-  if (!d) return undefined;
-  const date = typeof d === "string" ? new Date(d) : d;
-  return Number.isNaN(date.getTime()) ? undefined : date.toISOString();
-}
 
 function toSettings(u: CurrentUser): AccountSettings {
   const filters = (u.contentFilters ?? []).filter((t): t is ContentFilterKey =>

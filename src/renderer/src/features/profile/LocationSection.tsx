@@ -1,6 +1,6 @@
 import { ChevronRight, Globe, Hash, MapPin, Users } from "lucide-react";
 import { parseLocation, type Location } from "../../../../shared/types/user";
-import { HoverImage } from "../../components/ui";
+import { HoverImage, IconLabel } from "../../components/ui";
 import { useWorld } from "../../store/worlds";
 import { useNav } from "../navigation/NavContext";
 import { api } from "../../lib/api";
@@ -54,36 +54,34 @@ export function LocationSection({ location }: { location?: Location }) {
               <span className="truncate">
                 {t("profile:location.by", { author: world.authorName })}
               </span>
-              <span
-                className="inline-flex items-center gap-1"
-                title={t("profile:location.instance")}
-              >
-                <Hash size={11} />
+              <IconLabel icon={<Hash size={11} />} title={t("profile:location.instance")}>
                 {parsed.instanceId}
-              </span>
+              </IconLabel>
               {region ? (
-                <span className="inline-flex items-center gap-1">
-                  {flag ? (
-                    <span className="text-[13px] leading-none">{flag}</span>
-                  ) : (
-                    <Globe size={11} />
-                  )}{" "}
+                <IconLabel
+                  icon={
+                    flag ? (
+                      <span className="text-[13px] leading-none">{flag}</span>
+                    ) : (
+                      <Globe size={11} />
+                    )
+                  }
+                >
+                  {" "}
                   {region}
-                </span>
+                </IconLabel>
               ) : null}
               {inInstance ? (
-                <span
-                  className="inline-flex items-center gap-1"
-                  style={{ color: "var(--status-active)" }}
-                >
-                  <Users size={11} />{" "}
+                <IconLabel icon={<Users size={11} />} style={{ color: "var(--status-active)" }}>
+                  {" "}
                   {t("profile:location.inInstance", { n: inInstance.userCount })}
-                </span>
+                </IconLabel>
               ) : null}
               {world.occupants > 0 ? (
-                <span className="inline-flex items-center gap-1">
-                  <Users size={11} /> {t("profile:location.inWorld", { n: world.occupants })}
-                </span>
+                <IconLabel icon={<Users size={11} />}>
+                  {" "}
+                  {t("profile:location.inWorld", { n: world.occupants })}
+                </IconLabel>
               ) : null}
             </div>
           </div>

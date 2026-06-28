@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { writeFileAtomic, writeFileAtomicSync } from "../lib/atomicFile";
 import type { CacheEntryInfo, CacheStats } from "../../shared/types/debug";
+import { httpStatusOf } from "../vrchat/errors";
 
 interface Entry<T> {
   value: T;
@@ -31,14 +32,11 @@ function byteSize(value: unknown): number {
 }
 
 function retryAfterMs(err: unknown): number | null {
+  if (httpStatusOf(err) !== 429) return null;
   const e = (err ?? {}) as {
-    status?: number;
-    statusCode?: number;
-    response?: { status?: number; headers?: Record<string, string> };
+    response?: { headers?: Record<string, string> };
     headers?: Record<string, string>;
   };
-  const status = e.status ?? e.statusCode ?? e.response?.status;
-  if (status !== 429) return null;
   const raw = e.response?.headers?.["retry-after"] ?? e.headers?.["retry-after"];
   const secs = raw != null ? Number(raw) : NaN;
   return Number.isFinite(secs) ? secs * 1000 : 8000;

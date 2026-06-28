@@ -1,6 +1,6 @@
 import { Circle, Star, Users } from "lucide-react";
 import type { World } from "../../../../shared/types/world";
-import { Card, HoverImage, Tag } from "../../components/ui";
+import { Card, HoverImage, IconLabel, Tag } from "../../components/ui";
 import { compactNumber } from "../../lib/format";
 import { useT } from "../../lib/i18n";
 import { useNav } from "../navigation/NavContext";
@@ -37,26 +37,29 @@ export function WorldCard({
           </div>
         ) : null}
         <div className="mt-1 flex flex-wrap items-center gap-3 text-[11px] tabular-nums text-faint">
-          <span className="inline-flex items-center gap-1" title={t("profile:worlds.tip.favorites")}>
-            <Star size={12} /> {compactNumber(world.favorites)}
-          </span>
+          <IconLabel icon={<Star size={12} />} title={t("profile:worlds.tip.favorites")}>
+            {" "}
+            {compactNumber(world.favorites)}
+          </IconLabel>
           {world.occupants > 0 ? (
-            <span
-              className="inline-flex items-center gap-1"
+            <IconLabel
+              icon={<Circle size={9} fill="currentColor" />}
               title={t("profile:worlds.tip.online")}
               style={{ color: "var(--status-active)" }}
             >
-              <Circle size={9} fill="currentColor" /> {compactNumber(world.occupants)}
-            </span>
+              {" "}
+              {compactNumber(world.occupants)}
+            </IconLabel>
           ) : null}
           {world.visits > 0 ? (
             <span title={t("profile:worlds.tip.visits")}>
               {t("profile:worlds.visitsCount", { formattedCount: compactNumber(world.visits) })}
             </span>
           ) : null}
-          <span className="inline-flex items-center gap-1" title={t("profile:worlds.tip.capacity")}>
-            <Users size={12} /> {world.capacity}
-          </span>
+          <IconLabel icon={<Users size={12} />} title={t("profile:worlds.tip.capacity")}>
+            {" "}
+            {world.capacity}
+          </IconLabel>
         </div>
       </div>
     </Card>

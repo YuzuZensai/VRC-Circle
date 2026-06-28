@@ -92,10 +92,10 @@ function normalizeStatus(status?: string): UserStatus {
   }
 }
 
-function toIso(v?: string | Date | null): string | undefined {
+export function toIso(v?: string | Date | null): string | undefined {
   if (!v) return undefined;
-  const s = v instanceof Date ? v.toISOString() : v;
-  return s === "" ? undefined : s;
+  const date = v instanceof Date ? v : new Date(v);
+  return Number.isNaN(date.getTime()) ? undefined : date.toISOString();
 }
 
 export function toUserProfile(raw: RawUser, selfId: string): UserProfile {

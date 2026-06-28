@@ -3,7 +3,7 @@ import { Search as SearchIcon } from "lucide-react";
 import type { UserProfile } from "../../../../shared/types/user";
 import type { World } from "../../../../shared/types/world";
 import { api } from "../../lib/api";
-import { Avatar, Button, ContextMenu, Field, Tabs, Tag } from "../../components/ui";
+import { Avatar, Button, CardGrid, ContextMenu, Field, Tabs, Tag } from "../../components/ui";
 import { useT } from "../../lib/i18n";
 import { useNav } from "../navigation/NavContext";
 import { useUserMenu } from "../friends/useUserMenu";
@@ -106,11 +106,11 @@ export function SearchView() {
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+          <CardGrid>
             {(results as World[]).map((w) => (
               <WorldCard key={w.id} world={w} showAuthor onOpen={() => openWorld(w.id)} />
             ))}
-          </div>
+          </CardGrid>
         )}
       </div>
 

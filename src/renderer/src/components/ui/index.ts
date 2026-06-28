@@ -17,6 +17,8 @@ export { Toggle } from "./Toggle";
 export { Section, Fact } from "./Section";
 export { StatTile } from "./StatTile";
 export { SkeletonGrid } from "./SkeletonGrid";
+export { CardGrid } from "./CardGrid";
+export { IconLabel } from "./IconLabel";
 export { Skeleton } from "./Skeleton";
 export { LinkPill } from "./LinkPill";
 export { CodeBlock } from "./CodeBlock";

@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import type { World } from "../../../../shared/types/world";
-import { CollapsibleCard, Field, SkeletonGrid } from "../../components/ui";
+import { CardGrid, CollapsibleCard, Field, SkeletonGrid } from "../../components/ui";
 import { useT } from "../../lib/i18n";
 import { WorldCard } from "../world/WorldCard";
 import { useUserWorlds } from "./useUserWorlds";
@@ -73,11 +73,11 @@ export function FavoriteWorldsSection({
     <div className="flex flex-col gap-5">
       {shown.map((folder) => (
         <CollapsibleCard key={folder.name} title={folder.displayName} count={folder.worlds.length}>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+          <CardGrid>
             {folder.worlds.map((w) => (
               <WorldCard key={w.id} world={w} />
             ))}
-          </div>
+          </CardGrid>
         </CollapsibleCard>
       ))}
       {loading ? <SkeletonGrid count={3} /> : null}
@@ -99,11 +99,11 @@ function WorldGrid({
   if (worlds.length) {
     return (
       <CollapsibleCard title={title} count={worlds.length}>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+        <CardGrid>
           {worlds.map((w) => (
             <WorldCard key={w.id} world={w} />
           ))}
-        </div>
+        </CardGrid>
       </CollapsibleCard>
     );
   }
