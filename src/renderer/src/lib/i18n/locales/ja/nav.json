@@ -7,5 +7,24 @@
   "debug": "デバッグ",
   "hideNav": "ナビゲーションを隠す",
   "showNav": "ナビゲーションを表示",
-  "toggleNav": "ナビゲーションサイドバーの切り替え"
+  "toggleNav": "ナビゲーションサイドバーの切り替え",
+  "friends": {
+    "title": "フレンド",
+    "online": "オンライン",
+    "noFriendsOnline": "オンラインのフレンドがいません。",
+    "inAWorld": "ワールドにいます",
+    "sectionOnline": "オンライン",
+    "sectionOffline": "オフライン",
+    "contextMenu": {
+      "viewProfile": "プロフィールを見る",
+      "invite": "招待する",
+      "requestInvite": "招待をリクエスト",
+      "unfriend": "フレンド解除"
+    },
+    "unfriendModal": {
+      "title": "フレンド解除",
+      "body": "<0>{{name}}</0> をフレンドリストから削除しますか？",
+      "confirm": "解除する"
+    }
+  }
 }

@@ -7,5 +7,24 @@
   "debug": "ดีบัก",
   "hideNav": "ซ่อนแถบนำทาง",
   "showNav": "แสดงแถบนำทาง",
-  "toggleNav": "สลับแถบนำทาง"
+  "toggleNav": "สลับแถบนำทาง",
+  "friends": {
+    "title": "เพื่อน",
+    "online": "ออนไลน์",
+    "noFriendsOnline": "ยังไม่มีเพื่อนออนไลน์",
+    "inAWorld": "อยู่ในเวิลด์",
+    "sectionOnline": "ออนไลน์",
+    "sectionOffline": "ออฟไลน์",
+    "contextMenu": {
+      "viewProfile": "ดูโปรไฟล์",
+      "invite": "ชวนเข้าห้อง",
+      "requestInvite": "ขอคำเชิญ",
+      "unfriend": "ยกเลิกการเป็นเพื่อน"
+    },
+    "unfriendModal": {
+      "title": "ยกเลิกการเป็นเพื่อน",
+      "body": "ต้องการลบ <0>{{name}}</0> ออกจากรายชื่อเพื่อนใช่ไหม?",
+      "confirm": "ยกเลิกเพื่อน"
+    }
+  }
 }

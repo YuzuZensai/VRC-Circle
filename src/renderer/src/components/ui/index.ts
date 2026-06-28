@@ -21,4 +21,6 @@ export { LinkPill } from "./LinkPill";
 export { CodeBlock } from "./CodeBlock";
 export { Card } from "./Card";
 export { HoverImage } from "./HoverImage";
+export { ContextMenu } from "./ContextMenu";
+export type { ContextMenuEntry, ContextMenuItem } from "./ContextMenu";
 export { LABEL_HEADING } from "./styles";

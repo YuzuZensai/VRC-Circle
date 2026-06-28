@@ -444,15 +444,17 @@ function UnityStatusBody({ status }: { status: UnityStatus }) {
   );
 }
 
-const MATCH_META: Record<
-  UnityStatus["match"],
-  { key: string; icon: typeof Check; color: string }
-> = {
-  ok: { key: "settings:unity.match.ok", icon: Check, color: "var(--status-active)" },
-  missing: { key: "settings:unity.match.missing", icon: AlertTriangle, color: "var(--status-ask)" },
-  "no-editor": { key: "settings:unity.match.noEditor", icon: X, color: "var(--danger)" },
-  unknown: { key: "settings:unity.match.unknown", icon: AlertTriangle, color: "var(--muted)" },
-};
+const MATCH_META: Record<UnityStatus["match"], { key: string; icon: typeof Check; color: string }> =
+  {
+    ok: { key: "settings:unity.match.ok", icon: Check, color: "var(--status-active)" },
+    missing: {
+      key: "settings:unity.match.missing",
+      icon: AlertTriangle,
+      color: "var(--status-ask)",
+    },
+    "no-editor": { key: "settings:unity.match.noEditor", icon: X, color: "var(--danger)" },
+    unknown: { key: "settings:unity.match.unknown", icon: AlertTriangle, color: "var(--muted)" },
+  };
 
 function AboutSection() {
   const { t } = useI18n();

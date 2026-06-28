@@ -7,5 +7,24 @@
   "debug": "Debug",
   "hideNav": "Hide navigation",
   "showNav": "Show navigation",
-  "toggleNav": "Toggle navigation sidebar"
+  "toggleNav": "Toggle navigation sidebar",
+  "friends": {
+    "title": "Friends",
+    "online": "online",
+    "noFriendsOnline": "No friends online yet.",
+    "inAWorld": "In a world",
+    "sectionOnline": "Online",
+    "sectionOffline": "Offline",
+    "contextMenu": {
+      "viewProfile": "View Profile",
+      "invite": "Invite",
+      "requestInvite": "Request Invite",
+      "unfriend": "Unfriend"
+    },
+    "unfriendModal": {
+      "title": "Unfriend",
+      "body": "Remove <0>{{name}}</0> from your friends list?",
+      "confirm": "Unfriend"
+    }
+  }
 }

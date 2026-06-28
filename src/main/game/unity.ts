@@ -29,7 +29,11 @@ function hubBinaries(): string[] {
     case "darwin":
       return ["/Applications/Unity Hub.app"];
     default:
-      return ["/usr/bin/unityhub", "/opt/unityhub/unityhub", join(home, ".local", "bin", "unityhub")];
+      return [
+        "/usr/bin/unityhub",
+        "/opt/unityhub/unityhub",
+        join(home, ".local", "bin", "unityhub"),
+      ];
   }
 }
 
