@@ -4,11 +4,12 @@ import type { World } from "../../../../shared/types/world";
 import { Banner, Button, Fact, Section, Skeleton, StatTile, Tag } from "../../components/ui";
 import { api } from "../../lib/api";
 import { useAsync } from "../../lib/useAsync";
-import { compactNumber, formatDate, prettyTag } from "../../lib/format";
+import { compactNumber, formatDate, prettyTag, tagsWithPrefix } from "../../lib/format";
 import { useWorlds } from "../../store/worlds";
 import { useNav } from "../navigation/NavContext";
 import { useT } from "../../lib/i18n";
 import { COL_WIDE } from "../../lib/layout";
+import { HeroHeader } from "../shared/HeroHeader";
 import { CreateInstanceModal } from "./CreateInstanceModal";
 import "../profile/profile.css";
 
@@ -31,22 +32,20 @@ function WorldCard({ world }: { world: World }) {
   const players = world.occupants;
 
   return (
-    <article className="profile flex min-h-full w-full flex-col bg-surface pb-12">
-      <div
-        className="profile__banner"
-        style={{ backgroundImage: banner ? `url(${banner})` : undefined }}
-      />
-
-      <div className={`${COL_WIDE} relative flex items-end gap-5`} style={{ marginTop: -64 }}>
+    <HeroHeader
+      banner={banner}
+      media={
         <div className="world__thumb">
           {world.thumbnailImageUrl || world.imageUrl ? (
             <img src={world.thumbnailImageUrl || world.imageUrl} alt="" />
           ) : null}
         </div>
+      }
+      body={
         <div className="min-w-0 pb-1">
           <h2 className="text-[30px] font-bold leading-tight tracking-[-0.6px]">{world.name}</h2>
           <p className="mt-1 text-[14px] text-muted">
-            by{" "}
+            {t("world:detail.byPrefix")}{" "}
             <button
               onClick={() => openUser(world.authorId)}
               className="font-semibold text-text transition-colors hover:text-accent"
@@ -62,41 +61,42 @@ function WorldCard({ world }: { world: World }) {
             {world.platforms?.android ? <Tag color="var(--status-join)">Quest</Tag> : null}
           </div>
         </div>
+      }
+      actions={
         <Button className="mb-1 ml-auto shrink-0" onClick={() => setCreateOpen(true)}>
           <Plus size={15} />
           {t("world:createInstance")}
         </Button>
-      </div>
+      }
+    >
+      <CreateInstanceModal worldId={world.id} open={createOpen} onClose={() => setCreateOpen(false)} />
 
-      <CreateInstanceModal
-        worldId={world.id}
-        open={createOpen}
-        onClose={() => setCreateOpen(false)}
-      />
-
-      <div className={`${COL_WIDE} mt-6 flex flex-col gap-5`}>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           <StatTile
             icon={<Users size={15} />}
-            label="Players now"
+            label={t("world:detail.stats.playersNow")}
             value={compactNumber(players)}
             live={players > 0}
           />
           <StatTile
             icon={<Heart size={15} />}
-            label="Favorites"
+            label={t("world:detail.stats.favorites")}
             value={compactNumber(world.favorites)}
           />
           <StatTile
             icon={<Globe size={15} />}
-            label="Visits"
+            label={t("world:detail.stats.visits")}
             value={world.visits ? compactNumber(world.visits) : "—"}
           />
-          <StatTile icon={<Users size={15} />} label="Capacity" value={`${world.capacity}`} />
+          <StatTile
+            icon={<Users size={15} />}
+            label={t("world:detail.stats.capacity")}
+            value={`${world.capacity}`}
+          />
         </div>
 
         {world.description ? (
-          <Section title="Description">
+          <Section title={t("world:detail.sections.description")}>
             <p className="whitespace-pre-wrap text-[14px] leading-relaxed text-muted">
               {world.description}
             </p>
@@ -104,12 +104,12 @@ function WorldCard({ world }: { world: World }) {
         ) : null}
 
         {world.previewYoutubeId ? (
-          <Section title="Trailer">
+          <Section title={t("world:detail.sections.trailer")}>
             <div className="aspect-video overflow-hidden rounded-lg border border-border">
               <iframe
                 className="size-full"
                 src={`https://www.youtube.com/embed/${world.previewYoutubeId}`}
-                title="World trailer"
+                title={t("world:detail.sections.trailer")}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
               />
@@ -118,52 +118,59 @@ function WorldCard({ world }: { world: World }) {
         ) : null}
 
         <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-2">
-          <Section title="Details">
+          <Section title={t("world:detail.sections.details")}>
             <dl className="grid grid-cols-2 gap-x-6 gap-y-3">
               {world.recommendedCapacity ? (
-                <Fact label="Recommended" value={`${world.recommendedCapacity} players`} />
+                <Fact
+                  label={t("world:detail.facts.recommended")}
+                  value={t("world:detail.recommendedValue", { count: world.recommendedCapacity })}
+                />
               ) : null}
               {typeof world.popularity === "number" ? (
-                <Fact label="Popularity" value={`${world.popularity} / 6`} />
+                <Fact label={t("world:detail.facts.popularity")} value={`${world.popularity} / 6`} />
               ) : null}
               {typeof world.heat === "number" ? (
-                <Fact label="Heat" value={`${world.heat} / 6`} />
+                <Fact label={t("world:detail.facts.heat")} value={`${world.heat} / 6`} />
               ) : null}
-              {world.version ? <Fact label="Version" value={`${world.version}`} /> : null}
+              {world.version ? (
+                <Fact label={t("world:detail.facts.version")} value={`${world.version}`} />
+              ) : null}
               {world.publishedAt ? (
-                <Fact label="Published" value={formatDate(world.publishedAt)} />
+                <Fact label={t("world:detail.facts.published")} value={formatDate(world.publishedAt)} />
               ) : null}
               {world.labsPublishedAt ? (
-                <Fact label="Community Labs" value={formatDate(world.labsPublishedAt)} />
+                <Fact
+                  label={t("world:detail.facts.communityLabs")}
+                  value={formatDate(world.labsPublishedAt)}
+                />
               ) : null}
               {world.createdAt ? (
-                <Fact label="Created" value={formatDate(world.createdAt)} />
+                <Fact label={t("world:detail.facts.created")} value={formatDate(world.createdAt)} />
               ) : null}
               {world.updatedAt ? (
-                <Fact label="Updated" value={formatDate(world.updatedAt)} />
+                <Fact label={t("world:detail.facts.updated")} value={formatDate(world.updatedAt)} />
               ) : null}
-              <Fact label="World ID" value={world.id} mono />
+              <Fact label={t("world:detail.facts.worldId")} value={world.id} mono />
             </dl>
           </Section>
 
           {world.tags.length ? (
-            <Section title="Tags">
+            <Section title={t("world:detail.sections.tags")}>
               <div className="flex flex-wrap gap-1.5">
-                {world.tags.filter((t) => t.startsWith("author_tag_")).length ? (
-                  world.tags
-                    .filter((t) => t.startsWith("author_tag_"))
-                    .map((t) => <Tag key={t}>{prettyTag(t, "author_tag_")}</Tag>)
+                {tagsWithPrefix(world.tags, "author_tag_").length ? (
+                  tagsWithPrefix(world.tags, "author_tag_").map((tag) => (
+                    <Tag key={tag}>{prettyTag(tag, "author_tag_")}</Tag>
+                  ))
                 ) : (
                   <span className="inline-flex items-center gap-1.5 text-[13px] text-faint">
-                    <TagIcon size={13} /> No author tags
+                    <TagIcon size={13} /> {t("world:detail.noAuthorTags")}
                   </span>
                 )}
               </div>
             </Section>
           ) : null}
         </div>
-      </div>
-    </article>
+    </HeroHeader>
   );
 }
 

@@ -31,7 +31,8 @@ import { WorldsSection, FavoriteWorldsSection, WorldSearch } from "./WorldsSecti
 import { GroupsSection } from "./GroupsSection";
 import { LocationSection } from "./LocationSection";
 import { COL, COL_WIDE } from "../../lib/layout";
-import { formatDate, formatDateTime, platformLabel, prettyTag } from "../../lib/format";
+import { HeroHeader } from "../shared/HeroHeader";
+import { formatDate, formatDateTime, platformLabel, prettyLink, prettyTag } from "../../lib/format";
 import "./profile.css";
 
 export function ProfileView({ target }: { target: "me" | string }) {
@@ -64,13 +65,11 @@ function ProfileCard({ profile }: { profile: UserProfile }) {
   const showcasedBadges = (profile.badges ?? []).filter((b) => b.showcased);
 
   return (
-    <article className="profile flex min-h-full w-full flex-col bg-surface pb-12">
-      <div
-        className="profile__banner"
-        style={{ backgroundImage: banner ? `url(${banner})` : undefined }}
-      />
-
-      <div className={`${COL_WIDE} relative flex items-end gap-6`} style={{ marginTop: -72 }}>
+    <HeroHeader
+      banner={banner}
+      gap="gap-6"
+      overlap={-72}
+      media={
         <div className="profile__avatar" style={{ "--ring": trust.color } as React.CSSProperties}>
           <Avatar src={avatar} name={profile.displayName} size={116} />
           <span
@@ -79,7 +78,8 @@ function ProfileCard({ profile }: { profile: UserProfile }) {
             title={statusLabel}
           />
         </div>
-
+      }
+      body={
         <div className="min-w-0 flex-1 pb-2">
           <div className="flex flex-wrap items-center gap-2.5">
             <h2 className="text-[32px] font-bold tracking-[-0.6px]">{profile.displayName}</h2>
@@ -113,8 +113,9 @@ function ProfileCard({ profile }: { profile: UserProfile }) {
             </div>
           ) : null}
         </div>
-
-        {canAdd ? (
+      }
+      actions={
+        canAdd ? (
           <div className="shrink-0 pb-2">
             <AddFriendButton add={addFriend} />
           </div>
@@ -130,11 +131,10 @@ function ProfileCard({ profile }: { profile: UserProfile }) {
               <MoreHorizontal size={18} />
             </IconButton>
           </div>
-        ) : null}
-      </div>
-
-      <div className={`${COL_WIDE} mt-6 flex flex-col gap-5`}>
-        <LocationSection location={profile.location} />
+        ) : null
+      }
+    >
+      <LocationSection location={profile.location} />
 
         <Tabs
           tabs={[
@@ -303,7 +303,6 @@ function ProfileCard({ profile }: { profile: UserProfile }) {
             <GroupsSection userId={profile.id} />
           </div>
         ) : null}
-      </div>
 
       {menu ? (
         <ContextMenu
@@ -315,7 +314,7 @@ function ProfileCard({ profile }: { profile: UserProfile }) {
       ) : null}
 
       {modal}
-    </article>
+    </HeroHeader>
   );
 }
 
@@ -390,14 +389,6 @@ function ProfileSkeleton() {
       <Skeleton className={`${COL} mt-[18px] h-3.5 w-2/5 rounded-lg`} />
     </div>
   );
-}
-
-function prettyLink(url: string): string {
-  try {
-    return new URL(url).hostname.replace(/^www\./, "");
-  } catch {
-    return url;
-  }
 }
 
 function stateLabel(state: NonNullable<UserProfile["state"]>, t: ReturnType<typeof useT>): string {
