@@ -17,6 +17,9 @@
     "sectionOffline": "Offline",
     "contextMenu": {
       "viewProfile": "View Profile",
+      "actions": "Actions",
+      "addFriend": "Add Friend",
+      "requestSent": "Request sent",
       "invite": "Invite",
       "requestInvite": "Request Invite",
       "unfriend": "Unfriend"

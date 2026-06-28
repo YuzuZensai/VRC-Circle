@@ -1,6 +1,22 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
+import { Check, MoreHorizontal, UserPlus } from "lucide-react";
 import { type UserProfile } from "../../../../shared/types/user";
-import { Avatar, Banner, Fact, LinkPill, Section, Skeleton, Tabs, Tag } from "../../components/ui";
+import { api, errorMessage } from "../../lib/api";
+import { useT } from "../../lib/i18n";
+import {
+  Avatar,
+  Banner,
+  Button,
+  ContextMenu,
+  Fact,
+  IconButton,
+  LinkPill,
+  Section,
+  Skeleton,
+  Tabs,
+  Tag,
+} from "../../components/ui";
+import { useUserMenu } from "../friends/useUserMenu";
 import {
   avatarOf,
   bannerOf,
@@ -29,7 +45,12 @@ export function ProfileView({ target }: { target: "me" | string }) {
 }
 
 function ProfileCard({ profile }: { profile: UserProfile }) {
+  const t = useT();
   const [tab, setTab] = useState<TabId>("overview");
+  const [menu, setMenu] = useState<{ x: number; y: number } | null>(null);
+  const canAdd = !profile.isSelf && !profile.isFriend;
+  const addFriend = useAddFriend(profile.id);
+  const { buildItems, modal } = useUserMenu();
   const trust = trustMeta[profile.trustRank];
   const online = isOnline(profile);
   const status = statusMeta[profile.status];
@@ -59,7 +80,7 @@ function ProfileCard({ profile }: { profile: UserProfile }) {
           />
         </div>
 
-        <div className="min-w-0 pb-2">
+        <div className="min-w-0 flex-1 pb-2">
           <div className="flex flex-wrap items-center gap-2.5">
             <h2 className="text-[32px] font-bold tracking-[-0.6px]">{profile.displayName}</h2>
             {profile.isSelf ? <Tag color="var(--accent)">You</Tag> : null}
@@ -96,6 +117,24 @@ function ProfileCard({ profile }: { profile: UserProfile }) {
             </div>
           ) : null}
         </div>
+
+        {canAdd ? (
+          <div className="shrink-0 pb-2">
+            <AddFriendButton add={addFriend} />
+          </div>
+        ) : profile.isFriend && !profile.isSelf ? (
+          <div className="shrink-0 pb-2">
+            <IconButton
+              aria-label={t("nav:friends.contextMenu.actions")}
+              onClick={(e) => {
+                const r = e.currentTarget.getBoundingClientRect();
+                setMenu({ x: r.right, y: r.bottom });
+              }}
+            >
+              <MoreHorizontal size={18} />
+            </IconButton>
+          </div>
+        ) : null}
       </div>
 
       <div className={`${COL_WIDE} mt-6 flex flex-col gap-5`}>
@@ -252,7 +291,68 @@ function ProfileCard({ profile }: { profile: UserProfile }) {
           </div>
         ) : null}
       </div>
+
+      {menu ? (
+        <ContextMenu
+          x={menu.x}
+          y={menu.y}
+          items={buildItems(profile)}
+          onClose={() => setMenu(null)}
+        />
+      ) : null}
+
+      {modal}
     </article>
+  );
+}
+
+type AddFriendState = "idle" | "sending" | "sent";
+
+interface AddFriend {
+  state: AddFriendState;
+  error?: string;
+  send: () => void;
+}
+
+function useAddFriend(userId: string): AddFriend {
+  const [state, setState] = useState<AddFriendState>("idle");
+  const [error, setError] = useState<string>();
+
+  const send = useCallback(() => {
+    setState("sending");
+    setError(undefined);
+    api.friends
+      .add(userId)
+      .then(() => setState("sent"))
+      .catch((err) => {
+        setError(errorMessage(err, "Couldn't send friend request."));
+        setState("idle");
+      });
+  }, [userId]);
+
+  return { state, error, send };
+}
+
+function AddFriendButton({ add }: { add: AddFriend }) {
+  const t = useT();
+
+  if (add.state === "sent") {
+    return (
+      <Button variant="ghost" disabled>
+        <Check size={16} />
+        {t("nav:friends.contextMenu.requestSent")}
+      </Button>
+    );
+  }
+
+  return (
+    <div className="flex flex-col items-end gap-1.5">
+      <Button onClick={add.send} loading={add.state === "sending"}>
+        {add.state === "sending" ? null : <UserPlus size={16} />}
+        {t("nav:friends.contextMenu.addFriend")}
+      </Button>
+      {add.error ? <span className="text-xs text-danger">{add.error}</span> : null}
+    </div>
   );
 }
 

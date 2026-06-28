@@ -47,6 +47,7 @@ export const api = {
   },
   friends: {
     list: () => call("friends:list"),
+    add: (userId: string) => call("friends:add", userId),
     unfriend: (userId: string) => call("friends:unfriend", userId),
     invite: (userId: string, instanceLocation: string) =>
       call("friends:invite", { userId, instanceLocation }),

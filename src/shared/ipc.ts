@@ -41,6 +41,7 @@ export interface IpcRequests {
   "user:search": (query: string) => IpcResult<UserProfile[]>;
 
   "friends:list": () => IpcResult<UserProfile[]>;
+  "friends:add": (userId: string) => IpcResult<void>;
   "friends:unfriend": (userId: string) => IpcResult<void>;
   "friends:invite": (p: { userId: string; instanceLocation: string }) => IpcResult<void>;
   "friends:requestInvite": (userId: string) => IpcResult<void>;

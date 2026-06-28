@@ -1,14 +1,12 @@
 import { useMemo, useState, useCallback, type ReactNode } from "react";
-import { ChevronDown, ChevronRight, UserMinus, Send, LogIn } from "lucide-react";
-import { Trans } from "react-i18next";
+import { ChevronDown, ChevronRight } from "lucide-react";
 import { isOnline, locationLabel, statusMeta } from "../../lib/vrchat";
-import { Badge, PresenceAvatar, Modal, ContextMenu } from "../../components/ui";
-import type { ContextMenuEntry } from "../../components/ui";
+import { Badge, PresenceAvatar, ContextMenu } from "../../components/ui";
 import { useFriends, useSelf } from "../../store/social";
 import { useWorldName } from "../../store/worlds";
 import { parseLocation, type UserProfile } from "../../../../shared/types/user";
-import { api, errorMessage } from "../../lib/api";
 import { useT } from "../../lib/i18n";
+import { useUserMenu } from "./useUserMenu";
 
 interface InstanceSection {
   key: string;
@@ -21,11 +19,6 @@ interface ContextMenuState {
   x: number;
   y: number;
   friend: UserProfile;
-}
-
-interface UnfriendState {
-  friend: UserProfile;
-  loading: boolean;
 }
 
 export function FriendsSidebar({ onOpen }: { onOpen: (id: string) => void }) {
@@ -96,84 +89,13 @@ export function FriendsSidebar({ onOpen }: { onOpen: (id: string) => void }) {
     self && isOnline(self) && !instances.some((i) => i.members.some((m) => m.id === selfId));
 
   const [contextMenu, setContextMenu] = useState<ContextMenuState | null>(null);
-  const [unfriendState, setUnfriendState] = useState<UnfriendState | null>(null);
+  const { buildItems, modal } = useUserMenu();
 
   const openContextMenu = useCallback((e: React.MouseEvent, friend: UserProfile) => {
     e.preventDefault();
     e.stopPropagation();
     setContextMenu({ x: e.clientX, y: e.clientY, friend });
   }, []);
-
-  const buildMenuItems = (friend: UserProfile): ContextMenuEntry[] => {
-    const selfLocation = self ? parseLocation(self.location) : null;
-    const friendLocation = parseLocation(friend.location);
-    const selfInstanceKey = selfLocation
-      ? `${selfLocation.worldId}:${selfLocation.instanceId}`
-      : null;
-    const friendInstanceKey = friendLocation
-      ? `${friendLocation.worldId}:${friendLocation.instanceId}`
-      : null;
-
-    const canInvite = selfLocation !== null && self?.location != null;
-    const canRequestInvite = friendInstanceKey !== null && selfInstanceKey !== friendInstanceKey;
-
-    const items: ContextMenuEntry[] = [
-      {
-        label: t("nav:friends.contextMenu.viewProfile"),
-        onClick: () => onOpen(friend.id),
-      },
-    ];
-
-    if (canInvite) {
-      items.push({
-        label: t("nav:friends.contextMenu.invite"),
-        icon: <Send size={14} />,
-        onClick: async () => {
-          try {
-            await api.friends.invite(friend.id, self!.location!);
-          } catch (err) {
-            console.error("Invite failed:", errorMessage(err, "Failed to send invite"));
-          }
-        },
-      });
-    }
-
-    if (canRequestInvite) {
-      items.push({
-        label: t("nav:friends.contextMenu.requestInvite"),
-        icon: <LogIn size={14} />,
-        onClick: async () => {
-          try {
-            await api.friends.requestInvite(friend.id);
-          } catch (err) {
-            console.error("Request invite failed:", errorMessage(err, "Failed to request invite"));
-          }
-        },
-      });
-    }
-
-    items.push({ separator: true });
-    items.push({
-      label: t("nav:friends.contextMenu.unfriend"),
-      icon: <UserMinus size={14} />,
-      danger: true,
-      onClick: () => setUnfriendState({ friend, loading: false }),
-    });
-
-    return items;
-  };
-
-  const handleUnfriendConfirm = async () => {
-    if (!unfriendState) return;
-    setUnfriendState((s) => s && { ...s, loading: true });
-    try {
-      await api.friends.unfriend(unfriendState.friend.id);
-      setUnfriendState(null);
-    } catch (err) {
-      console.error("Unfriend failed:", errorMessage(err, "Failed to unfriend"));
-      setUnfriendState((s) => s && { ...s, loading: false });
-    }
-  };
 
   return (
     <aside className="friendsbar flex h-full flex-col overflow-hidden border-l border-border bg-surface">
@@ -256,27 +178,12 @@ export function FriendsSidebar({ onOpen }: { onOpen: (id: string) => void }) {
         <ContextMenu
           x={contextMenu.x}
           y={contextMenu.y}
-          items={buildMenuItems(contextMenu.friend)}
+          items={buildItems(contextMenu.friend, { includeProfile: true, onOpen })}
           onClose={() => setContextMenu(null)}
         />
       ) : null}
 
-      <Modal
-        open={unfriendState !== null}
-        onClose={() => setUnfriendState(null)}
-        title={t("nav:friends.unfriendModal.title")}
-        danger
-        icon={<UserMinus size={18} />}
-        confirmLabel={t("nav:friends.unfriendModal.confirm")}
-        onConfirm={handleUnfriendConfirm}
-        confirmLoading={unfriendState?.loading}
-      >
-        <Trans
-          i18nKey="nav:friends.unfriendModal.body"
-          values={{ name: unfriendState?.friend.displayName }}
-          components={[<strong className="font-semibold text-text" />]}
-        />
-      </Modal>
+      {modal}
     </aside>
   );
 }

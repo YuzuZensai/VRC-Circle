@@ -37,6 +37,11 @@ export async function listFriends(): Promise<UserProfile[]> {
   });
 }
 
+export async function addFriend(userId: string): Promise<void> {
+  const vrc = requireActiveClient();
+  await vrc.friend({ path: { userId }, throwOnError: true });
+}
+
 export async function unfriend(userId: string): Promise<void> {
   const vrc = requireActiveClient();
   await vrc.unfriend({ path: { userId }, throwOnError: true });

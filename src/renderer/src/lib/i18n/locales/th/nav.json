@@ -17,6 +17,9 @@
     "sectionOffline": "ออฟไลน์",
     "contextMenu": {
       "viewProfile": "ดูโปรไฟล์",
+      "actions": "การทำงาน",
+      "addFriend": "เพิ่มเพื่อน",
+      "requestSent": "ส่งคำขอแล้ว",
       "invite": "ชวนเข้าห้อง",
       "requestInvite": "ขอคำเชิญ",
       "unfriend": "ยกเลิกการเป็นเพื่อน"

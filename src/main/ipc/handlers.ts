@@ -37,6 +37,7 @@ const handlers = {
   "user:search": (query) => guard(() => users.searchUsers(query)),
 
   "friends:list": () => guard(() => friends.listFriends()),
+  "friends:add": (userId) => guard(() => friends.addFriend(userId)),
   "friends:unfriend": (userId) => guard(() => friends.unfriend(userId)),
   "friends:invite": (p) => guard(() => friends.inviteUser(p.userId, p.instanceLocation)),
   "friends:requestInvite": (userId) => guard(() => friends.requestInvite(userId)),

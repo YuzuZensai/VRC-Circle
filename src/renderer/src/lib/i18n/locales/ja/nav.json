@@ -17,6 +17,9 @@
     "sectionOffline": "オフライン",
     "contextMenu": {
       "viewProfile": "プロフィールを見る",
+      "actions": "操作",
+      "addFriend": "フレンド追加",
+      "requestSent": "リクエスト送信済み",
       "invite": "招待する",
       "requestInvite": "招待をリクエスト",
       "unfriend": "フレンド解除"
