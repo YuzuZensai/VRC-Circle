@@ -5,6 +5,7 @@ import { api, errorMessage } from "../../lib/api";
 import { useCopied } from "../../lib/useCopied";
 import { accessLabel, regionFlag, regionLabel } from "../../lib/vrchat";
 import { useT } from "../../lib/i18n";
+import { useGameLaunch } from "../game/useGameLaunch";
 import type {
   CreateInstanceInput,
   CreateInstanceType,
@@ -185,20 +186,18 @@ function Picker<T extends string>({
 
 function ResultView({ instance }: { instance: Instance }) {
   const t = useT();
+  const { running, launching, markLaunching } = useGameLaunch();
   const [inviteSent, setInviteSent] = useState(false);
   const [inviteError, setInviteError] = useState<string | null>(null);
-  const [launching, setLaunching] = useState(false);
   const [launchError, setLaunchError] = useState<string | null>(null);
 
   const launch = async () => {
-    setLaunching(true);
+    if (!running) markLaunching();
     setLaunchError(null);
     try {
       await api.game.join(instance.location);
     } catch (err) {
       setLaunchError(errorMessage(err, "Failed to launch VRChat"));
-    } finally {
-      setLaunching(false);
     }
   };
 
@@ -220,9 +219,13 @@ function ResultView({ instance }: { instance: Instance }) {
 
       {canLaunch ? (
         <div className="flex flex-col gap-1.5">
-          <Button variant="primary" onClick={launch} loading={launching} block>
+          <Button variant="primary" onClick={launch} loading={launching} disabled={running} block>
             {!launching ? <Play size={15} /> : null}
-            {launching ? t("world:create.launching") : t("world:create.launch")}
+            {running
+              ? t("world:create.running")
+              : launching
+                ? t("world:create.launching")
+                : t("world:create.launch")}
           </Button>
           {launchError ? <span className="text-[12px] text-danger">{launchError}</span> : null}
         </div>

@@ -1,7 +1,12 @@
 import type { VRChat } from "vrchat";
-import type { FavoriteWorldFolder, World } from "../../shared/types/world";
+import type { DiscoverCategory, FavoriteWorldFolder, World } from "../../shared/types/world";
 import { httpStatusOf } from "./errors";
-import { getFavoriteGroupWorlds, type WorldFavoriteGroupType } from "./rawEndpoints";
+import {
+  getCategoryWorlds,
+  getFavoriteGroupWorlds,
+  getWorldCategories,
+  type WorldFavoriteGroupType,
+} from "./rawEndpoints";
 import { toWorld } from "./mappers";
 import { cachedRead } from "./cachedRead";
 import { worldStore } from "../store/worldStore";
@@ -129,6 +134,26 @@ export async function searchWorlds(query: string): Promise<World[]> {
   );
   for (const w of worlds) worldStore.addWorld(w);
   return worlds;
+}
+
+const DISCOVER_ROW_SIZE = 12;
+
+export async function getDiscover(): Promise<DiscoverCategory[]> {
+  const categories = await cachedRead(cacheKeys.discover(), policies.discover, async (vrc) => {
+    const cats = await getWorldCategories(vrc);
+    const rows = await Promise.all(cats.map((cat) => loadCategory(vrc, cat).catch(() => null)));
+    return rows.filter((r): r is DiscoverCategory => r !== null && r.worlds.length > 0);
+  });
+  for (const cat of categories) for (const w of cat.worlds) worldStore.addWorld(w);
+  return categories;
+}
+
+async function loadCategory(
+  vrc: VRChat,
+  cat: Awaited<ReturnType<typeof getWorldCategories>>[number],
+): Promise<DiscoverCategory> {
+  const raw = await getCategoryWorlds(vrc, cat, DISCOVER_ROW_SIZE);
+  return { id: cat.id, name: cat.name, worlds: raw.map(toWorld) };
 }
 
 export async function getUserWorlds(userId: string, isSelf: boolean): Promise<World[]> {

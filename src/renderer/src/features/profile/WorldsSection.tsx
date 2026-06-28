@@ -1,26 +1,58 @@
+import { useMemo, useState } from "react";
 import { Circle, Star, Users } from "lucide-react";
 import type { World } from "../../../../shared/types/world";
-import { Card, CollapsibleCard, HoverImage, SkeletonGrid, Tag } from "../../components/ui";
+import { Card, CollapsibleCard, Field, HoverImage, SkeletonGrid, Tag } from "../../components/ui";
 import { compactNumber } from "../../lib/format";
 import { useT } from "../../lib/i18n";
 import { useNav } from "../navigation/NavContext";
 import { useUserWorlds } from "./useUserWorlds";
 import { useFavoriteWorlds } from "./useFavoriteWorlds";
 
-export function WorldsSection({ userId }: { userId: string }) {
+type WorldFilter = (world: World) => boolean;
+
+function matchWorld(query: string): WorldFilter {
+  const q = query.trim().toLowerCase();
+  if (!q) return () => true;
+  const terms = q.split(/\s+/);
+  return (w) => {
+    const haystack = `${w.name} ${w.authorName} ${w.description} ${w.tags.join(" ")}`.toLowerCase();
+    return terms.every((term) => haystack.includes(term));
+  };
+}
+
+export function WorldSearch({ children }: { children: (filter: WorldFilter) => React.ReactNode }) {
   const t = useT();
-  const { status, worlds, message } = useUserWorlds(userId);
+  const [query, setQuery] = useState("");
+  const filter = useMemo(() => matchWorld(query), [query]);
   return (
-    <WorldGrid
-      title={t("profile:worlds.title")}
-      status={status}
-      worlds={worlds}
-      message={message}
-    />
+    <div className="flex flex-col gap-5">
+      <Field
+        label={t("profile:worlds.search.label")}
+        placeholder={t("profile:worlds.search.placeholder")}
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+      />
+      {children(filter)}
+    </div>
   );
 }
 
-export function FavoriteWorldsSection({ userId }: { userId: string }) {
+export function WorldsSection({ userId, filter }: { userId: string; filter?: WorldFilter }) {
+  const t = useT();
+  const { status, worlds, message } = useUserWorlds(userId);
+  const shown = filter ? worlds.filter(filter) : worlds;
+  return (
+    <WorldGrid title={t("profile:worlds.title")} status={status} worlds={shown} message={message} />
+  );
+}
+
+export function FavoriteWorldsSection({
+  userId,
+  filter,
+}: {
+  userId: string;
+  filter?: WorldFilter;
+}) {
   const t = useT();
   const { status, folders } = useFavoriteWorlds(userId);
   const loading = status === "loading";
@@ -33,11 +65,15 @@ export function FavoriteWorldsSection({ userId }: { userId: string }) {
     );
   }
 
-  if (!folders.length) return null;
+  const shown = filter
+    ? folders.map((f) => ({ ...f, worlds: f.worlds.filter(filter) })).filter((f) => f.worlds.length)
+    : folders;
+
+  if (!shown.length) return null;
 
   return (
     <div className="flex flex-col gap-5">
-      {folders.map((folder) => (
+      {shown.map((folder) => (
         <CollapsibleCard key={folder.name} title={folder.displayName} count={folder.worlds.length}>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
             {folder.worlds.map((w) => (
@@ -109,7 +145,7 @@ function Wrap({
   );
 }
 
-function WorldCard({ world }: { world: World }) {
+export function WorldCard({ world }: { world: World }) {
   const t = useT();
   const { openWorld } = useNav();
   const img = world.thumbnailImageUrl || world.imageUrl;

@@ -6,7 +6,7 @@ import type {
   TwoFactorPayload,
 } from "./types/auth";
 import type { SocialSnapshot, UserProfile, UserStatus } from "./types/user";
-import type { FavoriteWorldFolder, World, WorldSnapshot } from "./types/world";
+import type { DiscoverCategory, FavoriteWorldFolder, World, WorldSnapshot } from "./types/world";
 import type { CreateInstanceInput, Instance, InstanceRegion } from "./types/instance";
 import type { UnityStatus } from "./types/unity";
 import type { Avatar } from "./types/avatar";
@@ -48,6 +48,7 @@ export interface IpcRequests {
 
   "world:byUser": (userId: string) => IpcResult<World[]>;
   "world:search": (query: string) => IpcResult<World[]>;
+  "world:discover": () => IpcResult<DiscoverCategory[]>;
   "world:favorites": (userId: string) => IpcResult<FavoriteWorldFolder[]>;
   "world:get": (worldId: string) => IpcResult<World>;
   "world:snapshot": () => IpcResult<WorldSnapshot>;

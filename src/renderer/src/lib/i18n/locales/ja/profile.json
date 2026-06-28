@@ -10,7 +10,8 @@
   "addFriendError": "フレンド申請を送信できませんでした。",
   "tabs": {
     "overview": "概要",
-    "worlds": "ワールド",
+    "discover": "見つける",
+    "worlds": "アップロードしたワールド",
     "favorites": "お気に入りのワールド",
     "groups": "グループ"
   },
@@ -48,7 +49,12 @@
       "visits": "訪問数",
       "capacity": "定員"
     },
-    "visitsCount": "{{formattedCount}} 回訪問"
+    "visitsCount": "{{formattedCount}} 回訪問",
+    "search": {
+      "label": "ワールドを検索",
+      "placeholder": "名前・作者・タグで絞り込み…"
+    },
+    "empty": "表示するワールドがありません。"
   },
   "groups": {
     "title": "グループ",

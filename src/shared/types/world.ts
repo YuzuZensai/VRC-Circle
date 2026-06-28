@@ -45,3 +45,9 @@ export interface FavoriteWorldFolder {
   displayName: string;
   worldIds: string[];
 }
+
+export interface DiscoverCategory {
+  id: string;
+  name: string;
+  worlds: World[];
+}

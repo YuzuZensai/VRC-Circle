@@ -1,39 +1,19 @@
-import { useEffect, useState } from "react";
 import { ChevronRight } from "lucide-react";
 import { Button } from "../../components/ui/Button";
-import { api, events } from "../../lib/api";
+import { api } from "../../lib/api";
 import { useI18n } from "../../lib/i18n";
+import { useGameLaunch } from "./useGameLaunch";
 
 export function LaunchButton() {
   const { t } = useI18n();
-  const [running, setRunning] = useState(false);
-  const [supported, setSupported] = useState(true);
-  const [launching, setLaunching] = useState(false);
-
-  useEffect(() => {
-    void api.game.status().then((s) => {
-      setRunning(s.running);
-      setSupported(s.supported);
-    });
-    return events.on("game:changed", (s) => {
-      setRunning(s.running);
-      if (s.launching) setLaunching(true);
-    });
-  }, []);
-
-  useEffect(() => {
-    if (running) setLaunching(false);
-  }, [running]);
+  const { running, supported, launching, markLaunching } = useGameLaunch();
 
   const onClick = async () => {
     if (launching) return;
-    if (!running) setLaunching(true);
+    if (!running) markLaunching();
     try {
-      const s = await api.game.launch();
-      setRunning(s.running);
-    } catch {
-      setLaunching(false);
-    }
+      await api.game.launch();
+    } catch {}
   };
 
   if (!supported) {

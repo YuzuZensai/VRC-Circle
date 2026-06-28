@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import {
   ArrowLeft,
   ChevronLeft,
@@ -6,6 +6,7 @@ import {
   CircleDot,
   ExternalLink,
   Images,
+  Globe2,
   Search,
   Settings,
   SlidersHorizontal,
@@ -14,6 +15,7 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { ProfileView } from "../features/profile/ProfileView";
+import { MyWorldsView } from "../features/profile/MyWorldsView";
 import { WorldView } from "../features/world/WorldView";
 import { InstanceView } from "../features/world/InstanceView";
 import { GroupView } from "../features/group/GroupView";
@@ -45,6 +47,7 @@ type NavItem = {
   onClick: () => void;
   kind?: View["kind"];
   external?: boolean;
+  divider?: boolean;
 };
 
 function Shell() {
@@ -84,6 +87,14 @@ function Shell() {
       onClick: () => nav.openEnhancements(),
     },
     {
+      id: "worlds",
+      label: t("nav:worlds"),
+      icon: Globe2,
+      kind: "worlds",
+      divider: true,
+      onClick: () => nav.openWorlds(),
+    },
+    {
       id: "account",
       label: t("nav:account"),
       icon: UserCog,
@@ -95,6 +106,7 @@ function Shell() {
       label: t("nav:settings"),
       icon: SlidersHorizontal,
       kind: "settings",
+      divider: true,
       onClick: () => nav.openSettings(),
     },
     {
@@ -138,22 +150,24 @@ function Shell() {
                 const Icon = item.icon;
                 const active = !item.external && nav.current.kind === item.kind;
                 return (
-                  <button
-                    key={item.id}
-                    className={`navitem ${active ? "is-active" : ""}`}
-                    onClick={item.onClick}
-                    title={item.label}
-                  >
-                    <span className="navitem__ico">
-                      <Icon size={16} />
-                    </span>
-                    <span className="navitem__label">{item.label}</span>
-                    {item.external ? (
-                      <span className="navitem__hint">
-                        <ExternalLink size={13} />
+                  <Fragment key={item.id}>
+                    {item.divider ? <div className="navitem-divider" aria-hidden /> : null}
+                    <button
+                      className={`navitem ${active ? "is-active" : ""}`}
+                      onClick={item.onClick}
+                      title={item.label}
+                    >
+                      <span className="navitem__ico">
+                        <Icon size={16} />
                       </span>
-                    ) : null}
-                  </button>
+                      <span className="navitem__label">{item.label}</span>
+                      {item.external ? (
+                        <span className="navitem__hint">
+                          <ExternalLink size={13} />
+                        </span>
+                      ) : null}
+                    </button>
+                  </Fragment>
                 );
               })}
             </nav>
@@ -177,6 +191,8 @@ function Shell() {
               <InstanceView worldId={nav.current.worldId} instanceId={nav.current.instanceId} />
             ) : nav.current.kind === "group" ? (
               <GroupView groupId={nav.current.id} />
+            ) : nav.current.kind === "worlds" ? (
+              <MyWorldsView />
             ) : nav.current.kind === "account" ? (
               <AccountSettingsView />
             ) : nav.current.kind === "settings" ? (

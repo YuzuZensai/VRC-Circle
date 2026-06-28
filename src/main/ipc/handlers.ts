@@ -50,6 +50,7 @@ const handlers = {
     }),
   "world:favorites": (userId) => guard(() => worlds.getFavoriteWorlds(userId)),
   "world:search": (query) => guard(() => worlds.searchWorlds(query)),
+  "world:discover": () => guard(() => worlds.getDiscover()),
   "world:get": (worldId) => guard(() => worlds.getWorld(worldId)),
   "world:snapshot": () => guard(async () => worldStore.snapshot()),
 

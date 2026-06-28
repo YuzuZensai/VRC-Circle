@@ -27,7 +27,7 @@ import {
   trustMeta,
 } from "../../lib/vrchat";
 import { useProfile } from "./useProfile";
-import { WorldsSection, FavoriteWorldsSection } from "./WorldsSection";
+import { WorldsSection, FavoriteWorldsSection, WorldSearch } from "./WorldsSection";
 import { GroupsSection } from "./GroupsSection";
 import { LocationSection } from "./LocationSection";
 import { COL, COL_WIDE } from "../../lib/layout";
@@ -290,16 +290,19 @@ function ProfileCard({ profile }: { profile: UserProfile }) {
           </div>
         ) : null}
 
-        {/* don't hit tab endpoints until the tab opens */}
         {tab === "worlds" ? (
           <div className="rise-in">
-            <WorldsSection userId={profile.id} />
+            <WorldSearch>
+              {(filter) => <WorldsSection userId={profile.id} filter={filter} />}
+            </WorldSearch>
           </div>
         ) : null}
 
         {tab === "favorites" ? (
           <div className="rise-in">
-            <FavoriteWorldsSection userId={profile.id} />
+            <WorldSearch>
+              {(filter) => <FavoriteWorldsSection userId={profile.id} filter={filter} />}
+            </WorldSearch>
           </div>
         ) : null}
 

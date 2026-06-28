@@ -1,3 +1,58 @@
+.discover-row {
+  scrollbar-width: none;
+  scroll-padding-inline: 4px;
+}
+.discover-row::-webkit-scrollbar {
+  display: none;
+}
+
+.discover-rail[data-at-start="false"] {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 28px);
+  mask-image: linear-gradient(to right, transparent, #000 28px);
+}
+.discover-rail[data-at-end="false"] {
+  -webkit-mask-image: linear-gradient(to left, transparent, #000 28px);
+  mask-image: linear-gradient(to left, transparent, #000 28px);
+}
+.discover-rail[data-at-start="false"][data-at-end="false"] {
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 28px,
+    #000 calc(100% - 28px),
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 28px,
+    #000 calc(100% - 28px),
+    transparent
+  );
+}
+.discover-arrow {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-50%) scale(0.96);
+  transition:
+    opacity var(--dur) var(--ease),
+    transform var(--dur) var(--ease),
+    background var(--dur) var(--ease);
+}
+.discover-rail:hover .discover-arrow:not([disabled]) {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(-50%) scale(1);
+}
+.discover-rail:hover .discover-arrow:not([disabled]):hover {
+  transform: translateY(-50%) scale(1.07);
+}
+@media (prefers-reduced-motion: reduce) {
+  .discover-row {
+    scroll-behavior: auto;
+  }
+}
+
 .profile__banner {
   height: clamp(200px, 32vh, 340px);
   flex: none;

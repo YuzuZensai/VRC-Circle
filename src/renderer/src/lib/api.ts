@@ -58,6 +58,7 @@ export const api = {
   world: {
     byUser: (userId: string) => call("world:byUser", userId),
     search: (query: string) => call("world:search", query),
+    discover: () => call("world:discover"),
     favorites: (userId: string) => call("world:favorites", userId),
     get: (worldId: string) => call("world:get", worldId),
     snapshot: () => call("world:snapshot"),

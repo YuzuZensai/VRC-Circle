@@ -10,7 +10,8 @@
   "addFriendError": "Couldn't send friend request.",
   "tabs": {
     "overview": "Overview",
-    "worlds": "Worlds",
+    "discover": "Discover",
+    "worlds": "Uploaded Worlds",
     "favorites": "Favorite Worlds",
     "groups": "Groups"
   },
@@ -48,7 +49,12 @@
       "visits": "visits",
       "capacity": "capacity"
     },
-    "visitsCount": "{{formattedCount}} visits"
+    "visitsCount": "{{formattedCount}} visits",
+    "search": {
+      "label": "Search worlds",
+      "placeholder": "Filter by name, author, or tag…"
+    },
+    "empty": "No worlds to show."
   },
   "groups": {
     "title": "Groups",

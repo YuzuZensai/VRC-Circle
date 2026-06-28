@@ -5,6 +5,7 @@ export type View =
   | { kind: "world"; id: string }
   | { kind: "instance"; worldId: string; instanceId: string; location: string }
   | { kind: "group"; id: string }
+  | { kind: "worlds" }
   | { kind: "account" }
   | { kind: "settings" }
   | { kind: "enhancements" }
@@ -18,6 +19,7 @@ interface Nav {
   openWorld: (id: string) => void;
   openInstance: (worldId: string, instanceId: string, location: string) => void;
   openGroup: (id: string) => void;
+  openWorlds: () => void;
   openAccount: () => void;
   openSettings: () => void;
   openEnhancements: () => void;
@@ -49,6 +51,7 @@ export function NavProvider({ children }: { children: React.ReactNode }) {
       openInstance: (worldId, instanceId, location) =>
         push({ kind: "instance", worldId, instanceId, location }),
       openGroup: (id) => push({ kind: "group", id }),
+      openWorlds: () => root({ kind: "worlds" }),
       openAccount: () => root({ kind: "account" }),
       openSettings: () => root({ kind: "settings" }),
       openEnhancements: () => root({ kind: "enhancements" }),

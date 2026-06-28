@@ -9,6 +9,7 @@ import { useNav } from "../navigation/NavContext";
 import { useT } from "../../lib/i18n";
 import { COL_WIDE } from "../../lib/layout";
 import { accessLabel, regionFlag, regionLabel } from "../../lib/vrchat";
+import { useGameLaunch } from "../game/useGameLaunch";
 import "../profile/profile.css";
 
 export function InstanceView({ worldId, instanceId }: { worldId: string; instanceId: string }) {
@@ -131,20 +132,18 @@ function InstanceCard({
 
 function JoinActions({ instance }: { instance: Instance }) {
   const t = useT();
-  const [joining, setJoining] = useState(false);
+  const { running, launching, markLaunching } = useGameLaunch();
   const [joinError, setJoinError] = useState<string | null>(null);
   const [inviteSent, setInviteSent] = useState(false);
   const [inviteError, setInviteError] = useState<string | null>(null);
 
   const join = async () => {
-    setJoining(true);
+    if (!running) markLaunching();
     setJoinError(null);
     try {
       await api.game.join(instance.location);
     } catch (err) {
       setJoinError(errorMessage(err, "Failed to launch VRChat"));
-    } finally {
-      setJoining(false);
     }
   };
 
@@ -168,9 +167,13 @@ function JoinActions({ instance }: { instance: Instance }) {
           {inviteSent ? t("world:instance.inviteSent") : t("world:instance.inviteMe")}
         </Button>
         {canLaunch ? (
-          <Button variant="primary" onClick={join} loading={joining}>
-            {!joining ? <Play size={15} /> : null}
-            {joining ? t("world:instance.joining") : t("world:instance.join")}
+          <Button variant="primary" onClick={join} loading={launching} disabled={running}>
+            {!launching ? <Play size={15} /> : null}
+            {running
+              ? t("world:instance.running")
+              : launching
+                ? t("world:instance.joining")
+                : t("world:instance.join")}
           </Button>
         ) : null}
       </div>

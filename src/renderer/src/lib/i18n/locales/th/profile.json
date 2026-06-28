@@ -10,7 +10,8 @@
   "addFriendError": "ส่งคำขอเป็นเพื่อนไม่สำเร็จ",
   "tabs": {
     "overview": "ภาพรวม",
-    "worlds": "เวิลด์",
+    "discover": "ค้นพบ",
+    "worlds": "เวิลด์ที่อัปโหลด",
     "favorites": "เวิลด์ที่ชื่นชอบ",
     "groups": "กลุ่ม"
   },
@@ -48,7 +49,12 @@
       "visits": "การเข้าชม",
       "capacity": "ความจุ"
     },
-    "visitsCount": "เข้าชม {{formattedCount}} ครั้ง"
+    "visitsCount": "เข้าชม {{formattedCount}} ครั้ง",
+    "search": {
+      "label": "ค้นหาโลก",
+      "placeholder": "กรองตามชื่อ ผู้สร้าง หรือแท็ก…"
+    },
+    "empty": "ไม่มีโลกที่จะแสดง"
   },
   "groups": {
     "title": "กลุ่ม",
