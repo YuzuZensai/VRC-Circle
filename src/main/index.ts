@@ -4,7 +4,7 @@ import { registerIpcHandlers } from "./ipc/handlers";
 import { reconcile as reconcileEnhancements } from "./enhancements/service";
 import { registerGalleryScheme, registerGalleryProtocol } from "./gallery/protocol";
 import { startSocialBridge } from "./store/social";
-import { startWatcher as startGameWatcher } from "./game/launch";
+import { startWatcher as startGameWatcher, joinInstance } from "./game/launch";
 import { startGalleryWatch, stopGalleryWatch } from "./gallery/watcher";
 import { startDebugBridge } from "./debug/bridge";
 import { logger } from "./debug/logger";
@@ -14,10 +14,29 @@ import { activeId } from "./accounts/store";
 import { closeClients } from "./vrchat/client";
 import { createMainWindow, focusMainWindow } from "./windows";
 
+function handleVrchatUrl(url: string | undefined): void {
+  if (!url || !url.startsWith("vrchat://")) return;
+  logger.info("game", "received vrchat:// url", { url });
+  joinInstance(url).catch((err) => logger.warn("game", "join from protocol url failed", err));
+}
+
+function vrchatUrlFromArgv(argv: string[]): string | undefined {
+  return argv.find((a) => a.startsWith("vrchat://"));
+}
+
 if (!app.requestSingleInstanceLock()) {
   app.quit();
 } else {
-  app.on("second-instance", () => focusMainWindow());
+  // already-running case (win32/linux): the new instance's argv carries the url
+  app.on("second-instance", (_e, argv) => {
+    focusMainWindow();
+    handleVrchatUrl(vrchatUrlFromArgv(argv));
+  });
+  // macOS delivers protocol urls here, both cold and warm
+  app.on("open-url", (_e, url) => {
+    focusMainWindow();
+    handleVrchatUrl(url);
+  });
   registerGalleryScheme();
   start();
 }
@@ -55,6 +74,8 @@ function start(): void {
     startGameWatcher();
     startGalleryWatch();
     createMainWindow();
+
+    handleVrchatUrl(vrchatUrlFromArgv(process.argv));
 
     app.on("activate", () => {
       if (BrowserWindow.getAllWindows().length === 0) createMainWindow();

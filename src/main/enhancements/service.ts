@@ -10,6 +10,7 @@ import type {
   OsPlatform,
 } from "../../shared/types/enhancements";
 import * as screenshot from "./screenshotSymlink";
+import * as protocol from "./vrchatProtocol";
 
 const platform = () => process.platform as OsPlatform;
 const storePath = () => join(app.getPath("userData"), "enhancements.json");
@@ -38,32 +39,55 @@ function screenshotState(): EnhancementState {
   };
 }
 
-export function snapshot(): EnhancementsSnapshot {
-  return { platform: platform(), states: [screenshotState()] };
+function protocolState(): EnhancementState {
+  const s = protocol.status();
+  return { id: "vrchat-protocol-handler", enabled: s.registered, detail: s.detail };
 }
 
-export function setEnabled(id: EnhancementId, enabled: boolean): EnhancementsSnapshot {
+export function snapshot(): EnhancementsSnapshot {
+  return { platform: platform(), states: [screenshotState(), protocolState()] };
+}
+
+export async function setEnabled(
+  id: EnhancementId,
+  enabled: boolean,
+): Promise<EnhancementsSnapshot> {
   if (id === "linux-screenshot-symlink") {
     if (platform() !== "linux") throw new Error("This enhancement only applies to Linux.");
     const status = enabled ? screenshot.enable() : screenshot.disable();
-    const prefs = readPrefs();
-    prefs[id] = enabled;
-    writePrefs(prefs);
     logger.info("enhancements", `screenshot symlink ${enabled ? "enabled" : "disabled"}`, status);
+  } else if (id === "vrchat-protocol-handler") {
+    const status = enabled ? await protocol.enable() : await protocol.disable();
+    logger.info("enhancements", `vrchat protocol ${enabled ? "registered" : "removed"}`, status);
   }
+  const prefs = readPrefs();
+  prefs[id] = enabled;
+  writePrefs(prefs);
   return snapshot();
 }
 
-export function reconcile(): void {
-  if (platform() !== "linux") return;
+export async function reconcile(): Promise<void> {
   const prefs = readPrefs();
-  if (!prefs["linux-screenshot-symlink"]) return;
-  try {
-    if (!screenshot.status().active) {
-      screenshot.enable();
-      logger.info("enhancements", "re-applied screenshot symlink on startup");
+
+  if (platform() === "linux" && prefs["linux-screenshot-symlink"]) {
+    try {
+      if (!screenshot.status().active) {
+        screenshot.enable();
+        logger.info("enhancements", "re-applied screenshot symlink on startup");
+      }
+    } catch (err) {
+      logger.warn("enhancements", "could not re-apply screenshot symlink", err);
     }
-  } catch (err) {
-    logger.warn("enhancements", "could not re-apply screenshot symlink", err);
+  }
+
+  if (prefs["vrchat-protocol-handler"]) {
+    try {
+      if (!protocol.status().registered) {
+        await protocol.enable();
+        logger.info("enhancements", "re-registered vrchat protocol on startup");
+      }
+    } catch (err) {
+      logger.warn("enhancements", "could not re-register vrchat protocol", err);
+    }
   }
 }

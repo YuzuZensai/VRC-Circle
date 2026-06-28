@@ -1,4 +1,4 @@
-export type EnhancementId = "linux-screenshot-symlink";
+export type EnhancementId = "linux-screenshot-symlink" | "vrchat-protocol-handler";
 
 export type OsPlatform = "linux" | "win32" | "darwin";
 

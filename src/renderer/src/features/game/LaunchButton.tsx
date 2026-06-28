@@ -15,7 +15,10 @@ export function LaunchButton() {
       setRunning(s.running);
       setSupported(s.supported);
     });
-    return events.on("game:changed", (s) => setRunning(s.running));
+    return events.on("game:changed", (s) => {
+      setRunning(s.running);
+      if (s.launching) setLaunching(true);
+    });
   }, []);
 
   useEffect(() => {

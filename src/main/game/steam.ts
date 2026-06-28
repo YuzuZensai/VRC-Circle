@@ -53,11 +53,39 @@ export function steamLibraries(): string[] {
   return [...libs];
 }
 
+export function steamRoot(): string {
+  const prefix = vrchatPrefix();
+  if (prefix) return dirname(dirname(dirname(prefix)));
+  return platformBases()[0];
+}
+
 export function vrchatPrefix(): string | null {
   for (const lib of steamLibraries()) {
     const prefix = join(lib, "compatdata", VRCHAT_APPID);
     if (existsSync(prefix)) return prefix;
   }
+  return null;
+}
+
+export function vrchatLaunchExe(): string | null {
+  for (const lib of steamLibraries()) {
+    const exe = join(lib, "common", "VRChat", "launch.exe");
+    if (existsSync(exe)) return exe;
+  }
+  return null;
+}
+
+export function vrchatProton(): string | null {
+  const prefix = vrchatPrefix();
+  if (!prefix) return null;
+  try {
+    const info = readFileSync(join(prefix, "config_info"), "utf8").split("\n");
+    const toolDir = info[1]?.split("/files/")[0]?.trim();
+    if (toolDir) {
+      const proton = join(toolDir, "proton");
+      if (existsSync(proton)) return proton;
+    }
+  } catch {}
   return null;
 }
 

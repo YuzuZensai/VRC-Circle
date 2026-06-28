@@ -13,6 +13,14 @@
         "protonFolder": "Proton フォルダ：{{path}}",
         "noPrefix": "VRChat の Proton プレフィックスが見つかりません。"
       }
+    },
+    "vrchat-protocol-handler": {
+      "title": "vrchat:// リンクを処理",
+      "blurb": "vrchat:// の招待リンクを VRC Circle で開き、VRChat が起動中でも未起動でもそのインスタンスへ案内します。Linux ではデスクトップ単体ではできない Proton へのリンク転送も行います。",
+      "detail": {
+        "registered": "VRC Circle が vrchat:// のハンドラーです。",
+        "notRegistered": "まだ登録されていません。"
+      }
     }
   }
 }

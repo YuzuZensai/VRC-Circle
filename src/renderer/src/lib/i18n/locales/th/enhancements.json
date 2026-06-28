@@ -13,6 +13,14 @@
         "protonFolder": "โฟลเดอร์ Proton: {{path}}",
         "noPrefix": "ไม่พบ Proton prefix ของ VRChat"
       }
+    },
+    "vrchat-protocol-handler": {
+      "title": "จัดการลิงก์ vrchat://",
+      "blurb": "เปิดลิงก์เชิญ vrchat:// ผ่าน VRC Circle และพาคุณเข้าสู่อินสแตนซ์ ไม่ว่า VRChat จะเปิดอยู่แล้วหรือยังไม่ได้เปิด บน Linux ยังส่งต่อลิงก์ผ่าน Proton ให้ด้วย ซึ่งเดสก์ท็อปทำเองไม่ได้",
+      "detail": {
+        "registered": "VRC Circle เป็นตัวจัดการ vrchat:// อยู่",
+        "notRegistered": "ยังไม่ได้ลงทะเบียน"
+      }
     }
   }
 }

@@ -1,9 +1,10 @@
 import { shell } from "electron";
-import { exec } from "node:child_process";
+import { exec, spawn } from "node:child_process";
 import { promisify } from "node:util";
-import { VRCHAT_APPID } from "./steam";
+import { VRCHAT_APPID, vrchatLaunchExe, vrchatProton, vrchatPrefix, steamRoot } from "./steam";
 import type { GameStatus } from "../../shared/types/game";
 import { broadcast } from "../windows";
+import { logger } from "../debug/logger";
 
 const sh = promisify(exec);
 
@@ -42,6 +43,69 @@ export async function launch(): Promise<GameStatus> {
   }
   await shell.openExternal(`steam://rungameid/${VRCHAT_APPID}`);
   return { running: lastRunning, supported: true };
+}
+
+export interface JoinResult {
+  launched: boolean;
+  alreadyRunning: boolean;
+  unsupported?: boolean;
+}
+
+export async function joinInstance(url: string): Promise<JoinResult> {
+  if (!url.startsWith("vrchat://")) throw new Error("Not a vrchat:// link");
+  const running = await isRunning();
+
+  if (process.platform === "darwin") {
+    // TODO: no VRChat on macOS; show the instance in an in-app page instead
+    return { launched: false, alreadyRunning: false, unsupported: true };
+  }
+
+  if (process.platform === "win32") {
+    if (running) await focus();
+    else {
+      broadcast("game:changed", { running: false, supported: true, launching: true });
+      await shell.openExternal(`steam://rungameid/${VRCHAT_APPID}`);
+    }
+    await shell.openExternal(url);
+    return { launched: true, alreadyRunning: running };
+  }
+
+  if (running) {
+    linuxHandoff(url);
+    await focus();
+    return { launched: true, alreadyRunning: true };
+  }
+
+  broadcast("game:changed", { running: false, supported: true, launching: true });
+  spawn("steam", ["-applaunch", VRCHAT_APPID, url], { detached: true, stdio: "ignore" }).unref();
+  logger.info("game", "cold join via steam -applaunch");
+  return { launched: true, alreadyRunning: false };
+}
+
+// reaches a live VRChat through its named pipe by running launch.exe inside the
+// same proton prefix; steam -applaunch is a no-op once the game is up.
+function linuxHandoff(url: string): void {
+  const proton = vrchatProton();
+  const exe = vrchatLaunchExe();
+  const prefix = vrchatPrefix();
+  if (!proton || !exe || !prefix) {
+    logger.warn("game", "cannot hand off url; proton/launch.exe/prefix not found", {
+      proton,
+      exe,
+      prefix,
+    });
+    return;
+  }
+  spawn(proton, ["run", exe, url], {
+    detached: true,
+    stdio: "ignore",
+    env: {
+      ...process.env,
+      STEAM_COMPAT_DATA_PATH: prefix,
+      STEAM_COMPAT_CLIENT_INSTALL_PATH: steamRoot(),
+    },
+  }).unref();
+  logger.info("game", "warm join via proton launch.exe");
 }
 
 let lastRunning = false;

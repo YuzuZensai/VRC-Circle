@@ -13,6 +13,14 @@
         "protonFolder": "Proton folder: {{path}}",
         "noPrefix": "No VRChat Proton prefix found."
       }
+    },
+    "vrchat-protocol-handler": {
+      "title": "Handle vrchat:// links",
+      "blurb": "Opens vrchat:// invite links through VRC Circle and takes you into the instance, whether VRChat is already running or needs to launch. On Linux it also bridges the link across Proton, which the desktop can't do on its own.",
+      "detail": {
+        "registered": "VRC Circle is the vrchat:// handler.",
+        "notRegistered": "Not registered yet."
+      }
     }
   }
 }

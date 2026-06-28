@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from "react";
-import { AlertTriangle, Camera } from "lucide-react";
+import { AlertTriangle, Camera, Link2 } from "lucide-react";
 import type {
   EnhancementId,
   EnhancementState,
@@ -23,6 +23,11 @@ const CATALOG: Meta[] = [
     id: "linux-screenshot-symlink",
     icon: <Camera size={18} />,
     platforms: ["linux"],
+  },
+  {
+    id: "vrchat-protocol-handler",
+    icon: <Link2 size={18} />,
+    platforms: ["linux", "win32"], // TODO: add darwin with the in-app instance page
   },
 ];
 
@@ -117,7 +122,7 @@ function EnhancementCard({
           <div className="flex flex-wrap items-center gap-2">
             <h2 className="text-[15px] font-bold">{t(`enhancements:items.${meta.id}.title`)}</h2>
             {meta.platforms.map((p) => (
-              <Badge key={p} tone={p === platform ? "neutral" : "warn"}>
+              <Badge key={p} tone={supported ? "neutral" : "warn"}>
                 {OS_LABEL[p]}
               </Badge>
             ))}
