@@ -65,6 +65,7 @@ async function finalizeLogin(vrc: VRChatLike): Promise<AuthStatus> {
     userIcon: user.userIcon || user.currentAvatarThumbnailImageUrl,
   });
   clearLoginClient();
+  dropClient(user.id);
   userCache.clear();
   await syncSessionCookies(vrc);
   logger.info("auth", `signed in as ${user.displayName}`);
