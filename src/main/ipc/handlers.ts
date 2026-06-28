@@ -94,7 +94,8 @@ const handlers = {
   "unity:status": () => guard(() => unity.unityStatus()),
   "unity:install": (url) =>
     guard(async () => {
-      if (!url.startsWith("unityhub://")) throw new Error("Invalid Unity Hub link");
+      if (!url.startsWith("unityhub://") && !url.startsWith("https://unity.com/"))
+        throw new Error("Invalid Unity Hub link");
       await shell.openExternal(url);
     }),
 

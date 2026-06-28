@@ -68,6 +68,7 @@
     "installedVersions": "インストール済みエディター",
     "status": "状態",
     "install": "Unity Hub で {{version}} をインストール",
+    "getHub": "Unity Hub を入手",
     "match": {
       "ok": "一致",
       "missing": "そのバージョンが未インストール",

@@ -68,6 +68,7 @@
     "installedVersions": "เอดิเตอร์ที่ติดตั้ง",
     "status": "สถานะ",
     "install": "ติดตั้ง {{version}} ใน Unity Hub",
+    "getHub": "ดาวน์โหลด Unity Hub",
     "match": {
       "ok": "ตรงกัน",
       "missing": "ยังไม่ได้ติดตั้งเวอร์ชันนี้",

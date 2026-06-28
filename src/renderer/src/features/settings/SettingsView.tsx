@@ -425,7 +425,14 @@ function UnityStatusBody({ status }: { status: UnityStatus }) {
           {t(verdict.key)}
         </span>
       </div>
-      {status.match !== "ok" && status.installUrl ? (
+      {!status.hubInstalled ? (
+        <div className="mt-1">
+          <Button onClick={() => void api.unity.install("https://unity.com/download")}>
+            <Download size={14} />
+            {t("settings:unity.getHub")}
+          </Button>
+        </div>
+      ) : status.match !== "ok" && status.installUrl ? (
         <div className="mt-1">
           <Button onClick={() => void api.unity.install(status.installUrl as string)}>
             <Download size={14} />

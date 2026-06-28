@@ -68,6 +68,7 @@
     "installedVersions": "Installed editors",
     "status": "Status",
     "install": "Install {{version}} in Unity Hub",
+    "getHub": "Get Unity Hub",
     "match": {
       "ok": "Match",
       "missing": "Version not installed",
