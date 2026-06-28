@@ -1,6 +1,6 @@
 import { useMemo, useState, useCallback, type ReactNode } from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
-import { isOnline, locationLabel, statusMeta } from "../../lib/vrchat";
+import { isOnline, locationLabel, presenceOf } from "../../lib/vrchat";
 import { Badge, PresenceAvatar, ContextMenu } from "../../components/ui";
 import { useFriends, useSelf } from "../../store/social";
 import { useWorldName } from "../../store/worlds";
@@ -263,8 +263,8 @@ function FriendRow({
   onContextMenu?: (e: React.MouseEvent, friend: UserProfile) => void;
 }) {
   const t = useT();
-  const status = statusMeta[isOnline(friend) || isSelf ? friend.status : "offline"];
-  const sub = friend.statusDescription || status.label;
+  const presence = presenceOf({ ...friend, isSelf });
+  const sub = friend.statusDescription || presence.effective.label;
   const parsed = parseLocation(friend.location);
   const worldName = useWorldName(parsed?.worldId);
   const location = parsed

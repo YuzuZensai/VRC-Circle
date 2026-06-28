@@ -5,7 +5,7 @@ import { Banner, SkeletonGrid } from "../../components/ui";
 import { useT } from "../../lib/i18n";
 import { api } from "../../lib/api";
 import { useAsync } from "../../lib/useAsync";
-import { WorldCard } from "./WorldsSection";
+import { WorldCard } from "../world/WorldCard";
 import "./profile.css";
 
 export function DiscoverSection() {

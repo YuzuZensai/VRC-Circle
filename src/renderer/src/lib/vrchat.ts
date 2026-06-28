@@ -36,6 +36,25 @@ export const statusMeta: Record<UserStatus, { label: string; color: string }> = 
   offline: { label: "Offline", color: "var(--status-offline)" },
 };
 
+interface Presence {
+  online: boolean;
+  color: string;
+  status: { label: string; color: string };
+  effective: { label: string; color: string };
+}
+
+export function presenceOf(u: {
+  status: UserStatus;
+  state?: "online" | "active" | "offline";
+  location?: string;
+  isSelf?: boolean;
+}): Presence {
+  const online = isOnline(u);
+  const status = statusMeta[u.status];
+  const effective = online ? status : statusMeta.offline;
+  return { online, color: effective.color, status, effective };
+}
+
 export function avatarOf(p: {
   userIcon: string;
   currentAvatarImageUrl: string;

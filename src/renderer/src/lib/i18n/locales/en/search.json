@@ -1,0 +1,18 @@
+{
+  "title": "Search",
+  "tabs": {
+    "users": "Users",
+    "worlds": "Worlds"
+  },
+  "field": {
+    "labelUsers": "Find a user",
+    "labelWorlds": "Find a world",
+    "placeholderUsers": "Search users by name…",
+    "placeholderWorlds": "Search worlds by name…"
+  },
+  "button": "Search",
+  "promptUsers": "Search for someone to get started.",
+  "promptWorlds": "Search for a world to get started.",
+  "emptyUsers": "No users found.",
+  "emptyWorlds": "No worlds found."
+}

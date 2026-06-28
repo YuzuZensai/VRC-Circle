@@ -10,6 +10,7 @@ export { Panel } from "./Panel";
 export { Tabs } from "./Tabs";
 export { Stat } from "./Stat";
 export { PresenceAvatar } from "./PresenceAvatar";
+export { PresenceLabel } from "./PresenceLabel";
 export { CollapsibleCard } from "./CollapsibleCard";
 export { Modal } from "./Modal";
 export { Toggle } from "./Toggle";

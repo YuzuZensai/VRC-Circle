@@ -11,6 +11,7 @@ import {
   Fact,
   IconButton,
   LinkPill,
+  PresenceLabel,
   Section,
   Skeleton,
   Tabs,
@@ -21,9 +22,8 @@ import {
   avatarOf,
   bannerOf,
   developerLabels,
-  isOnline,
   languageLabel,
-  statusMeta,
+  presenceOf,
   trustMeta,
 } from "../../lib/vrchat";
 import { useProfile } from "./useProfile";
@@ -52,13 +52,11 @@ function ProfileCard({ profile }: { profile: UserProfile }) {
   const addFriend = useAddFriend(profile.id);
   const { buildItems, modal } = useUserMenu();
   const trust = trustMeta[profile.trustRank];
-  const online = isOnline(profile);
-  const status = statusMeta[profile.status];
-  const presenceStatus = online ? status : statusMeta.offline;
+  const presence = presenceOf(profile);
   const statusLabel =
-    !online && profile.status !== "offline"
-      ? t("profile:status.offlineWas", { status: status.label })
-      : status.label;
+    !presence.online && profile.status !== "offline"
+      ? t("profile:status.offlineWas", { status: presence.status.label })
+      : presence.effective.label;
   const avatar = avatarOf(profile);
   const banner = bannerOf(profile);
   const devLabel = profile.developerType ? developerLabels[profile.developerType] : undefined;
@@ -77,7 +75,7 @@ function ProfileCard({ profile }: { profile: UserProfile }) {
           <Avatar src={avatar} name={profile.displayName} size={116} />
           <span
             className="profile__status-dot"
-            style={{ background: presenceStatus.color }}
+            style={{ background: presence.color }}
             title={statusLabel}
           />
         </div>
@@ -96,13 +94,7 @@ function ProfileCard({ profile }: { profile: UserProfile }) {
           </div>
           <div className="mt-2.5 flex flex-wrap items-center gap-3">
             <Tag color={trust.color}>{trust.label}</Tag>
-            <span
-              className="inline-flex items-center gap-1.5 text-[13px] font-semibold"
-              style={{ color: presenceStatus.color }}
-            >
-              <span className="size-2 rounded-full" style={{ background: presenceStatus.color }} />
-              {statusLabel}
-            </span>
+            <PresenceLabel label={statusLabel} color={presence.color} />
             {profile.pronouns ? (
               <span className="text-[13px] text-muted">{profile.pronouns}</span>
             ) : null}

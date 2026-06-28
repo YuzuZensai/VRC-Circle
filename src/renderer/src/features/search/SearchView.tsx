@@ -1,21 +1,13 @@
 import { useState, type FormEvent } from "react";
-import { Circle, Search as SearchIcon, Star, Users } from "lucide-react";
+import { Search as SearchIcon } from "lucide-react";
 import type { UserProfile } from "../../../../shared/types/user";
 import type { World } from "../../../../shared/types/world";
 import { api } from "../../lib/api";
-import { compactNumber } from "../../lib/format";
-import {
-  Avatar,
-  Button,
-  Card,
-  ContextMenu,
-  Field,
-  HoverImage,
-  Tabs,
-  Tag,
-} from "../../components/ui";
+import { Avatar, Button, ContextMenu, Field, Tabs, Tag } from "../../components/ui";
+import { useT } from "../../lib/i18n";
 import { useNav } from "../navigation/NavContext";
 import { useUserMenu } from "../friends/useUserMenu";
+import { WorldCard } from "../world/WorldCard";
 import { avatarOf, trustMeta } from "../../lib/vrchat";
 
 interface UserMenu {
@@ -27,6 +19,7 @@ interface UserMenu {
 type SearchTab = "users" | "worlds";
 
 export function SearchView() {
+  const t = useT();
   const { openUser, openWorld } = useNav();
   const { buildItems, modal } = useUserMenu();
   const [tab, setTab] = useState<SearchTab>("users");
@@ -57,13 +50,13 @@ export function SearchView() {
   return (
     <div className="mx-auto w-full max-w-[760px] px-12 py-10">
       <header className="mb-5">
-        <h1 className="text-[26px] font-bold tracking-[-0.4px]">Search</h1>
+        <h1 className="text-[26px] font-bold tracking-[-0.4px]">{t("search:title")}</h1>
       </header>
 
       <Tabs
         tabs={[
-          { id: "users", label: "Users" },
-          { id: "worlds", label: "Worlds" },
+          { id: "users", label: t("search:tabs.users") },
+          { id: "worlds", label: t("search:tabs.worlds") },
         ]}
         active={tab}
         onChange={setTab}
@@ -72,8 +65,12 @@ export function SearchView() {
       <form onSubmit={submit} className="mt-5 flex items-end gap-2.5">
         <div className="flex-1">
           <Field
-            label={tab === "users" ? "Find a user" : "Find a world"}
-            placeholder={tab === "users" ? "Search users by name…" : "Search worlds by name…"}
+            label={tab === "users" ? t("search:field.labelUsers") : t("search:field.labelWorlds")}
+            placeholder={
+              tab === "users"
+                ? t("search:field.placeholderUsers")
+                : t("search:field.placeholderWorlds")
+            }
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             autoFocus
@@ -81,17 +78,19 @@ export function SearchView() {
         </div>
         <Button type="submit" loading={busy} disabled={query.trim().length < 2}>
           <SearchIcon size={15} />
-          Search
+          {t("search:button")}
         </Button>
       </form>
 
       <div className="mt-6">
         {results === null ? (
           <p className="text-[13.5px] text-faint">
-            Search for {tab === "users" ? "someone" : "a world"} to get started.
+            {tab === "users" ? t("search:promptUsers") : t("search:promptWorlds")}
           </p>
         ) : results.length === 0 ? (
-          <p className="text-[13.5px] text-faint">No {tab} found.</p>
+          <p className="text-[13.5px] text-faint">
+            {tab === "users" ? t("search:emptyUsers") : t("search:emptyWorlds")}
+          </p>
         ) : tab === "users" ? (
           <div className="flex flex-col gap-1.5">
             {(results as UserProfile[]).map((u) => (
@@ -109,7 +108,7 @@ export function SearchView() {
         ) : (
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
             {(results as World[]).map((w) => (
-              <WorldResult key={w.id} world={w} onOpen={() => openWorld(w.id)} />
+              <WorldCard key={w.id} world={w} showAuthor onOpen={() => openWorld(w.id)} />
             ))}
           </div>
         )}
@@ -153,41 +152,5 @@ function UserResult({
       </span>
       <Tag color={trustMeta[user.trustRank].color}>{trustMeta[user.trustRank].label}</Tag>
     </button>
-  );
-}
-
-function WorldResult({ world, onOpen }: { world: World; onOpen: () => void }) {
-  const img = world.thumbnailImageUrl || world.imageUrl;
-  return (
-    <Card onClick={onOpen}>
-      <div className="relative aspect-video bg-surface-hover">
-        {img ? <HoverImage src={img} loading="lazy" /> : null}
-      </div>
-      <div className="p-2.5">
-        <div className="truncate text-[13px] font-semibold" title={world.name}>
-          {world.name}
-        </div>
-        <div className="truncate text-[11px] text-faint" title={world.authorName}>
-          {world.authorName}
-        </div>
-        <div className="mt-1 flex flex-wrap items-center gap-3 text-[11px] tabular-nums text-faint">
-          <span className="inline-flex items-center gap-1" title="favorites">
-            <Star size={12} /> {compactNumber(world.favorites)}
-          </span>
-          {world.occupants > 0 ? (
-            <span
-              className="inline-flex items-center gap-1"
-              title="players online now"
-              style={{ color: "var(--status-active)" }}
-            >
-              <Circle size={9} fill="currentColor" /> {compactNumber(world.occupants)}
-            </span>
-          ) : null}
-          <span className="inline-flex items-center gap-1" title="capacity">
-            <Users size={12} /> {world.capacity}
-          </span>
-        </div>
-      </div>
-    </Card>
   );
 }
