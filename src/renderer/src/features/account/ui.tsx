@@ -47,7 +47,7 @@ export function Section({
   );
 }
 
-export function useAsync() {
+export function useAction() {
   const { t } = useI18n();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);

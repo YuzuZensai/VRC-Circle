@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useSocial } from "../../store/social";
+import { useFriends } from "../../store/social";
 import { useWorlds } from "../../store/worlds";
 import { useGroups } from "../../store/groups";
 import { useCopied, useDebug } from "./useDebug";
@@ -19,7 +19,7 @@ export function DebugPanel() {
   const { cache, stats, logs, ws, repoStats, invalidate, clear, clearLogs, clearWs } = useDebug();
   const [tab, setTab] = useState<Tab>("cache");
 
-  const friendCount = useSocial((s) => Object.values(s.users).filter((u) => u.isFriend).length);
+  const friendCount = useFriends().length;
   const worldCount = useWorlds((s) => Object.keys(s.worlds).length);
   const groupCount = useGroups((s) => Object.keys(s.groups).length);
   const repoCount = repoStats.reduce((sum, r) => sum + r.count, 0);

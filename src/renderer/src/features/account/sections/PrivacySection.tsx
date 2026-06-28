@@ -1,10 +1,10 @@
 import { api } from "../../../lib/api";
 import { useI18n } from "../../../lib/i18n";
-import { Notice, Section, ToggleRow, useAsync, type SectionProps } from "../ui";
+import { Notice, Section, ToggleRow, useAction, type SectionProps } from "../ui";
 
 export function PrivacySection({ settings, onChange }: SectionProps) {
   const { t } = useI18n();
-  const { busy, error, run } = useAsync();
+  const { busy, error, run } = useAction();
 
   function setShared(show: boolean) {
     void run(api.settings.privacy({ sharedConnectionsHidden: !show }), { onOk: onChange });

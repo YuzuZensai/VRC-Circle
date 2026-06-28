@@ -7,7 +7,7 @@ import {
   Notice,
   Section,
   WEBSITE_ACCOUNT,
-  useAsync,
+  useAction,
   type SectionProps,
 } from "../ui";
 
@@ -16,7 +16,7 @@ export function PasswordSection({ settings, onChange }: SectionProps) {
   const [current, setCurrent] = useState("");
   const [next, setNext] = useState("");
   const [confirm, setConfirm] = useState("");
-  const { busy, error, ok, run } = useAsync();
+  const { busy, error, ok, run } = useAction();
   const mismatch = confirm.length > 0 && next !== confirm;
   const valid = current.length > 0 && next.length >= 8 && next === confirm;
 

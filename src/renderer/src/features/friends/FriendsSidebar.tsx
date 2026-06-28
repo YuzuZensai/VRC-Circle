@@ -1,4 +1,4 @@
-import { useMemo, useState, useCallback, type ReactNode } from "react";
+import { useState, useCallback, type ReactNode } from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { isOnline, locationLabel, presenceOf } from "../../lib/vrchat";
 import { Badge, PresenceAvatar, ContextMenu } from "../../components/ui";
@@ -7,13 +7,7 @@ import { useWorldName } from "../../store/worlds";
 import { parseLocation, type UserProfile } from "../../../../shared/types/user";
 import { useT } from "../../lib/i18n";
 import { useUserMenu } from "./useUserMenu";
-
-interface InstanceSection {
-  key: string;
-  worldId: string;
-  instanceId: string;
-  members: UserProfile[];
-}
+import { useFriendsGrouped } from "./useFriendsGrouped";
 
 interface ContextMenuState {
   x: number;
@@ -27,55 +21,7 @@ export function FriendsSidebar({ onOpen }: { onOpen: (id: string) => void }) {
   const self = useSelf();
   const selfId = self?.id;
 
-  const sorted = useMemo(
-    () =>
-      [...friends].sort(
-        (a, b) =>
-          Number(isOnline(b)) - Number(isOnline(a)) || a.displayName.localeCompare(b.displayName),
-      ),
-    [friends],
-  );
-
-  const online = useMemo(() => sorted.filter(isOnline), [sorted]);
-  const offline = useMemo(() => sorted.filter((f) => !isOnline(f)), [sorted]);
-
-  const { instances, alone } = useMemo(() => {
-    const byInstance = new Map<string, UserProfile[]>();
-    const alone: UserProfile[] = [];
-    const people = self && isOnline(self) ? [self, ...online] : online;
-    for (const f of people) {
-      const parsed = parseLocation(f.location);
-      if (!parsed) {
-        if (f.id !== selfId) alone.push(f);
-        continue;
-      }
-      const key = `${parsed.worldId}:${parsed.instanceId}`;
-      const list = byInstance.get(key);
-      if (list) list.push(f);
-      else byInstance.set(key, [f]);
-    }
-    const instances: InstanceSection[] = [];
-    for (const [key, members] of byInstance) {
-      if (members.length < 2) {
-        if (members[0].id !== selfId) alone.push(members[0]);
-        continue;
-      }
-      members.sort(
-        (a, b) =>
-          Number(b.id === selfId) - Number(a.id === selfId) ||
-          a.displayName.localeCompare(b.displayName),
-      );
-      const [worldId, instanceId] = key.split(":");
-      instances.push({ key, worldId, instanceId, members });
-    }
-    instances.sort(
-      (a, b) =>
-        Number(b.members.some((m) => m.id === selfId)) -
-          Number(a.members.some((m) => m.id === selfId)) || b.members.length - a.members.length,
-    );
-    alone.sort((a, b) => a.displayName.localeCompare(b.displayName));
-    return { instances, alone };
-  }, [online, self, selfId]);
+  const { online, offline, instances, alone } = useFriendsGrouped(friends, self);
 
   const [collapsed, setCollapsed] = useState<Set<string>>(() => new Set(["offline"]));
   const toggle = (id: string) =>

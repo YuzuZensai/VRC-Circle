@@ -6,7 +6,7 @@ import { useI18n } from "../../../lib/i18n";
 import { Badge, Button, Field, Modal } from "../../../components/ui";
 import { useStepUp } from "../../auth/useStepUp";
 import { TwoFactorPrompt } from "../../auth/TwoFactorPrompt";
-import { Notice, Section, useAsync, type SectionProps } from "../ui";
+import { Notice, Section, useAction, type SectionProps } from "../ui";
 
 export function TwoFactorSection({ settings, onChange }: SectionProps) {
   const { t } = useI18n();
@@ -16,8 +16,8 @@ export function TwoFactorSection({ settings, onChange }: SectionProps) {
   } | null>(null);
   const [code, setCode] = useState("");
   const [codes, setCodes] = useState<RecoveryCode[] | null>(null);
-  const setup = useAsync();
-  const verify = useAsync();
+  const setup = useAction();
+  const verify = useAction();
   const [confirmDisable, setConfirmDisable] = useState(false);
   const [disabledOk, setDisabledOk] = useState(false);
   const stepUp = useStepUp();

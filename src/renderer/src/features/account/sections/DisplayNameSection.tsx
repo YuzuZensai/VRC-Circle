@@ -11,7 +11,7 @@ import {
   addDays,
   daysSince,
   lastChangedLabel,
-  useAsync,
+  useAction,
   type SectionProps,
 } from "../ui";
 
@@ -20,7 +20,7 @@ export function DisplayNameSection({ settings, onChange }: SectionProps) {
   const [name, setName] = useState(settings.displayName);
   const [password, setPassword] = useState("");
   const [confirmRevert, setConfirmRevert] = useState(false);
-  const { busy, error, ok, run } = useAsync();
+  const { busy, error, ok, run } = useAction();
 
   const cooldownDays = settings.supporter ? 30 : 90;
   const changedDaysAgo = daysSince(settings.displayNameChangedAt);

@@ -2,13 +2,13 @@ import { useState } from "react";
 import { api } from "../../../lib/api";
 import { useI18n } from "../../../lib/i18n";
 import { Button, Field } from "../../../components/ui";
-import { Notice, Section, useAsync, type SectionProps } from "../ui";
+import { Notice, Section, useAction, type SectionProps } from "../ui";
 
 export function EmailSection({ settings, onChange }: SectionProps) {
   const { t } = useI18n();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { busy, error, ok, run } = useAsync();
+  const { busy, error, ok, run } = useAction();
 
   async function submit() {
     await run(api.settings.email(email.trim(), password), {

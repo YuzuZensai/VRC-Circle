@@ -1,7 +1,7 @@
 import type { ContentFilterKey } from "../../../../../shared/types/settings";
 import { api } from "../../../lib/api";
 import { useI18n } from "../../../lib/i18n";
-import { Notice, Section, ToggleRow, useAsync, type SectionProps } from "../ui";
+import { Notice, Section, ToggleRow, useAction, type SectionProps } from "../ui";
 
 const FILTER_ORDER: ContentFilterKey[] = [
   "content_sex",
@@ -13,7 +13,7 @@ const FILTER_ORDER: ContentFilterKey[] = [
 
 export function ContentGatingSection({ settings, onChange }: SectionProps) {
   const { t } = useI18n();
-  const { busy, error, run } = useAsync();
+  const { busy, error, run } = useAction();
   const active = new Set(settings.contentFilters);
 
   function toggle(key: ContentFilterKey, on: boolean) {

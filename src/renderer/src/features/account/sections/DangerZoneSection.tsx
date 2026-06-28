@@ -4,11 +4,11 @@ import { Trans } from "react-i18next";
 import { api } from "../../../lib/api";
 import { useI18n } from "../../../lib/i18n";
 import { Button, Field } from "../../../components/ui";
-import { Notice, Section, useAsync, type SectionProps } from "../ui";
+import { Notice, Section, useAction, type SectionProps } from "../ui";
 
 export function DangerZoneSection({ settings, onChange }: SectionProps) {
   const { t } = useI18n();
-  const { busy, error, run } = useAsync();
+  const { busy, error, run } = useAction();
   const [confirmText, setConfirmText] = useState("");
   const canDelete = confirmText.trim().toUpperCase() === "DELETE";
 

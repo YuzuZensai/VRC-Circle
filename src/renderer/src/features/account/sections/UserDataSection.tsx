@@ -2,11 +2,11 @@ import { useState } from "react";
 import { api } from "../../../lib/api";
 import { useI18n } from "../../../lib/i18n";
 import { Button } from "../../../components/ui";
-import { Notice, Section, useAsync } from "../ui";
+import { Notice, Section, useAction } from "../ui";
 
 export function UserDataSection() {
   const { t } = useI18n();
-  const { busy, error, ok, run } = useAsync();
+  const { busy, error, ok, run } = useAction();
   const [armed, setArmed] = useState(false);
 
   async function reset() {
