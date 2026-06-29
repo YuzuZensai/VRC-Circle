@@ -1,19 +1,13 @@
 import { app, screen, type BrowserWindow, type Rectangle } from "electron";
 import { join } from "node:path";
-import { readFileSync } from "node:fs";
-import { writeFileAtomicSync } from "./lib/atomicFile";
+import { jsonFile } from "./lib/jsonFile";
 
 type Bounds = Rectangle & { maximized: boolean };
 
 const path = () => join(app.getPath("userData"), "window-state.json");
 
-function read(): Partial<Bounds> | null {
-  try {
-    return JSON.parse(readFileSync(path(), "utf8")) as Partial<Bounds>;
-  } catch {
-    return null;
-  }
-}
+const stateFile = jsonFile<Partial<Bounds> | null>(path, () => null);
+const read = stateFile.read;
 
 function onScreen(b: Rectangle): boolean {
   return screen.getAllDisplays().some((d) => {
@@ -47,10 +41,7 @@ export function trackBounds(win: BrowserWindow): void {
 
   const save = (): void => {
     if (win.isDestroyed()) return;
-    writeFileAtomicSync(
-      path(),
-      JSON.stringify({ ...normalBounds, maximized: win.isMaximized() }, null, 2),
-    );
+    stateFile.write({ ...normalBounds, maximized: win.isMaximized() });
   };
 
   const remember = (): void => {

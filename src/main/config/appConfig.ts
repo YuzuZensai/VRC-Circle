@@ -1,7 +1,7 @@
 import { app } from "electron";
 import { join } from "node:path";
-import { existsSync, readFileSync } from "node:fs";
-import { writeFileAtomicSync } from "../lib/atomicFile";
+import { existsSync } from "node:fs";
+import { jsonFile } from "../lib/jsonFile";
 import type { AppConfig, PreferredRegion } from "../../shared/types/appConfig";
 import { detectedGamePath } from "../game/steam";
 
@@ -10,12 +10,15 @@ const path = () => join(app.getPath("userData"), "app-config.json");
 type StoredConfig = Omit<AppConfig, "version" | "detectedGamePath">;
 const DEFAULTS: StoredConfig = { gamePath: null, preferredRegion: "auto" };
 
-function readStored(): StoredConfig {
-  try {
-    return { ...DEFAULTS, ...(JSON.parse(readFileSync(path(), "utf8")) as Partial<StoredConfig>) };
-  } catch {
-    return { ...DEFAULTS };
-  }
+const configFile = jsonFile<StoredConfig>(
+  path,
+  () => ({ ...DEFAULTS }),
+  (raw) => ({ ...DEFAULTS, ...(raw as Partial<StoredConfig>) }),
+);
+const readStored = configFile.read;
+
+function writeStored(next: StoredConfig): void {
+  configFile.write(next);
 }
 
 function withDerived(stored: StoredConfig): AppConfig {
@@ -32,7 +35,7 @@ export function preferredRegion(): PreferredRegion {
 
 export function setPreferredRegion(region: PreferredRegion): AppConfig {
   const next: StoredConfig = { ...readStored(), preferredRegion: region };
-  writeFileAtomicSync(path(), JSON.stringify(next, null, 2));
+  writeStored(next);
   return withDerived(next);
 }
 
@@ -46,6 +49,6 @@ export function setGamePath(gamePath: string | null): AppConfig {
     throw new Error("That path doesn't exist on disk.");
   }
   const next: StoredConfig = { ...readStored(), gamePath: trimmed };
-  writeFileAtomicSync(path(), JSON.stringify(next, null, 2));
+  writeStored(next);
   return withDerived(next);
 }

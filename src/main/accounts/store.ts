@@ -1,7 +1,7 @@
 import { app } from "electron";
 import { join } from "node:path";
-import { copyFileSync, existsSync, readFileSync, rmSync } from "node:fs";
-import { writeFileAtomicSync } from "../lib/atomicFile";
+import { copyFileSync, existsSync, rmSync } from "node:fs";
+import { jsonFile } from "../lib/jsonFile";
 import type { Account, AccountsState } from "../../shared/types/auth";
 
 const dir = () => join(app.getPath("userData"), "sessions");
@@ -15,17 +15,9 @@ interface Registry {
   accounts: Account[];
 }
 
-function read(): Registry {
-  try {
-    return JSON.parse(readFileSync(registryPath(), "utf8")) as Registry;
-  } catch {
-    return { active: null, accounts: [] };
-  }
-}
-
-function write(reg: Registry): void {
-  writeFileAtomicSync(registryPath(), JSON.stringify(reg, null, 2));
-}
+const registry = jsonFile<Registry>(registryPath, () => ({ active: null, accounts: [] }));
+const read = registry.read;
+const write = registry.write;
 
 export function listAccounts(): AccountsState {
   const reg = read();

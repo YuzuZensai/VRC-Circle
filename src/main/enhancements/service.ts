@@ -1,7 +1,6 @@
 import { app } from "electron";
 import { join } from "node:path";
-import { readFileSync } from "node:fs";
-import { writeFileAtomicSync } from "../lib/atomicFile";
+import { jsonFile } from "../lib/jsonFile";
 import { logger } from "../debug/logger";
 import type {
   EnhancementId,
@@ -17,17 +16,9 @@ const storePath = () => join(app.getPath("userData"), "enhancements.json");
 
 type Prefs = Partial<Record<EnhancementId, boolean>>;
 
-function readPrefs(): Prefs {
-  try {
-    return JSON.parse(readFileSync(storePath(), "utf8")) as Prefs;
-  } catch {
-    return {};
-  }
-}
-
-function writePrefs(prefs: Prefs): void {
-  writeFileAtomicSync(storePath(), JSON.stringify(prefs, null, 2));
-}
+const prefsFile = jsonFile<Prefs>(storePath, () => ({}));
+const readPrefs = prefsFile.read;
+const writePrefs = prefsFile.write;
 
 function screenshotState(): EnhancementState {
   const s = screenshot.status();
