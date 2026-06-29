@@ -10,6 +10,7 @@ import { entityStore, type SocialSnapshot } from "./entityStore";
 import { worldStore } from "./worldStore";
 import { groupStore } from "./groupStore";
 import { avatarStore } from "./avatarStore";
+import { worldFavoritesStore } from "./worldFavoritesStore";
 import { repos } from "./repository/manager";
 import { broadcast } from "../windows";
 import { logger } from "../debug/logger";
@@ -172,6 +173,7 @@ export async function seedActiveAccount(force = false): Promise<void> {
   repos.setActive(id);
   if (!id) {
     worldStore.reset();
+    worldFavoritesStore.reset();
     groupStore.reset();
     avatarStore.reset();
     entityStore.reset();
@@ -180,6 +182,7 @@ export async function seedActiveAccount(force = false): Promise<void> {
   if (!force && alreadyActive) return;
 
   worldStore.reset();
+  worldFavoritesStore.reset();
   groupStore.reset();
   entityStore.reset();
 
@@ -219,4 +222,6 @@ export function startSocialBridge(): void {
     if (c.type === "seed") broadcast("avatar:seed", c.snapshot);
     else broadcast("avatar:upsert", c.avatar);
   });
+
+  worldFavoritesStore.onChange((snap) => broadcast("world:favorites:seed", snap));
 }

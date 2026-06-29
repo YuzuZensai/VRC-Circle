@@ -1,5 +1,57 @@
 {
   "createInstance": "インスタンスを作成",
+  "deleted": {
+    "badge": "削除済み",
+    "name": "削除されたワールド"
+  },
+  "releaseStatus": {
+    "public": "公開",
+    "private": "非公開",
+    "hidden": "非表示"
+  },
+  "favorite": {
+    "add": "お気に入り登録",
+    "favorited": "お気に入り済み",
+    "manage": "お気に入りを管理",
+    "unfavorite": "お気に入り解除",
+    "save": "保存",
+    "failed": "操作に失敗しました。",
+    "folderCount": "{{count}} 件",
+    "folderFull": "満杯"
+  },
+  "folder": {
+    "edit": "フォルダを編集",
+    "editTitle": "フォルダを編集",
+    "name": "フォルダ名",
+    "visibility": "公開設定",
+    "clear": "フォルダを空にする",
+    "clearConfirm": "{{count}} 件すべて削除しますか？",
+    "empty": "このフォルダは空です。"
+  },
+  "visibility": {
+    "private": "非公開",
+    "friends": "フレンド",
+    "public": "公開"
+  },
+  "context": {
+    "open": "ワールドを開く",
+    "select": "ワールドを選択",
+    "unfavoriteConfirm": "「{{name}}」をお気に入りから削除しますか？"
+  },
+  "bulk": {
+    "select": "選択",
+    "done": "完了",
+    "selectPrivate": "非公開を選択",
+    "selectDeleted": "削除済みを選択",
+    "selected": "{{count}} 件選択中",
+    "move": "移動",
+    "moving": "お気に入りを移動中...",
+    "movingProgress": "{{done}} / {{total}} 件を移動中...",
+    "unfavoriteTitle": "お気に入りから削除",
+    "unfavoriteConfirm": "選択した {{count}} 件をお気に入りから削除しますか？",
+    "moveTitle": "{{count}} 件を移動",
+    "skipped": "{{count}} 件は移動できず（非公開または削除済み）、そのままになりました。"
+  },
   "regions": {
     "us": "米国西部",
     "use": "米国東部",

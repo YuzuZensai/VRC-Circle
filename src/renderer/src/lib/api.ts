@@ -6,6 +6,10 @@ import type { EnhancementId } from "../../../shared/types/enhancements";
 import type { CreateInstanceInput } from "../../../shared/types/instance";
 import type { PreferredRegion } from "../../../shared/types/appConfig";
 import type { AvatarEdit, FavoriteGroupEdit, MoveResult } from "../../../shared/types/avatar";
+import type {
+  FavoriteGroupEdit as WorldFavoriteGroupEdit,
+  MoveResult as WorldMoveResult,
+} from "../../../shared/types/world";
 
 export class ApiException extends Error {
   constructor(public readonly error: ApiError) {
@@ -63,6 +67,18 @@ export const api = {
     favorites: (userId: string) => call("world:favorites", userId),
     get: (worldId: string) => call("world:get", worldId),
     snapshot: () => call("world:snapshot"),
+    favoritesSnapshot: () => call("world:favoritesSnapshot"),
+    loadFavorites: () => call("world:loadFavorites"),
+    favorite: (worldId: string, folder?: string) => call("world:favorite", { worldId, folder }),
+    unfavorite: (worldId: string) => call("world:unfavorite", worldId),
+    moveFavorite: (worldId: string, folder: string): Promise<WorldMoveResult> =>
+      call("world:moveFavorite", { worldId, folder }),
+    unfavoriteMany: (worldIds: string[]) => call("world:unfavoriteMany", worldIds),
+    moveFavoriteMany: (worldIds: string[], folder: string): Promise<WorldMoveResult> =>
+      call("world:moveFavoriteMany", { worldIds, folder }),
+    clearFavoriteFolder: (folder: string) => call("world:clearFavoriteFolder", folder),
+    updateFavoriteFolder: (folder: string, edit: WorldFavoriteGroupEdit) =>
+      call("world:updateFavoriteFolder", { folder, edit }),
   },
   instance: {
     get: (worldId: string, instanceId: string) => call("instance:get", { worldId, instanceId }),

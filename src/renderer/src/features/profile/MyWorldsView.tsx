@@ -2,8 +2,9 @@ import { Banner, Loader, PAGE_TITLE, Tabs } from "../../components/ui";
 import { useT } from "../../lib/i18n";
 import { useViewState } from "../navigation/NavContext";
 import { useProfile } from "./useProfile";
-import { WorldsSection, FavoriteWorldsSection, WorldSearch } from "./WorldsSection";
+import { WorldsSection, WorldSearch } from "./WorldsSection";
 import { DiscoverSection } from "./DiscoverSection";
+import { MyFavoriteWorldsSection } from "../world/MyFavoriteWorldsSection";
 
 const SHELL = "mx-auto flex w-full max-w-[1100px] flex-col gap-5 px-12 pb-16 pt-10";
 
@@ -49,9 +50,7 @@ export function MyWorldsView() {
         </div>
       ) : (
         <div className="rise-in">
-          <WorldSearch>
-            {(filter) => <FavoriteWorldsSection userId={userId} filter={filter} />}
-          </WorldSearch>
+          <WorldSearch>{(filter) => <MyFavoriteWorldsSection filter={filter} />}</WorldSearch>
         </div>
       )}
     </div>

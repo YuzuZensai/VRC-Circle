@@ -31,6 +31,7 @@ export const cacheKeys = {
   friends: () => "friends",
   userWorlds: (id: string) => `user:worlds:${id}`,
   favoriteWorlds: (id: string) => `worlds:favorites:${id}`,
+  myFavoriteWorlds: () => "worlds:favorites:mine",
   world: (id: string) => `world:${id}`,
   avatar: (id: string) => `avatar:${id}`,
   avatarFavorites: () => "avatar:favorites",

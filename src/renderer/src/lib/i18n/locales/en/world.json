@@ -1,5 +1,57 @@
 {
   "createInstance": "Create Instance",
+  "deleted": {
+    "badge": "Deleted",
+    "name": "Deleted world"
+  },
+  "releaseStatus": {
+    "public": "Public",
+    "private": "Private",
+    "hidden": "Hidden"
+  },
+  "favorite": {
+    "add": "Favorite",
+    "favorited": "Favorited",
+    "manage": "Manage favorite",
+    "unfavorite": "Unfavorite",
+    "save": "Save",
+    "failed": "Action failed.",
+    "folderCount": "{{count}} worlds",
+    "folderFull": "Full"
+  },
+  "folder": {
+    "edit": "Edit folder",
+    "editTitle": "Edit folder",
+    "name": "Folder name",
+    "visibility": "Visibility",
+    "clear": "Empty folder",
+    "clearConfirm": "Remove all {{count}} worlds?",
+    "empty": "This folder is empty."
+  },
+  "visibility": {
+    "private": "Private",
+    "friends": "Friends",
+    "public": "Public"
+  },
+  "context": {
+    "open": "Open world",
+    "select": "Select world",
+    "unfavoriteConfirm": "Remove \"{{name}}\" from your favorites?"
+  },
+  "bulk": {
+    "select": "Select",
+    "done": "Done",
+    "selectPrivate": "Select private",
+    "selectDeleted": "Select deleted",
+    "selected": "{{count}} selected",
+    "move": "Move",
+    "moving": "Moving favorites...",
+    "movingProgress": "Moving {{done}} / {{total}} favorites...",
+    "unfavoriteTitle": "Remove favorites",
+    "unfavoriteConfirm": "Remove {{count}} selected worlds from your favorites?",
+    "moveTitle": "Move {{count}} worlds",
+    "skipped": "{{count}} couldn't be moved (private or deleted) and were left in place."
+  },
   "regions": {
     "us": "US West",
     "use": "US East",

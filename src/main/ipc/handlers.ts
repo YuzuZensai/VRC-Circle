@@ -19,6 +19,7 @@ import * as game from "../game/launch";
 import * as region from "../game/region";
 import { socialSnapshot } from "../store/social";
 import { worldStore } from "../store/worldStore";
+import { worldFavoritesStore } from "../store/worldFavoritesStore";
 import { groupStore } from "../store/groupStore";
 import { openDebugWindow } from "../windows";
 
@@ -53,6 +54,18 @@ const handlers = {
   "world:discover": () => guard(() => worlds.getDiscover()),
   "world:get": (worldId) => guard(() => worlds.getWorld(worldId)),
   "world:snapshot": () => guard(async () => worldStore.snapshot()),
+  "world:favoritesSnapshot": () => guard(async () => worldFavoritesStore.snapshot()),
+  "world:loadFavorites": () => guard(() => worlds.loadMyFavoriteWorlds()),
+  "world:favorite": ({ worldId, folder }) => guard(() => worlds.favoriteWorld(worldId, folder)),
+  "world:unfavorite": (worldId) => guard(() => worlds.unfavoriteWorld(worldId)),
+  "world:moveFavorite": ({ worldId, folder }) =>
+    guard(() => worlds.moveWorldToFolder(worldId, folder)),
+  "world:unfavoriteMany": (worldIds) => guard(() => worlds.unfavoriteWorlds(worldIds)),
+  "world:moveFavoriteMany": ({ worldIds, folder }) =>
+    guard(() => worlds.moveWorldsToFolder(worldIds, folder)),
+  "world:clearFavoriteFolder": (folder) => guard(() => worlds.clearFavoriteWorldFolder(folder)),
+  "world:updateFavoriteFolder": ({ folder, edit }) =>
+    guard(() => worlds.updateFavoriteWorldFolder(folder, edit)),
 
   "instance:get": ({ worldId, instanceId }) =>
     guard(() => instances.getInstance(worldId, instanceId)),

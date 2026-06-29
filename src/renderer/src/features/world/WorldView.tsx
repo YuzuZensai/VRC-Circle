@@ -1,33 +1,37 @@
 import { useState } from "react";
-import { Globe, Heart, Plus, Tag as TagIcon, Users } from "lucide-react";
+import { Globe, Heart, Plus, Star, Tag as TagIcon, Users } from "lucide-react";
 import type { World } from "../../../../shared/types/world";
 import { Banner, Button, Fact, Section, Skeleton, StatTile, Tag } from "../../components/ui";
 import { api } from "../../lib/api";
 import { useAsync } from "../../lib/useAsync";
 import { compactNumber, formatDate, prettyTag, tagsWithPrefix } from "../../lib/format";
 import { useWorlds } from "../../store/worlds";
+import { useWorldFolder } from "../../store/worldFavorites";
 import { useNav } from "../navigation/NavContext";
 import { useT } from "../../lib/i18n";
 import { COL_WIDE } from "../../lib/layout";
 import { HeroHeader } from "../shared/HeroHeader";
 import { CreateInstanceModal } from "./CreateInstanceModal";
+import { WorldFavoriteModal } from "./WorldFavoriteModal";
 import "../profile/profile.css";
 
 export function WorldView({ worldId }: { worldId: string }) {
   const cached = useWorlds((s) => s.worlds[worldId]);
   const load = useAsync(() => api.world.get(worldId), [worldId], "This world is unavailable.");
 
-  if (load.status === "error" && !cached?.detailed) {
+  if (cached?.detailed) return <WorldCard world={cached} />;
+  if (load.status === "error") {
     return <Banner className="m-10 max-w-[420px]">{load.message}</Banner>;
   }
-  if (!cached?.detailed) return <WorldSkeleton />;
-  return <WorldCard world={cached} />;
+  return <WorldSkeleton />;
 }
 
 function WorldCard({ world }: { world: World }) {
   const { openUser } = useNav();
   const t = useT();
   const [createOpen, setCreateOpen] = useState(false);
+  const [favoriteOpen, setFavoriteOpen] = useState(false);
+  const folder = useWorldFolder(world.id);
   const banner = world.imageUrl || world.thumbnailImageUrl;
   const players = world.occupants;
 
@@ -55,7 +59,7 @@ function WorldCard({ world }: { world: World }) {
           </p>
           <div className="mt-2.5 flex flex-wrap items-center gap-2">
             {world.releaseStatus !== "public" ? (
-              <Tag color="var(--status-ask)">{world.releaseStatus}</Tag>
+              <Tag color="var(--status-ask)">{t(`world:releaseStatus.${world.releaseStatus}`)}</Tag>
             ) : null}
             {world.platforms?.pc ? <Tag>PC</Tag> : null}
             {world.platforms?.android ? <Tag color="var(--status-join)">Quest</Tag> : null}
@@ -63,13 +67,26 @@ function WorldCard({ world }: { world: World }) {
         </div>
       }
       actions={
-        <Button className="mb-1 ml-auto shrink-0" onClick={() => setCreateOpen(true)}>
-          <Plus size={15} />
-          {t("world:createInstance")}
-        </Button>
+        <div className="mb-1 ml-auto flex shrink-0 items-center gap-2">
+          <Button
+            variant={folder ? "primary" : "ghost"}
+            onClick={() => setFavoriteOpen(true)}
+            title={folder ? t("world:favorite.manage") : t("world:favorite.add")}
+          >
+            <Star size={15} fill={folder ? "currentColor" : "none"} />
+            {folder ? t("world:favorite.favorited") : t("world:favorite.add")}
+          </Button>
+          <Button onClick={() => setCreateOpen(true)}>
+            <Plus size={15} />
+            {t("world:createInstance")}
+          </Button>
+        </div>
       }
     >
       <CreateInstanceModal worldId={world.id} open={createOpen} onClose={() => setCreateOpen(false)} />
+      {favoriteOpen ? (
+        <WorldFavoriteModal world={world} currentFolder={folder} onClose={() => setFavoriteOpen(false)} />
+      ) : null}
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           <StatTile

@@ -132,6 +132,8 @@ export class Repository<T extends Entity> {
       const prev = fields[key];
       const cls = this.policy.classOf(key);
       if (prev) {
+        // a stripped "???" list entry shouldn't wipe an identity field we already resolved
+        if (cls === "identity" && isEmpty(incoming) && !isEmpty(data[key])) continue;
         if (
           this.policy.keepNonEmpty?.has(key) &&
           isEmpty(incoming) &&

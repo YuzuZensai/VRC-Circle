@@ -6,7 +6,15 @@ import type {
   TwoFactorPayload,
 } from "./types/auth";
 import type { SocialSnapshot, UserProfile, UserStatus } from "./types/user";
-import type { DiscoverCategory, FavoriteWorldFolder, World, WorldSnapshot } from "./types/world";
+import type {
+  DiscoverCategory,
+  FavoriteWorldFolder,
+  World,
+  WorldSnapshot,
+  WorldFavoritesSnapshot,
+  FavoriteGroupEdit as WorldFavoriteGroupEdit,
+  MoveResult as WorldMoveResult,
+} from "./types/world";
 import type { CreateInstanceInput, Instance, InstanceRegion } from "./types/instance";
 import type { UnityStatus } from "./types/unity";
 import type {
@@ -58,6 +66,21 @@ export interface IpcRequests {
   "world:favorites": (userId: string) => IpcResult<FavoriteWorldFolder[]>;
   "world:get": (worldId: string) => IpcResult<World>;
   "world:snapshot": () => IpcResult<WorldSnapshot>;
+  "world:favoritesSnapshot": () => IpcResult<WorldFavoritesSnapshot>;
+  "world:loadFavorites": () => IpcResult<void>;
+  "world:favorite": (p: { worldId: string; folder?: string }) => IpcResult<void>;
+  "world:unfavorite": (worldId: string) => IpcResult<void>;
+  "world:moveFavorite": (p: { worldId: string; folder: string }) => IpcResult<WorldMoveResult>;
+  "world:unfavoriteMany": (worldIds: string[]) => IpcResult<void>;
+  "world:moveFavoriteMany": (p: {
+    worldIds: string[];
+    folder: string;
+  }) => IpcResult<WorldMoveResult>;
+  "world:clearFavoriteFolder": (folder: string) => IpcResult<void>;
+  "world:updateFavoriteFolder": (p: {
+    folder: string;
+    edit: WorldFavoriteGroupEdit;
+  }) => IpcResult<void>;
 
   "instance:get": (location: { worldId: string; instanceId: string }) => IpcResult<Instance>;
   "instance:create": (input: CreateInstanceInput) => IpcResult<Instance>;
@@ -163,6 +186,7 @@ export interface IpcEvents {
   "avatar:seed": AvatarSnapshot;
   "avatar:upsert": Avatar;
   "world:favoriteFolders": { userId: string; folders: FavoriteWorldFolder[]; done: boolean };
+  "world:favorites:seed": WorldFavoritesSnapshot;
   "game:changed": GameStatus;
   "instance:open": { worldId: string; instanceId: string; location: string };
   "gallery:added": Photo;

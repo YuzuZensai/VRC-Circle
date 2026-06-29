@@ -164,15 +164,18 @@ export function toCurrentUserSummary(raw: RawUser): CurrentUserSummary {
 
 type RawWorld = SdkWorld | LimitedWorld | FavoritedWorld;
 
+// vrchat returns "???" for the name/author of a private world you can't read
+const unhide = (v: string | undefined): string => (v && v !== "???" ? v : "");
+
 export function toWorld(raw: RawWorld): World {
   const platforms = raw.unityPackages ? platformsOf(raw.unityPackages) : undefined;
   const detailed = "visits" in raw;
   return {
     id: raw.id,
     detailed,
-    name: raw.name,
+    name: unhide(raw.name),
     authorId: raw.authorId ?? "",
-    authorName: raw.authorName,
+    authorName: unhide(raw.authorName),
     description: "description" in raw ? (raw.description ?? "") : "",
     imageUrl: raw.imageUrl ?? "",
     thumbnailImageUrl: raw.thumbnailImageUrl ?? "",
