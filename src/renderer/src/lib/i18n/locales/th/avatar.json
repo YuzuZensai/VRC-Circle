@@ -1,0 +1,64 @@
+{
+  "tabs": {
+    "uploaded": "ที่อัปโหลด",
+    "favorites": "รายการโปรด"
+  },
+  "search": {
+    "label": "ค้นหาอวตาร",
+    "placeholder": "กรองตามชื่อ ผู้สร้าง หรือแท็ก"
+  },
+  "tip": {
+    "favorites": "รายการโปรด"
+  },
+  "empty": "ไม่มีอวตารให้แสดง",
+  "current": "ที่ใช้อยู่",
+  "releaseStatus": {
+    "public": "สาธารณะ",
+    "private": "ส่วนตัว"
+  },
+  "actions": {
+    "wear": "สวมใส่",
+    "wearing": "กำลังสวมใส่",
+    "favorite": "เพิ่มรายการโปรด",
+    "unfavorite": "เอาออกจากรายการโปรด",
+    "edit": "แก้ไข",
+    "delete": "ลบ",
+    "save": "บันทึก",
+    "failed": "การดำเนินการล้มเหลว",
+    "name": "ชื่อ",
+    "description": "คำอธิบาย",
+    "releaseStatus": "การมองเห็น",
+    "editTitle": "แก้ไขอวตาร",
+    "deleteTitle": "ลบอวตาร",
+    "deleteBody": "ลบ \"{{name}}\" อย่างถาวรหรือไม่? ไม่สามารถย้อนกลับได้"
+  },
+  "performance": {
+    "Excellent": "ดีเยี่ยม",
+    "Good": "ดี",
+    "Medium": "ปานกลาง",
+    "Poor": "แย่",
+    "VeryPoor": "แย่มาก"
+  },
+  "detail": {
+    "byPrefix": "โดย",
+    "unavailable": "อวตารนี้ไม่พร้อมใช้งาน",
+    "featured": "แนะนำ",
+    "noAuthorTags": "ไม่มีแท็กจากผู้สร้าง",
+    "stats": {
+      "favorites": "รายการโปรด",
+      "performancePc": "อันดับ PC",
+      "performanceQuest": "อันดับ Quest"
+    },
+    "sections": {
+      "description": "คำอธิบาย",
+      "details": "รายละเอียด",
+      "tags": "แท็ก"
+    },
+    "facts": {
+      "releaseStatus": "สถานะการเผยแพร่",
+      "created": "สร้างเมื่อ",
+      "updated": "อัปเดตเมื่อ",
+      "avatarId": "ไอดีอวตาร"
+    }
+  }
+}

@@ -5,6 +5,7 @@ import type { UserStatus } from "../../../shared/types/user";
 import type { EnhancementId } from "../../../shared/types/enhancements";
 import type { CreateInstanceInput } from "../../../shared/types/instance";
 import type { PreferredRegion } from "../../../shared/types/appConfig";
+import type { AvatarEdit } from "../../../shared/types/avatar";
 
 export class ApiException extends Error {
   constructor(public readonly error: ApiError) {
@@ -71,7 +72,14 @@ export const api = {
   },
   avatar: {
     get: (avatarId: string) => call("avatar:get", avatarId),
-    favorites: () => call("avatar:favorites"),
+    snapshot: () => call("avatar:snapshot"),
+    loadMine: () => call("avatar:loadMine"),
+    loadFavorites: () => call("avatar:loadFavorites"),
+    select: (avatarId: string) => call("avatar:select", avatarId),
+    update: (avatarId: string, edit: AvatarEdit) => call("avatar:update", { avatarId, edit }),
+    delete: (avatarId: string) => call("avatar:delete", avatarId),
+    setFavorited: (avatarId: string, favorited: boolean) =>
+      call("avatar:setFavorited", { avatarId, favorited }),
   },
   group: {
     byUser: (userId: string) => call("group:byUser", userId),

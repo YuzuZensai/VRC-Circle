@@ -1,0 +1,64 @@
+{
+  "tabs": {
+    "uploaded": "アップロード済み",
+    "favorites": "お気に入り"
+  },
+  "search": {
+    "label": "アバターを検索",
+    "placeholder": "名前・作者・タグで絞り込み"
+  },
+  "tip": {
+    "favorites": "お気に入り"
+  },
+  "empty": "表示するアバターがありません。",
+  "current": "使用中",
+  "releaseStatus": {
+    "public": "公開",
+    "private": "非公開"
+  },
+  "actions": {
+    "wear": "着用",
+    "wearing": "使用中",
+    "favorite": "お気に入り登録",
+    "unfavorite": "お気に入り解除",
+    "edit": "編集",
+    "delete": "削除",
+    "save": "保存",
+    "failed": "操作に失敗しました。",
+    "name": "名前",
+    "description": "説明",
+    "releaseStatus": "公開設定",
+    "editTitle": "アバターを編集",
+    "deleteTitle": "アバターを削除",
+    "deleteBody": "「{{name}}」を完全に削除しますか？元に戻せません。"
+  },
+  "performance": {
+    "Excellent": "非常に良い",
+    "Good": "良い",
+    "Medium": "普通",
+    "Poor": "悪い",
+    "VeryPoor": "非常に悪い"
+  },
+  "detail": {
+    "byPrefix": "作者",
+    "unavailable": "このアバターは利用できません。",
+    "featured": "注目",
+    "noAuthorTags": "作者タグなし",
+    "stats": {
+      "favorites": "お気に入り",
+      "performancePc": "PCランク",
+      "performanceQuest": "Questランク"
+    },
+    "sections": {
+      "description": "説明",
+      "details": "詳細",
+      "tags": "タグ"
+    },
+    "facts": {
+      "releaseStatus": "公開状態",
+      "created": "作成日",
+      "updated": "更新日",
+      "avatarId": "アバターID"
+    }
+  }
+}

@@ -61,7 +61,14 @@ const handlers = {
     guard(() => instances.inviteSelf(worldId, instanceId)),
 
   "avatar:get": (avatarId) => guard(() => avatars.getAvatar(avatarId)),
-  "avatar:favorites": () => guard(() => avatars.getFavoritedAvatars()),
+  "avatar:snapshot": () => guard(async () => avatars.avatarSnapshot()),
+  "avatar:loadMine": () => guard(() => avatars.loadMyAvatars()),
+  "avatar:loadFavorites": () => guard(() => avatars.loadFavoritedAvatars()),
+  "avatar:select": (avatarId) => guard(() => avatars.selectAvatar(avatarId)),
+  "avatar:update": ({ avatarId, edit }) => guard(() => avatars.updateAvatar(avatarId, edit)),
+  "avatar:delete": (avatarId) => guard(() => avatars.deleteAvatar(avatarId)),
+  "avatar:setFavorited": ({ avatarId, favorited }) =>
+    guard(() => avatars.setAvatarFavorited(avatarId, favorited)),
 
   "group:byUser": (userId) => guard(() => groups.getUserGroups(userId)),
   "group:represented": (userId) => guard(() => groups.getRepresentedGroup(userId)),

@@ -51,6 +51,7 @@ export interface UserProfile {
   userIcon: string;
   profilePicOverride: string;
   profilePicOverrideThumbnail: string;
+  currentAvatarId?: string;
   currentAvatarImageUrl: string;
   currentAvatarThumbnailImageUrl: string;
   currentAvatarTags: string[];

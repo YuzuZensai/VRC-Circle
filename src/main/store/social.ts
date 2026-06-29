@@ -9,6 +9,7 @@ import { activeId } from "../accounts/store";
 import { entityStore, type SocialSnapshot } from "./entityStore";
 import { worldStore } from "./worldStore";
 import { groupStore } from "./groupStore";
+import { avatarStore } from "./avatarStore";
 import { repos } from "./repository/manager";
 import { broadcast } from "../windows";
 import { logger } from "../debug/logger";
@@ -172,6 +173,7 @@ export async function seedActiveAccount(force = false): Promise<void> {
   if (!id) {
     worldStore.reset();
     groupStore.reset();
+    avatarStore.reset();
     entityStore.reset();
     return;
   }
@@ -211,5 +213,10 @@ export function startSocialBridge(): void {
   groupStore.onChange((c) => {
     if (c.type === "seed") broadcast("group:seed", c.snapshot);
     else broadcast("group:upsert", c.group);
+  });
+
+  avatarStore.onChange((c) => {
+    if (c.type === "seed") broadcast("avatar:seed", c.snapshot);
+    else broadcast("avatar:upsert", c.avatar);
   });
 }

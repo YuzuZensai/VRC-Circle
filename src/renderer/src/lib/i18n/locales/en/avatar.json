@@ -1,0 +1,64 @@
+{
+  "tabs": {
+    "uploaded": "Uploaded",
+    "favorites": "Favorites"
+  },
+  "search": {
+    "label": "Search avatars",
+    "placeholder": "Filter by name, author, or tag"
+  },
+  "tip": {
+    "favorites": "Favorites"
+  },
+  "empty": "No avatars to show.",
+  "current": "Current",
+  "releaseStatus": {
+    "public": "Public",
+    "private": "Private"
+  },
+  "actions": {
+    "wear": "Wear",
+    "wearing": "Wearing",
+    "favorite": "Favorite",
+    "unfavorite": "Unfavorite",
+    "edit": "Edit",
+    "delete": "Delete",
+    "save": "Save",
+    "failed": "Action failed.",
+    "name": "Name",
+    "description": "Description",
+    "releaseStatus": "Visibility",
+    "editTitle": "Edit avatar",
+    "deleteTitle": "Delete avatar",
+    "deleteBody": "Permanently delete \"{{name}}\"? This can't be undone."
+  },
+  "performance": {
+    "Excellent": "Excellent",
+    "Good": "Good",
+    "Medium": "Medium",
+    "Poor": "Poor",
+    "VeryPoor": "Very Poor"
+  },
+  "detail": {
+    "byPrefix": "by",
+    "unavailable": "This avatar is unavailable.",
+    "featured": "Featured",
+    "noAuthorTags": "No author tags",
+    "stats": {
+      "favorites": "Favorites",
+      "performancePc": "PC Rank",
+      "performanceQuest": "Quest Rank"
+    },
+    "sections": {
+      "description": "Description",
+      "details": "Details",
+      "tags": "Tags"
+    },
+    "facts": {
+      "releaseStatus": "Release status",
+      "created": "Created",
+      "updated": "Updated",
+      "avatarId": "Avatar ID"
+    }
+  }
+}

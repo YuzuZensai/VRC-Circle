@@ -7,6 +7,7 @@ import {
   ExternalLink,
   Images,
   Globe2,
+  Shirt,
   Search,
   Settings,
   SlidersHorizontal,
@@ -16,6 +17,8 @@ import {
 import type { LucideIcon } from "lucide-react";
 import { ProfileView } from "../features/profile/ProfileView";
 import { MyWorldsView } from "../features/profile/MyWorldsView";
+import { AvatarsView } from "../features/avatar/AvatarsView";
+import { AvatarView } from "../features/avatar/AvatarView";
 import { WorldView } from "../features/world/WorldView";
 import { InstanceView } from "../features/world/InstanceView";
 import { GroupView } from "../features/group/GroupView";
@@ -44,7 +47,7 @@ type NavItem = {
   id: string;
   label: string;
   icon: LucideIcon;
-  onClick: () => void;
+  onClick: (e: React.MouseEvent) => void;
   kind?: View["kind"];
   external?: boolean;
   divider?: boolean;
@@ -95,6 +98,13 @@ function Shell() {
       onClick: () => nav.openWorlds(),
     },
     {
+      id: "avatars",
+      label: t("nav:avatars"),
+      icon: Shirt,
+      kind: "avatars",
+      onClick: () => nav.openAvatars(),
+    },
+    {
       id: "account",
       label: t("nav:account"),
       icon: UserCog,
@@ -114,13 +124,19 @@ function Shell() {
       label: t("nav:debug"),
       icon: Settings,
       external: true,
-      onClick: () => void api.debug.openWindow(),
+      onClick: (e) => {
+        if (e.ctrlKey || e.metaKey) void api.debug.cacheClear();
+        else void api.debug.openWindow();
+      },
     },
   ];
 
   const openProfile = (id: "me" | string) => nav.openUser(id);
   const stageKey =
-    nav.current.kind === "user" || nav.current.kind === "world" || nav.current.kind === "group"
+    nav.current.kind === "user" ||
+    nav.current.kind === "world" ||
+    nav.current.kind === "avatar" ||
+    nav.current.kind === "group"
       ? `${nav.current.kind}:${nav.current.id}`
       : nav.current.kind;
 
@@ -154,8 +170,8 @@ function Shell() {
                     {item.divider ? <div className="navitem-divider" aria-hidden /> : null}
                     <button
                       className={`navitem ${active ? "is-active" : ""}`}
-                      onClick={item.onClick}
-                      title={item.label}
+                      onClick={(e) => item.onClick(e)}
+                      title={item.id === "debug" ? t("nav:debugHint") : item.label}
                     >
                       <span className="navitem__ico">
                         <Icon size={16} />
@@ -187,12 +203,16 @@ function Shell() {
           <div key={stageKey} className="stage__inner animate-rise">
             {nav.current.kind === "world" ? (
               <WorldView worldId={nav.current.id} />
+            ) : nav.current.kind === "avatar" ? (
+              <AvatarView avatarId={nav.current.id} />
             ) : nav.current.kind === "instance" ? (
               <InstanceView worldId={nav.current.worldId} instanceId={nav.current.instanceId} />
             ) : nav.current.kind === "group" ? (
               <GroupView groupId={nav.current.id} />
             ) : nav.current.kind === "worlds" ? (
               <MyWorldsView />
+            ) : nav.current.kind === "avatars" ? (
+              <AvatarsView />
             ) : nav.current.kind === "account" ? (
               <AccountSettingsView />
             ) : nav.current.kind === "settings" ? (

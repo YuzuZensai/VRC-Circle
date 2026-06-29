@@ -1,6 +1,29 @@
-import type { VRChat, FavoritedWorld, LimitedWorld } from "vrchat";
+import type { VRChat, FavoritedWorld, LimitedWorld, Avatar } from "vrchat";
 
 // VRChat web routes that are missing from the SDK.
+
+export async function getAvatarRaw(vrc: VRChat, avatarId: string): Promise<Avatar> {
+  const { data } = await vrc.client.get({ url: `/avatars/${avatarId}`, throwOnError: true });
+  return data as Avatar;
+}
+
+export async function getMyAvatarsRaw(vrc: VRChat): Promise<Avatar[]> {
+  const { data } = await vrc.client.get<Avatar[], unknown, true>({
+    url: "/avatars",
+    query: { user: "me", releaseStatus: "all", sort: "updated", order: "descending", n: 100 },
+    throwOnError: true,
+  });
+  return data;
+}
+
+export async function getFavoritedAvatarsRaw(vrc: VRChat, group?: string): Promise<Avatar[]> {
+  const { data } = await vrc.client.get<Avatar[], unknown, true>({
+    url: "/avatars/favorites",
+    query: { n: 100, tag: group },
+    throwOnError: true,
+  });
+  return data;
+}
 
 interface FavoriteGroupItem {
   favoriteId: string;

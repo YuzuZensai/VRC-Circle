@@ -112,6 +112,13 @@ export function accessLabel(t: TFunc, type?: string): string {
   return label === key ? type : label;
 }
 
+export function performanceLabel(t: TFunc, rating?: string): string | null {
+  if (!rating) return null;
+  const key = `avatar:performance.${rating}`;
+  const label = t(key);
+  return label === key ? rating : label;
+}
+
 const languageNames: Record<string, string> = {
   eng: "English",
   kor: "Korean",

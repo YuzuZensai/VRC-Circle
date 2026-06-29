@@ -28,6 +28,7 @@ interface RawUser {
   userIcon?: string;
   profilePicOverride?: string;
   profilePicOverrideThumbnail?: string;
+  currentAvatar?: string;
   currentAvatarImageUrl?: string;
   currentAvatarThumbnailImageUrl?: string;
   currentAvatarTags?: string[];
@@ -113,6 +114,7 @@ export function toUserProfile(raw: RawUser, selfId: string): UserProfile {
     userIcon: raw.userIcon ?? "",
     profilePicOverride: raw.profilePicOverride ?? "",
     profilePicOverrideThumbnail: raw.profilePicOverrideThumbnail ?? "",
+    currentAvatarId: raw.currentAvatar,
     currentAvatarImageUrl: raw.currentAvatarImageUrl ?? "",
     currentAvatarThumbnailImageUrl: raw.currentAvatarThumbnailImageUrl ?? "",
     currentAvatarTags: raw.currentAvatarTags ?? [],
@@ -280,8 +282,18 @@ interface RawAvatar {
   releaseStatus?: string;
   tags?: string[];
   favorites?: number;
+  featured?: boolean;
+  performance?: { standalonewindows?: string; android?: string };
   created_at?: string | Date;
   updated_at?: string | Date;
+}
+
+function hasBuild(rating?: string): boolean {
+  return Boolean(rating) && rating !== "None";
+}
+
+function ratingOf(rating?: string): string | undefined {
+  return hasBuild(rating) ? rating : undefined;
 }
 
 export function toAvatar(raw: RawAvatar): Avatar {
@@ -296,6 +308,15 @@ export function toAvatar(raw: RawAvatar): Avatar {
     releaseStatus: raw.releaseStatus ?? "private",
     tags: raw.tags ?? [],
     favorites: raw.favorites ?? 0,
+    featured: raw.featured,
+    platforms: {
+      pc: hasBuild(raw.performance?.standalonewindows),
+      android: hasBuild(raw.performance?.android),
+    },
+    performance: {
+      pc: ratingOf(raw.performance?.standalonewindows),
+      android: ratingOf(raw.performance?.android),
+    },
     createdAt: toIso(raw.created_at),
     updatedAt: toIso(raw.updated_at),
   };
