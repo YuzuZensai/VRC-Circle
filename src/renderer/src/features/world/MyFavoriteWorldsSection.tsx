@@ -17,7 +17,9 @@ import { api } from "../../lib/api";
 import { useT } from "../../lib/i18n";
 import {
   useFavoriteWorldFolders,
+  useWorldFavorites,
   useWorldFavoriteLimits,
+  useWorldFavoritesLoaded,
   type FavoriteFolder,
 } from "../../store/worldFavorites";
 import { useSocial } from "../../store/social";
@@ -35,6 +37,7 @@ export function MyFavoriteWorldsSection({ filter }: { filter?: WorldFilter }) {
   const selfId = useSocial((s) => s.selfId);
   const folders = useFavoriteWorldFolders();
   const { maxPerGroup } = useWorldFavoriteLimits();
+  const loaded = useWorldFavoritesLoaded();
   const searching = Boolean(filter);
 
   const [editFolder, setEditFolder] = useState<FavoriteFolder | null>(null);
@@ -50,10 +53,11 @@ export function MyFavoriteWorldsSection({ filter }: { filter?: WorldFilter }) {
   const [selected, setSelected] = useState<Set<string>>(() => new Set());
 
   useEffect(() => {
+    useWorldFavorites.getState().markStale();
     void api.world.loadFavorites();
   }, [selfId]);
 
-  if (!folders.length) return <SkeletonGrid count={3} />;
+  if (!loaded && !folders.length) return <SkeletonGrid count={3} />;
 
   const filtered = filter
     ? folders.map((f) => ({ ...f, worlds: f.worlds.filter(filter) }))

@@ -14,13 +14,17 @@ const DEFAULT_LIMITS: FavoriteLimits = { maxGroups: 4, maxPerGroup: 64 };
 interface WorldFavoritesState {
   groups: FavoriteWorldGroup[];
   limits: FavoriteLimits;
+  loaded: boolean;
   seed: (s: WorldFavoritesSnapshot) => void;
+  markStale: () => void;
 }
 
 export const useWorldFavorites = create<WorldFavoritesState>((set) => ({
   groups: [],
   limits: DEFAULT_LIMITS,
-  seed: (s) => set({ groups: s.groups, limits: s.limits }),
+  loaded: false,
+  seed: (s) => set({ groups: s.groups, limits: s.limits, loaded: true }),
+  markStale: () => set({ loaded: false }),
 }));
 
 events.on("world:favorites:seed", (s) => useWorldFavorites.getState().seed(s));
@@ -65,6 +69,8 @@ function toFolder(
 
 export const useWorldFavoriteLimits = (): FavoriteLimits =>
   useWorldFavorites((s) => s.limits);
+
+export const useWorldFavoritesLoaded = (): boolean => useWorldFavorites((s) => s.loaded);
 
 export function useWorldFolder(worldId: string): string | undefined {
   return useWorldFavorites((s) => s.groups.find((g) => g.worldIds.includes(worldId))?.name);
