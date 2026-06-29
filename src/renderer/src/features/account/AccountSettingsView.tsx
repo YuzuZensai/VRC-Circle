@@ -1,7 +1,7 @@
-import { useState } from "react";
 import { Trans } from "react-i18next";
 import { useI18n } from "../../lib/i18n";
 import { Banner, Loader, PAGE_TITLE, Tabs } from "../../components/ui";
+import { useViewState } from "../navigation/NavContext";
 import { useAccountSettings } from "./useAccountSettings";
 import { DisplayNameSection } from "./sections/DisplayNameSection";
 import { EmailSection } from "./sections/EmailSection";
@@ -22,7 +22,7 @@ type AccountTab = "account" | "security" | "privacy" | "data";
 export function AccountSettingsView() {
   const { t } = useI18n();
   const { state, set } = useAccountSettings();
-  const [tab, setTab] = useState<AccountTab>("account");
+  const [tab, setTab] = useViewState<AccountTab>("account:tab", "account");
 
   if (state.status === "loading") return <Loader className="absolute inset-0" />;
   if (state.status === "error")

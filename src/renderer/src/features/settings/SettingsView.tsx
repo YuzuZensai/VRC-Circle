@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { useTheme } from "../../lib/ThemeContext";
 import { useI18n } from "../../lib/i18n";
+import { useViewState } from "../navigation/NavContext";
 import { ACCENT_PRESETS, DEFAULT_ACCENT, type SchemeMode } from "../../lib/theme";
 import type { AppConfig, PreferredRegion, RegionPing } from "../../../../shared/types/appConfig";
 import type { UnityStatus } from "../../../../shared/types/unity";
@@ -42,7 +43,7 @@ type SettingsTab = "appearance" | "game" | "creator" | "about";
 
 export function SettingsView() {
   const { t } = useI18n();
-  const [tab, setTab] = useState<SettingsTab>("appearance");
+  const [tab, setTab] = useViewState<SettingsTab>("settings:tab", "appearance");
   return (
     <div className={SHELL}>
       <header>

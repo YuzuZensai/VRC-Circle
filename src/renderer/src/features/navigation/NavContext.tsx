@@ -1,4 +1,4 @@
-import { createContext, useContext, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useMemo, useRef, useState } from "react";
 
 export type View =
   | { kind: "user"; id: "me" | string }
@@ -30,12 +30,15 @@ interface Nav {
   openGallery: () => void;
   openSearch: () => void;
   back: () => void;
+  getViewState: (key: string) => unknown;
+  setViewState: (key: string, value: unknown) => void;
 }
 
 const NavCtx = createContext<Nav | null>(null);
 
 export function NavProvider({ children }: { children: React.ReactNode }) {
   const [stack, setStack] = useState<View[]>([{ kind: "user", id: "me" }]);
+  const viewState = useRef(new Map<string, unknown>());
 
   const push = (view: View) =>
     setStack((s) => {
@@ -64,6 +67,8 @@ export function NavProvider({ children }: { children: React.ReactNode }) {
       openGallery: () => root({ kind: "gallery" }),
       openSearch: () => root({ kind: "search" }),
       back: () => setStack((s) => (s.length > 1 ? s.slice(0, -1) : s)),
+      getViewState: (key) => viewState.current.get(key),
+      setViewState: (key, value) => viewState.current.set(key, value),
     }),
     [stack],
   );
@@ -85,4 +90,20 @@ export function useNav(): Nav {
   const ctx = useContext(NavCtx);
   if (!ctx) throw new Error("useNav must be used within NavProvider");
   return ctx;
+}
+
+export function useViewState<T>(key: string, initial: T): [T, (value: T) => void] {
+  const nav = useNav();
+  const [state, set] = useState<T>(() => {
+    const saved = nav.getViewState(key);
+    return saved === undefined ? initial : (saved as T);
+  });
+  const setBoth = useCallback(
+    (value: T) => {
+      nav.setViewState(key, value);
+      set(value);
+    },
+    [nav, key],
+  );
+  return [state, setBoth];
 }

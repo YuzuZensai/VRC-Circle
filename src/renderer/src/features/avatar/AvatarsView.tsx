@@ -21,6 +21,7 @@ import {
   type FavoriteFolder,
 } from "../../store/avatars";
 import { useSelf, useSocial } from "../../store/social";
+import { useViewState } from "../navigation/NavContext";
 import { AvatarCard } from "./AvatarCard";
 import { FolderEditModal } from "./FolderEditModal";
 
@@ -41,8 +42,8 @@ function matchAvatar(query: string): AvatarFilter {
 
 export function AvatarsView() {
   const t = useT();
-  const [tab, setTab] = useState<Tab>("uploaded");
-  const [query, setQuery] = useState("");
+  const [tab, setTab] = useViewState<Tab>("avatars:tab", "uploaded");
+  const [query, setQuery] = useViewState("avatars:query", "");
   const filter = useMemo(() => matchAvatar(query), [query]);
   const selfId = useSocial((s) => s.selfId);
 

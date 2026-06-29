@@ -18,6 +18,7 @@ import {
   Tag,
 } from "../../components/ui";
 import { useUserMenu } from "../friends/useUserMenu";
+import { useViewState } from "../navigation/NavContext";
 import {
   avatarOf,
   bannerOf,
@@ -47,7 +48,7 @@ export function ProfileView({ target }: { target: "me" | string }) {
 
 function ProfileCard({ profile }: { profile: UserProfile }) {
   const t = useT();
-  const [tab, setTab] = useState<TabId>("overview");
+  const [tab, setTab] = useViewState<TabId>(`profile:${profile.id}:tab`, "overview");
   const [menu, setMenu] = useState<{ x: number; y: number } | null>(null);
   const canAdd = !profile.isSelf && !profile.isFriend;
   const addFriend = useAddFriend(profile.id);

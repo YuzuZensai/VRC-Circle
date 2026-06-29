@@ -1,6 +1,6 @@
-import { useState } from "react";
 import { Banner, Loader, PAGE_TITLE, Tabs } from "../../components/ui";
 import { useT } from "../../lib/i18n";
+import { useViewState } from "../navigation/NavContext";
 import { useProfile } from "./useProfile";
 import { WorldsSection, FavoriteWorldsSection, WorldSearch } from "./WorldsSection";
 import { DiscoverSection } from "./DiscoverSection";
@@ -12,7 +12,7 @@ type Tab = "discover" | "worlds" | "favorites";
 export function MyWorldsView() {
   const t = useT();
   const state = useProfile("me");
-  const [tab, setTab] = useState<Tab>("discover");
+  const [tab, setTab] = useViewState<Tab>("worlds:tab", "discover");
 
   if (state.status === "loading") return <Loader className="absolute inset-0" />;
   if (state.status === "error")

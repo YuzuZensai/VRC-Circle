@@ -14,7 +14,7 @@ import {
   Tag,
 } from "../../components/ui";
 import { useT } from "../../lib/i18n";
-import { useNav } from "../navigation/NavContext";
+import { useNav, useViewState } from "../navigation/NavContext";
 import { useUserMenu } from "../friends/useUserMenu";
 import { WorldCard } from "../world/WorldCard";
 import { avatarOf, trustMeta } from "../../lib/vrchat";
@@ -31,8 +31,8 @@ export function SearchView() {
   const t = useT();
   const { openUser, openWorld } = useNav();
   const { buildItems, modal } = useUserMenu();
-  const [tab, setTab] = useState<SearchTab>("users");
-  const [query, setQuery] = useState("");
+  const [tab, setTab] = useViewState<SearchTab>("search:tab", "users");
+  const [query, setQuery] = useViewState("search:query", "");
   const [busy, setBusy] = useState(false);
   const [users, setUsers] = useState<UserProfile[] | null>(null);
   const [worlds, setWorlds] = useState<World[] | null>(null);
