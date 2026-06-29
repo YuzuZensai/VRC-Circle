@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
   ArrowLeft,
   ChevronLeft,
@@ -140,6 +140,14 @@ function Shell() {
       ? `${nav.current.kind}:${nav.current.id}`
       : nav.current.kind;
 
+  const stageRef = useRef<HTMLElement>(null);
+  useLayoutEffect(() => {
+    const el = stageRef.current;
+    if (!el) return;
+    const saved = nav.getViewState(`scroll:${stageKey}`);
+    el.scrollTop = typeof saved === "number" ? saved : 0;
+  }, [stageKey, nav]);
+
   return (
     <div className="shell">
       <header className="topbar">
@@ -194,7 +202,11 @@ function Shell() {
           </div>
         </aside>
 
-        <main className="stage">
+        <main
+          className="stage"
+          ref={stageRef}
+          onScroll={(e) => nav.setViewState(`scroll:${stageKey}`, e.currentTarget.scrollTop)}
+        >
           {nav.canBack ? (
             <button onClick={nav.back} className="stage__back" aria-label="Go back">
               <ArrowLeft size={16} /> Back
