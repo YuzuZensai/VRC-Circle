@@ -48,6 +48,11 @@ export interface FavoriteGroupEdit {
   visibility?: FavoriteVisibility;
 }
 
+export interface MoveResult {
+  moved: number;
+  skipped: string[];
+}
+
 export interface AvatarSnapshot {
   avatars: Avatar[];
   mineIds: string[];

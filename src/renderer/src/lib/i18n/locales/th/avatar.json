@@ -39,12 +39,23 @@
     "edit": "แก้ไขโฟลเดอร์",
     "editTitle": "แก้ไขโฟลเดอร์",
     "name": "ชื่อโฟลเดอร์",
-    "visibility": "การมองเห็น"
+    "visibility": "การมองเห็น",
+    "clear": "ล้างโฟลเดอร์",
+    "clearConfirm": "ลบอวตารทั้งหมด {{count}} ตัวหรือไม่?",
+    "empty": "โฟลเดอร์นี้ว่างเปล่า"
   },
   "visibility": {
     "private": "ส่วนตัว",
     "friends": "เพื่อน",
     "public": "สาธารณะ"
+  },
+  "bulk": {
+    "select": "เลือก",
+    "done": "เสร็จ",
+    "selected": "เลือก {{count}} รายการ",
+    "move": "ย้าย",
+    "moveTitle": "ย้าย {{count}} ตัว",
+    "skipped": "ย้ายไม่ได้ {{count}} ตัว (ส่วนตัวหรือถูกลบแล้ว) และยังอยู่ที่เดิม"
   },
   "performance": {
     "Excellent": "ดีเยี่ยม",

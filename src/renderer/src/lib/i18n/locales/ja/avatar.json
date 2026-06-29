@@ -39,12 +39,23 @@
     "edit": "フォルダを編集",
     "editTitle": "フォルダを編集",
     "name": "フォルダ名",
-    "visibility": "公開設定"
+    "visibility": "公開設定",
+    "clear": "フォルダを空にする",
+    "clearConfirm": "{{count}} 体すべて削除しますか？",
+    "empty": "このフォルダは空です。"
   },
   "visibility": {
     "private": "非公開",
     "friends": "フレンド",
     "public": "公開"
+  },
+  "bulk": {
+    "select": "選択",
+    "done": "完了",
+    "selected": "{{count}} 件選択中",
+    "move": "移動",
+    "moveTitle": "{{count}} 体を移動",
+    "skipped": "{{count}} 体は移動できず（非公開または削除済み）、そのままになりました。"
   },
   "performance": {
     "Excellent": "非常に良い",

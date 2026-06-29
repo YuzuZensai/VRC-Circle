@@ -5,7 +5,7 @@ import type { UserStatus } from "../../../shared/types/user";
 import type { EnhancementId } from "../../../shared/types/enhancements";
 import type { CreateInstanceInput } from "../../../shared/types/instance";
 import type { PreferredRegion } from "../../../shared/types/appConfig";
-import type { AvatarEdit, FavoriteGroupEdit } from "../../../shared/types/avatar";
+import type { AvatarEdit, FavoriteGroupEdit, MoveResult } from "../../../shared/types/avatar";
 
 export class ApiException extends Error {
   constructor(public readonly error: ApiError) {
@@ -80,8 +80,12 @@ export const api = {
     delete: (avatarId: string) => call("avatar:delete", avatarId),
     favorite: (avatarId: string, folder?: string) => call("avatar:favorite", { avatarId, folder }),
     unfavorite: (avatarId: string) => call("avatar:unfavorite", avatarId),
-    moveFavorite: (avatarId: string, folder: string) =>
+    moveFavorite: (avatarId: string, folder: string): Promise<MoveResult> =>
       call("avatar:moveFavorite", { avatarId, folder }),
+    unfavoriteMany: (avatarIds: string[]) => call("avatar:unfavoriteMany", avatarIds),
+    moveFavoriteMany: (avatarIds: string[], folder: string): Promise<MoveResult> =>
+      call("avatar:moveFavoriteMany", { avatarIds, folder }),
+    clearFavoriteFolder: (folder: string) => call("avatar:clearFavoriteFolder", folder),
     updateFavoriteFolder: (folder: string, edit: FavoriteGroupEdit) =>
       call("avatar:updateFavoriteFolder", { folder, edit }),
   },

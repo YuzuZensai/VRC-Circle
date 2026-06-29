@@ -1,4 +1,4 @@
-import { Star } from "lucide-react";
+import { Check, Star } from "lucide-react";
 import type { Avatar } from "../../../../shared/types/avatar";
 import { Card, HoverImage, IconLabel, Tag } from "../../components/ui";
 import { compactNumber } from "../../lib/format";
@@ -9,19 +9,36 @@ export function AvatarCard({
   avatar,
   showAuthor,
   current,
+  selectable,
+  selected,
+  onToggleSelect,
 }: {
   avatar: Avatar;
   showAuthor?: boolean;
   current?: boolean;
+  selectable?: boolean;
+  selected?: boolean;
+  onToggleSelect?: () => void;
 }) {
   const t = useT();
   const { openAvatar } = useNav();
   const img = avatar.thumbnailImageUrl || avatar.imageUrl;
   return (
-    <Card onClick={() => openAvatar(avatar.id)}>
+    <Card onClick={selectable ? onToggleSelect : () => openAvatar(avatar.id)}>
       <div className="relative aspect-[4/3] bg-surface-hover">
         {img ? <HoverImage src={img} loading="lazy" /> : null}
-        {current ? (
+        {selectable ? (
+          <span
+            className={`absolute left-1.5 top-1.5 flex size-5 items-center justify-center rounded-md border transition-colors ${
+              selected
+                ? "border-accent bg-accent text-on-accent"
+                : "border-border bg-surface-2/80"
+            }`}
+          >
+            {selected ? <Check size={13} /> : null}
+          </span>
+        ) : null}
+        {current && !selectable ? (
           <span className="absolute left-1.5 top-1.5">
             <Tag color="var(--accent)">{t("avatar:current")}</Tag>
           </span>

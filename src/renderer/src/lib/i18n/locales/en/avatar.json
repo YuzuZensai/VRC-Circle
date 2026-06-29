@@ -39,12 +39,23 @@
     "edit": "Edit folder",
     "editTitle": "Edit folder",
     "name": "Folder name",
-    "visibility": "Visibility"
+    "visibility": "Visibility",
+    "clear": "Empty folder",
+    "clearConfirm": "Remove all {{count}} avatars?",
+    "empty": "This folder is empty."
   },
   "visibility": {
     "private": "Private",
     "friends": "Friends",
     "public": "Public"
+  },
+  "bulk": {
+    "select": "Select",
+    "done": "Done",
+    "selected": "{{count}} selected",
+    "move": "Move",
+    "moveTitle": "Move {{count}} avatars",
+    "skipped": "{{count}} couldn't be moved (private or deleted) and were left in place."
   },
   "performance": {
     "Excellent": "Excellent",

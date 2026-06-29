@@ -19,6 +19,7 @@ export function FavoriteModal({
   const slots = useFolderSlots();
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [skipped, setSkipped] = useState(false);
 
   const run = async (key: string, fn: () => Promise<void>) => {
     setBusy(key);
@@ -34,7 +35,22 @@ export function FavoriteModal({
 
   const pick = (folder: string) => {
     if (folder === currentFolder) return onClose();
-    if (currentFolder) return run(folder, () => api.avatar.moveFavorite(avatar.id, folder));
+    if (currentFolder) {
+      setBusy(folder);
+      setError(null);
+      setSkipped(false);
+      return api.avatar
+        .moveFavorite(avatar.id, folder)
+        .then((result) => {
+          if (result.skipped.length) {
+            setSkipped(true);
+            return;
+          }
+          onClose();
+        })
+        .catch((err) => setError(errorMessage(err, t("avatar:actions.failed"))))
+        .finally(() => setBusy(null));
+    }
     return run(folder, () => api.avatar.favorite(avatar.id, folder));
   };
 
@@ -83,6 +99,7 @@ export function FavoriteModal({
           </Button>
         ) : null}
 
+        {skipped ? <p className="text-[12px] text-muted">{t("avatar:bulk.skipped", { count: 1 })}</p> : null}
         {error ? <p className="text-[12px] text-danger">{error}</p> : null}
       </div>
     </Modal>
