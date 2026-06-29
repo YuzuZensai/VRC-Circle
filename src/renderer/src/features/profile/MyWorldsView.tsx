@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Banner, Loader, Tabs } from "../../components/ui";
+import { Banner, Loader, PAGE_TITLE, Tabs } from "../../components/ui";
 import { useT } from "../../lib/i18n";
 import { useProfile } from "./useProfile";
 import { WorldsSection, FavoriteWorldsSection, WorldSearch } from "./WorldsSection";
@@ -26,7 +26,7 @@ export function MyWorldsView() {
   return (
     <div className={SHELL}>
       <header>
-        <h1 className="text-[26px] font-bold tracking-[-0.4px]">{t("nav:worlds")}</h1>
+        <h1 className={PAGE_TITLE}>{t("nav:worlds")}</h1>
       </header>
 
       <Tabs

@@ -1,43 +1,36 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import type { AccountSettings } from "../../../../shared/types/settings";
-import { api, errorMessage } from "../../lib/api";
+import { api } from "../../lib/api";
+import { useAsync, type Async } from "../../lib/useAsync";
 import { useAuth } from "../auth/AuthContext";
 
-type State =
-  | { status: "loading" }
-  | { status: "error"; message: string }
-  | { status: "ready"; settings: AccountSettings };
-
 export function useAccountSettings(): {
-  state: State;
+  state: Async<AccountSettings>;
   reload: () => void;
   set: (s: AccountSettings) => void;
 } {
   const { status } = useAuth();
   const activeId = status.state === "authenticated" ? status.user.id : null;
-  const [state, setState] = useState<State>({ status: "loading" });
+
+  const [nonce, setNonce] = useState(0);
+  const [override, setOverride] = useState<AccountSettings | null>(null);
+
+  const fetched = useAsync(
+    () => api.settings.get(),
+    [activeId, nonce],
+    "Failed to load settings.",
+  );
+
+  const state: Async<AccountSettings> = override
+    ? { status: "ready", data: override }
+    : fetched;
 
   const reload = useCallback(() => {
-    setState({ status: "loading" });
-    api.settings
-      .get()
-      .then((settings) => setState({ status: "ready", settings }))
-      .catch((err) =>
-        setState({
-          status: "error",
-          message: errorMessage(err, "Failed to load settings."),
-        }),
-      );
+    setOverride(null);
+    setNonce((n) => n + 1);
   }, []);
 
-  useEffect(() => {
-    reload();
-  }, [reload, activeId]);
-
-  const set = useCallback(
-    (settings: AccountSettings) => setState({ status: "ready", settings }),
-    [],
-  );
+  const set = useCallback((settings: AccountSettings) => setOverride(settings), []);
 
   return { state, reload, set };
 }

@@ -1,9 +1,12 @@
 import { useState, type ReactNode } from "react";
-import { Check, ExternalLink, X } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import type { AccountSettings } from "../../../../shared/types/settings";
 import { errorMessage } from "../../lib/api";
 import { useI18n } from "../../lib/i18n";
-import { Toggle } from "../../components/ui";
+import { SettingsSection as Section, Toggle } from "../../components/ui";
+
+export { Section };
+export { Notice } from "../../components/ui";
 
 export type TFunc = ReturnType<typeof useI18n>["t"];
 
@@ -13,39 +16,6 @@ export type SectionProps = {
 };
 
 export const WEBSITE_ACCOUNT = "https://vrchat.com/home/profile";
-
-export function Section({
-  title,
-  description,
-  icon,
-  danger,
-  children,
-}: {
-  title: string;
-  description?: ReactNode;
-  icon?: ReactNode;
-  danger?: boolean;
-  children: ReactNode;
-}) {
-  return (
-    <section
-      className={`rounded-DEFAULT border px-6 py-[22px] shadow-[var(--shadow-1)] ${
-        danger
-          ? "border-[color-mix(in_srgb,var(--danger)_35%,var(--border))] bg-[color-mix(in_srgb,var(--danger)_6%,var(--surface-2))]"
-          : "border-border bg-surface-2"
-      }`}
-    >
-      <div className="mb-4">
-        <h2 className="flex items-center gap-2 text-[15px] font-bold">
-          {icon ? <span className="text-muted">{icon}</span> : null}
-          {title}
-        </h2>
-        {description ? <p className="mt-1 text-[13px] text-muted">{description}</p> : null}
-      </div>
-      {children}
-    </section>
-  );
-}
 
 export function useAction() {
   const { t } = useI18n();
@@ -78,22 +48,6 @@ export function useAction() {
     fail: (msg: string) => setError(msg),
     clear: () => (setError(null), setOk(null)),
   };
-}
-
-export function Notice({ error, ok }: { error?: string | null; ok?: string | null }) {
-  if (error)
-    return (
-      <p className="mt-3 flex items-center gap-1.5 text-[12.5px] text-[var(--danger)]">
-        <X size={14} /> {error}
-      </p>
-    );
-  if (ok)
-    return (
-      <p className="mt-3 flex items-center gap-1.5 text-[12.5px] text-[var(--status-active)]">
-        <Check size={14} /> {ok}
-      </p>
-    );
-  return null;
 }
 
 export function ToggleRow({

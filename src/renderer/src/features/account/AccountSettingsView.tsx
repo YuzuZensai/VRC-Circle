@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Trans } from "react-i18next";
 import { useI18n } from "../../lib/i18n";
-import { Banner, Loader, Tabs } from "../../components/ui";
+import { Banner, Loader, PAGE_TITLE, Tabs } from "../../components/ui";
 import { useAccountSettings } from "./useAccountSettings";
 import { DisplayNameSection } from "./sections/DisplayNameSection";
 import { EmailSection } from "./sections/EmailSection";
@@ -32,11 +32,11 @@ export function AccountSettingsView() {
       </div>
     );
 
-  const s = state.settings;
+  const s = state.data;
   return (
     <div className={SHELL}>
       <header>
-        <h1 className="text-[26px] font-bold tracking-[-0.4px]">{t("account:title")}</h1>
+        <h1 className={PAGE_TITLE}>{t("account:title")}</h1>
         <p className="mt-1 text-[13.5px] text-muted">
           <Trans
             i18nKey="account:subtitle"

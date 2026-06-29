@@ -8,7 +8,7 @@ import type {
 } from "../../../../shared/types/enhancements";
 import { api, errorMessage } from "../../lib/api";
 import { useI18n } from "../../lib/i18n";
-import { Badge, Banner, Loader, Toggle } from "../../components/ui";
+import { Badge, Banner, Loader, PAGE_TITLE, Toggle } from "../../components/ui";
 
 const SHELL = "mx-auto flex w-full max-w-[760px] flex-col gap-[18px] px-12 pb-16 pt-10";
 
@@ -62,7 +62,7 @@ export function EnhancementsView() {
   return (
     <div className={SHELL}>
       <header>
-        <h1 className="text-[26px] font-bold tracking-[-0.4px]">{t("enhancements:title")}</h1>
+        <h1 className={PAGE_TITLE}>{t("enhancements:title")}</h1>
         <p className="mt-1 text-[13.5px] text-muted">{t("enhancements:subtitle")}</p>
       </header>
 

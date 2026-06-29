@@ -26,7 +26,14 @@ import type { UnityStatus } from "../../../../shared/types/unity";
 import { api, errorMessage } from "../../lib/api";
 import { useAsync } from "../../lib/useAsync";
 import { regionFlag, regionLabel } from "../../lib/vrchat";
-import { Button, Field, Tabs } from "../../components/ui";
+import {
+  Button,
+  Field,
+  Notice,
+  PAGE_TITLE,
+  SettingsSection as Section,
+  Tabs,
+} from "../../components/ui";
 
 const SHELL = "mx-auto flex w-full max-w-[760px] flex-col gap-[18px] px-12 pb-16 pt-10";
 const SECTIONS = "animate-rise flex flex-col gap-[18px]";
@@ -39,7 +46,7 @@ export function SettingsView() {
   return (
     <div className={SHELL}>
       <header>
-        <h1 className="text-[26px] font-bold tracking-[-0.4px]">{t("settings:title")}</h1>
+        <h1 className={PAGE_TITLE}>{t("settings:title")}</h1>
         <p className="mt-1 text-[13.5px] text-muted">{t("settings:subtitle")}</p>
       </header>
 
@@ -81,31 +88,6 @@ export function SettingsView() {
         </div>
       ) : null}
     </div>
-  );
-}
-
-function Section({
-  title,
-  description,
-  icon,
-  children,
-}: {
-  title: string;
-  description?: ReactNode;
-  icon?: ReactNode;
-  children: ReactNode;
-}) {
-  return (
-    <section className="rounded-DEFAULT border border-border bg-surface-2 px-6 py-[22px] shadow-[var(--shadow-1)]">
-      <div className="mb-4">
-        <h2 className="flex items-center gap-2 text-[15px] font-bold">
-          {icon ? <span className="text-muted">{icon}</span> : null}
-          {title}
-        </h2>
-        {description ? <p className="mt-1 text-[13px] text-muted">{description}</p> : null}
-      </div>
-      {children}
-    </section>
   );
 }
 
@@ -376,12 +358,6 @@ function GameSection() {
       <Notice error={error} ok={ok} />
     </Section>
   );
-}
-
-function Notice({ error, ok }: { error?: string | null; ok?: string | null }) {
-  if (error) return <p className="mt-3 text-[12.5px] text-[var(--danger)]">{error}</p>;
-  if (ok) return <p className="mt-3 text-[12.5px] text-[var(--status-active)]">{ok}</p>;
-  return null;
 }
 
 const REGION_OPTIONS: PreferredRegion[] = ["auto", "us", "use", "eu", "jp"];

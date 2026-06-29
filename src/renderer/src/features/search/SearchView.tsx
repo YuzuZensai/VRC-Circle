@@ -3,7 +3,16 @@ import { Search as SearchIcon } from "lucide-react";
 import type { UserProfile } from "../../../../shared/types/user";
 import type { World } from "../../../../shared/types/world";
 import { api } from "../../lib/api";
-import { Avatar, Button, CardGrid, ContextMenu, Field, Tabs, Tag } from "../../components/ui";
+import {
+  Avatar,
+  Button,
+  CardGrid,
+  ContextMenu,
+  Field,
+  PAGE_TITLE,
+  Tabs,
+  Tag,
+} from "../../components/ui";
 import { useT } from "../../lib/i18n";
 import { useNav } from "../navigation/NavContext";
 import { useUserMenu } from "../friends/useUserMenu";
@@ -50,7 +59,7 @@ export function SearchView() {
   return (
     <div className="mx-auto w-full max-w-[760px] px-12 py-10">
       <header className="mb-5">
-        <h1 className="text-[26px] font-bold tracking-[-0.4px]">{t("search:title")}</h1>
+        <h1 className={PAGE_TITLE}>{t("search:title")}</h1>
       </header>
 
       <Tabs
