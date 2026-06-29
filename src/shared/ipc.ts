@@ -9,7 +9,7 @@ import type { SocialSnapshot, UserProfile, UserStatus } from "./types/user";
 import type { DiscoverCategory, FavoriteWorldFolder, World, WorldSnapshot } from "./types/world";
 import type { CreateInstanceInput, Instance, InstanceRegion } from "./types/instance";
 import type { UnityStatus } from "./types/unity";
-import type { Avatar, AvatarEdit, AvatarSnapshot } from "./types/avatar";
+import type { Avatar, AvatarEdit, AvatarSnapshot, FavoriteGroupEdit } from "./types/avatar";
 import type { RepoStats, StoredEntity } from "./types/repository";
 import type { AccountSettings, ContentFilterKey, Pending2Fa, RecoveryCode } from "./types/settings";
 import type { Group, GroupSnapshot } from "./types/group";
@@ -64,7 +64,10 @@ export interface IpcRequests {
   "avatar:select": (avatarId: string) => IpcResult<void>;
   "avatar:update": (p: { avatarId: string; edit: AvatarEdit }) => IpcResult<Avatar>;
   "avatar:delete": (avatarId: string) => IpcResult<void>;
-  "avatar:setFavorited": (p: { avatarId: string; favorited: boolean }) => IpcResult<void>;
+  "avatar:favorite": (p: { avatarId: string; folder?: string }) => IpcResult<void>;
+  "avatar:unfavorite": (avatarId: string) => IpcResult<void>;
+  "avatar:moveFavorite": (p: { avatarId: string; folder: string }) => IpcResult<void>;
+  "avatar:updateFavoriteFolder": (p: { folder: string; edit: FavoriteGroupEdit }) => IpcResult<void>;
 
   "group:byUser": (userId: string) => IpcResult<Group[]>;
   "group:represented": (userId: string) => IpcResult<Group | null>;

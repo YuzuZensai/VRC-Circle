@@ -29,14 +29,28 @@ export interface AvatarEdit {
   releaseStatus?: string;
 }
 
+export type FavoriteVisibility = "private" | "friends" | "public";
+
 export interface FavoriteAvatarFolder {
   name: string;
   displayName: string;
+  visibility: FavoriteVisibility;
   avatarIds: string[];
+}
+
+export interface FavoriteLimits {
+  maxGroups: number;
+  maxPerGroup: number;
+}
+
+export interface FavoriteGroupEdit {
+  displayName?: string;
+  visibility?: FavoriteVisibility;
 }
 
 export interface AvatarSnapshot {
   avatars: Avatar[];
   mineIds: string[];
   favorites: FavoriteAvatarFolder[];
+  favoriteLimits: FavoriteLimits;
 }

@@ -21,6 +21,9 @@
     "wearing": "使用中",
     "favorite": "お気に入り登録",
     "unfavorite": "お気に入り解除",
+    "manageFavorite": "お気に入りを管理",
+    "folderCount": "{{count}} 体",
+    "folderFull": "満杯",
     "edit": "編集",
     "delete": "削除",
     "save": "保存",
@@ -31,6 +34,17 @@
     "editTitle": "アバターを編集",
     "deleteTitle": "アバターを削除",
     "deleteBody": "「{{name}}」を完全に削除しますか？元に戻せません。"
+  },
+  "folder": {
+    "edit": "フォルダを編集",
+    "editTitle": "フォルダを編集",
+    "name": "フォルダ名",
+    "visibility": "公開設定"
+  },
+  "visibility": {
+    "private": "非公開",
+    "friends": "フレンド",
+    "public": "公開"
   },
   "performance": {
     "Excellent": "非常に良い",

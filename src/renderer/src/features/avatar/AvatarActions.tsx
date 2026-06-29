@@ -5,8 +5,9 @@ import { Button, Field, INPUT_CLASS, Modal } from "../../components/ui";
 import { api, errorMessage } from "../../lib/api";
 import { useT } from "../../lib/i18n";
 import { useSocial } from "../../store/social";
-import { useFavoriteAvatars } from "../../store/avatars";
+import { useAvatarFolder } from "../../store/avatars";
 import { useNav } from "../navigation/NavContext";
+import { FavoriteModal } from "./FavoriteModal";
 
 const RELEASE_STATUSES = ["public", "private"] as const;
 
@@ -14,17 +15,18 @@ export function AvatarActions({ avatar }: { avatar: Avatar }) {
   const t = useT();
   const { back } = useNav();
   const self = useSocial((s) => (s.selfId ? s.users[s.selfId] : undefined));
-  const folders = useFavoriteAvatars();
+  const folder = useAvatarFolder(avatar.id);
   const isOwner = avatar.authorId === self?.id;
   const isCurrent = self?.currentAvatarId === avatar.id;
-  const isFavorited = folders.some((f) => f.avatars.some((a) => a.id === avatar.id));
+  const isFavorited = Boolean(folder);
 
-  const [busy, setBusy] = useState<null | "select" | "favorite">(null);
+  const [busy, setBusy] = useState<null | "select">(null);
+  const [favoriteOpen, setFavoriteOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const run = async (kind: "select" | "favorite", fn: () => Promise<void>) => {
+  const run = async (kind: "select", fn: () => Promise<void>) => {
     setBusy(kind);
     setError(null);
     try {
@@ -48,12 +50,9 @@ export function AvatarActions({ avatar }: { avatar: Avatar }) {
           {isCurrent ? t("avatar:actions.wearing") : t("avatar:actions.wear")}
         </Button>
         <Button
-          variant="ghost"
-          onClick={() =>
-            run("favorite", () => api.avatar.setFavorited(avatar.id, !isFavorited))
-          }
-          loading={busy === "favorite"}
-          title={isFavorited ? t("avatar:actions.unfavorite") : t("avatar:actions.favorite")}
+          variant={isFavorited ? "primary" : "ghost"}
+          onClick={() => setFavoriteOpen(true)}
+          title={isFavorited ? t("avatar:actions.manageFavorite") : t("avatar:actions.favorite")}
         >
           <Star size={15} fill={isFavorited ? "currentColor" : "none"} />
         </Button>
@@ -73,6 +72,10 @@ export function AvatarActions({ avatar }: { avatar: Avatar }) {
         ) : null}
       </div>
       {error ? <p className="text-[12px] text-danger">{error}</p> : null}
+
+      {favoriteOpen ? (
+        <FavoriteModal avatar={avatar} currentFolder={folder} onClose={() => setFavoriteOpen(false)} />
+      ) : null}
 
       {editOpen ? (
         <EditModal avatar={avatar} onClose={() => setEditOpen(false)} />

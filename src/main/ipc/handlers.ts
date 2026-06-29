@@ -67,8 +67,12 @@ const handlers = {
   "avatar:select": (avatarId) => guard(() => avatars.selectAvatar(avatarId)),
   "avatar:update": ({ avatarId, edit }) => guard(() => avatars.updateAvatar(avatarId, edit)),
   "avatar:delete": (avatarId) => guard(() => avatars.deleteAvatar(avatarId)),
-  "avatar:setFavorited": ({ avatarId, favorited }) =>
-    guard(() => avatars.setAvatarFavorited(avatarId, favorited)),
+  "avatar:favorite": ({ avatarId, folder }) => guard(() => avatars.favoriteAvatar(avatarId, folder)),
+  "avatar:unfavorite": (avatarId) => guard(() => avatars.unfavoriteAvatar(avatarId)),
+  "avatar:moveFavorite": ({ avatarId, folder }) =>
+    guard(() => avatars.moveAvatarToFolder(avatarId, folder)),
+  "avatar:updateFavoriteFolder": ({ folder, edit }) =>
+    guard(() => avatars.updateFavoriteFolder(folder, edit)),
 
   "group:byUser": (userId) => guard(() => groups.getUserGroups(userId)),
   "group:represented": (userId) => guard(() => groups.getRepresentedGroup(userId)),

@@ -1,16 +1,28 @@
 import type { VRChat } from "vrchat";
-import type { Avatar, AvatarEdit, AvatarSnapshot } from "../../shared/types/avatar";
+import type {
+  Avatar,
+  AvatarEdit,
+  AvatarSnapshot,
+  FavoriteGroupEdit,
+  FavoriteLimits,
+  FavoriteVisibility,
+} from "../../shared/types/avatar";
 import { toAvatar } from "./mappers";
 import { httpStatusOf } from "./errors";
 import { cachedRead } from "./cachedRead";
 import { requireActiveClient } from "./client";
-import { userCache } from "./userService";
+import { userCache, currentUser } from "./userService";
 import { entityStore } from "../store/entityStore";
 import { avatarStore } from "../store/avatarStore";
 import { cacheKeys, policies } from "../cache/policies";
 import { getAvatarRaw, getMyAvatarsRaw, getFavoritedAvatarsRaw } from "./rawEndpoints";
 
-type FavoriteFolder = { name: string; displayName: string; avatars: Avatar[] };
+type FavoriteFolder = {
+  name: string;
+  displayName: string;
+  visibility: FavoriteVisibility;
+  avatars: Avatar[];
+};
 
 export async function getAvatar(avatarId: string): Promise<Avatar> {
   try {
@@ -39,38 +51,52 @@ export async function loadMyAvatars(): Promise<void> {
 }
 
 export async function loadFavoritedAvatars(): Promise<void> {
-  const folders = await cachedRead(
+  const { folders, limits } = await cachedRead(
     cacheKeys.avatarFavorites(),
     policies.avatarFavorites,
-    fetchFavoriteFolders,
+    fetchFavorites,
   );
-  avatarStore.setFavorites(folders);
+  avatarStore.setFavorites(folders, limits);
 }
 
-async function fetchFavoriteFolders(vrc: VRChat): Promise<FavoriteFolder[]> {
-  const { data: groups } = await vrc.getFavoriteGroups({
-    query: { n: 100 },
-    throwOnError: true,
-  });
+async function fetchFavorites(vrc: VRChat): Promise<{
+  folders: FavoriteFolder[];
+  limits: FavoriteLimits;
+}> {
+  const [{ data: groups }, limits] = await Promise.all([
+    vrc.getFavoriteGroups({ query: { n: 100 }, throwOnError: true }),
+    fetchFavoriteLimits(vrc),
+  ]);
   const avatarGroups = groups.filter((g) => g.type === "avatar");
 
   const folders: FavoriteFolder[] = [];
   for (const group of avatarGroups) {
-    let raw;
+    let raw: Awaited<ReturnType<typeof getFavoritedAvatarsRaw>> = [];
     try {
       raw = await getFavoritedAvatarsRaw(vrc, group.name);
     } catch (err) {
-      if (httpStatusOf(err) === 401 || httpStatusOf(err) === 403) continue;
-      throw err;
+      if (httpStatusOf(err) !== 401 && httpStatusOf(err) !== 403) throw err;
     }
-    if (!raw.length) continue;
     folders.push({
       name: group.name,
       displayName: group.displayName || prettyFolderName(group.name),
+      visibility: normalizeVisibility(group.visibility),
       avatars: raw.map(toAvatar),
     });
   }
-  return folders;
+  return { folders, limits };
+}
+
+async function fetchFavoriteLimits(vrc: VRChat): Promise<FavoriteLimits> {
+  const { data } = await vrc.getFavoriteLimits({ throwOnError: true });
+  return {
+    maxGroups: data.maxFavoriteGroups?.avatar ?? data.defaultMaxFavoriteGroups,
+    maxPerGroup: data.maxFavoritesPerGroup?.avatar ?? data.defaultMaxFavoritesPerGroup,
+  };
+}
+
+function normalizeVisibility(v: string): FavoriteVisibility {
+  return v === "friends" || v === "public" ? v : "private";
 }
 
 function prettyFolderName(key: string): string {
@@ -121,18 +147,54 @@ export async function deleteAvatar(avatarId: string): Promise<void> {
   await refreshLists(vrc);
 }
 
-export async function setAvatarFavorited(avatarId: string, favorited: boolean): Promise<void> {
+export async function favoriteAvatar(avatarId: string, folder = "avatars1"): Promise<void> {
   const vrc = requireActiveClient();
-  if (favorited) {
-    await vrc.addFavorite({
-      body: { type: "avatar", favoriteId: avatarId, tags: ["avatars1"] },
-      throwOnError: true,
-    });
-  } else {
-    const { data } = await vrc.getFavorites({ query: { type: "avatar", n: 100 }, throwOnError: true });
-    const fav = data.find((f) => f.favoriteId === avatarId);
-    if (fav) await vrc.removeFavorite({ path: { favoriteId: fav.id }, throwOnError: true });
-  }
+  await vrc.addFavorite({
+    body: { type: "avatar", favoriteId: avatarId, tags: [folder] },
+    throwOnError: true,
+  });
+  await reloadFavorites();
+}
+
+export async function unfavoriteAvatar(avatarId: string): Promise<void> {
+  const vrc = requireActiveClient();
+  const fav = await findFavoriteRecord(vrc, avatarId);
+  if (fav) await vrc.removeFavorite({ path: { favoriteId: fav.id }, throwOnError: true });
+  await reloadFavorites();
+}
+
+export async function moveAvatarToFolder(avatarId: string, folder: string): Promise<void> {
+  const vrc = requireActiveClient();
+  const fav = await findFavoriteRecord(vrc, avatarId);
+  if (fav?.tags?.includes(folder)) return;
+  if (fav) await vrc.removeFavorite({ path: { favoriteId: fav.id }, throwOnError: true });
+  await vrc.addFavorite({
+    body: { type: "avatar", favoriteId: avatarId, tags: [folder] },
+    throwOnError: true,
+  });
+  await reloadFavorites();
+}
+
+export async function updateFavoriteFolder(folder: string, edit: FavoriteGroupEdit): Promise<void> {
+  const vrc = requireActiveClient();
+  const me = await currentUser();
+  await vrc.updateFavoriteGroup({
+    path: { favoriteGroupType: "avatar", favoriteGroupName: folder, userId: me.id },
+    body: {
+      displayName: edit.displayName,
+      visibility: edit.visibility as never,
+    },
+    throwOnError: true,
+  });
+  await reloadFavorites();
+}
+
+async function findFavoriteRecord(vrc: VRChat, avatarId: string) {
+  const { data } = await vrc.getFavorites({ query: { type: "avatar", n: 100 }, throwOnError: true });
+  return data.find((f) => f.favoriteId === avatarId);
+}
+
+async function reloadFavorites(): Promise<void> {
   userCache.invalidate(cacheKeys.avatarFavorites());
   await loadFavoritedAvatars();
 }
@@ -145,5 +207,6 @@ function invalidateAvatar(avatarId: string): void {
 
 async function refreshLists(vrc: VRChat): Promise<void> {
   avatarStore.setMine((await getMyAvatarsRaw(vrc)).map(toAvatar));
-  avatarStore.setFavorites(await fetchFavoriteFolders(vrc));
+  const { folders, limits } = await fetchFavorites(vrc);
+  avatarStore.setFavorites(folders, limits);
 }

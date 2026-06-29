@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import type { Avatar } from "../../../../shared/types/avatar";
+import { Pencil } from "lucide-react";
 import {
   CardGrid,
   CollapsibleCard,
   Field,
+  IconButton,
   LABEL_HEADING,
   PAGE_TITLE,
   SkeletonGrid,
@@ -11,9 +13,16 @@ import {
 } from "../../components/ui";
 import { api } from "../../lib/api";
 import { useT } from "../../lib/i18n";
-import { useAvatar, useFavoriteAvatars, useMyAvatars } from "../../store/avatars";
+import {
+  useAvatar,
+  useFavoriteAvatars,
+  useFavoriteLimits,
+  useMyAvatars,
+  type FavoriteFolder,
+} from "../../store/avatars";
 import { useSelf, useSocial } from "../../store/social";
 import { AvatarCard } from "./AvatarCard";
+import { FolderEditModal } from "./FolderEditModal";
 
 const SHELL = "mx-auto flex w-full max-w-[1100px] flex-col gap-5 px-12 pb-16 pt-10";
 
@@ -109,6 +118,8 @@ function UploadedTab({ filter }: { filter: AvatarFilter }) {
 function FavoritesTab({ filter }: { filter: AvatarFilter }) {
   const t = useT();
   const folders = useFavoriteAvatars();
+  const { maxPerGroup } = useFavoriteLimits();
+  const [editFolder, setEditFolder] = useState<FavoriteFolder | null>(null);
 
   if (!folders.length) return <SkeletonGrid count={6} />;
 
@@ -120,7 +131,20 @@ function FavoritesTab({ filter }: { filter: AvatarFilter }) {
   return (
     <div className="flex flex-col gap-5">
       {shown.map((folder) => (
-        <CollapsibleCard key={folder.name} title={folder.displayName} count={folder.avatars.length}>
+        <CollapsibleCard
+          key={folder.name}
+          title={folder.displayName}
+          count={`${folder.count} / ${maxPerGroup}`}
+          action={
+            <IconButton
+              title={t("avatar:folder.edit")}
+              onClick={() => setEditFolder(folder)}
+              aria-label={t("avatar:folder.edit")}
+            >
+              <Pencil size={14} />
+            </IconButton>
+          }
+        >
           <CardGrid>
             {folder.avatars.map((a) => (
               <AvatarCard key={a.id} avatar={a} showAuthor />
@@ -128,6 +152,10 @@ function FavoritesTab({ filter }: { filter: AvatarFilter }) {
           </CardGrid>
         </CollapsibleCard>
       ))}
+
+      {editFolder ? (
+        <FolderEditModal folder={editFolder} onClose={() => setEditFolder(null)} />
+      ) : null}
     </div>
   );
 }

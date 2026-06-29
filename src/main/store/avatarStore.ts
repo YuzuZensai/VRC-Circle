@@ -1,6 +1,21 @@
-import type { Avatar, AvatarSnapshot, FavoriteAvatarFolder } from "../../shared/types/avatar";
+import type {
+  Avatar,
+  AvatarSnapshot,
+  FavoriteAvatarFolder,
+  FavoriteLimits,
+  FavoriteVisibility,
+} from "../../shared/types/avatar";
 import type { FieldSource } from "../../shared/types/repository";
 import { repos } from "./repository/manager";
+
+const DEFAULT_LIMITS: FavoriteLimits = { maxGroups: 6, maxPerGroup: 50 };
+
+export type FavoriteFolderInput = {
+  name: string;
+  displayName: string;
+  visibility: FavoriteVisibility;
+  avatars: Avatar[];
+};
 
 export type { AvatarSnapshot };
 
@@ -11,6 +26,7 @@ class AvatarStore {
   private readonly listeners = new Set<Listener>();
   private mineIds = new Set<string>();
   private favorites: FavoriteAvatarFolder[] = [];
+  private favoriteLimits: FavoriteLimits = DEFAULT_LIMITS;
   private wired = false;
 
   onChange(fn: Listener): () => void {
@@ -33,12 +49,14 @@ class AvatarStore {
     this.emit({ type: "seed", snapshot: this.snapshot() });
   }
 
-  setFavorites(folders: { name: string; displayName: string; avatars: Avatar[] }[]): void {
+  setFavorites(folders: FavoriteFolderInput[], limits?: FavoriteLimits): void {
     this.favorites = folders.map((f) => ({
       name: f.name,
       displayName: f.displayName,
+      visibility: f.visibility,
       avatarIds: f.avatars.map((a) => a.id),
     }));
+    if (limits) this.favoriteLimits = limits;
     for (const f of folders) repos.active.avatars.upsertMany(f.avatars, "rest:list");
     this.emit({ type: "seed", snapshot: this.snapshot() });
   }
@@ -65,12 +83,14 @@ class AvatarStore {
       avatars: repos.hasActive ? repos.active.avatars.all() : [],
       mineIds: [...this.mineIds],
       favorites: this.favorites,
+      favoriteLimits: this.favoriteLimits,
     };
   }
 
   reset(): void {
     this.mineIds.clear();
     this.favorites = [];
+    this.favoriteLimits = DEFAULT_LIMITS;
     this.wired = false;
     this.wire();
     this.emit({ type: "seed", snapshot: this.snapshot() });

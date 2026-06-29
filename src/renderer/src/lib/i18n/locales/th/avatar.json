@@ -21,6 +21,9 @@
     "wearing": "กำลังสวมใส่",
     "favorite": "เพิ่มรายการโปรด",
     "unfavorite": "เอาออกจากรายการโปรด",
+    "manageFavorite": "จัดการรายการโปรด",
+    "folderCount": "{{count}} ตัว",
+    "folderFull": "เต็ม",
     "edit": "แก้ไข",
     "delete": "ลบ",
     "save": "บันทึก",
@@ -31,6 +34,17 @@
     "editTitle": "แก้ไขอวตาร",
     "deleteTitle": "ลบอวตาร",
     "deleteBody": "ลบ \"{{name}}\" อย่างถาวรหรือไม่? ไม่สามารถย้อนกลับได้"
+  },
+  "folder": {
+    "edit": "แก้ไขโฟลเดอร์",
+    "editTitle": "แก้ไขโฟลเดอร์",
+    "name": "ชื่อโฟลเดอร์",
+    "visibility": "การมองเห็น"
+  },
+  "visibility": {
+    "private": "ส่วนตัว",
+    "friends": "เพื่อน",
+    "public": "สาธารณะ"
   },
   "performance": {
     "Excellent": "ดีเยี่ยม",

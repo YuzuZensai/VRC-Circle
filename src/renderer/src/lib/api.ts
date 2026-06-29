@@ -5,7 +5,7 @@ import type { UserStatus } from "../../../shared/types/user";
 import type { EnhancementId } from "../../../shared/types/enhancements";
 import type { CreateInstanceInput } from "../../../shared/types/instance";
 import type { PreferredRegion } from "../../../shared/types/appConfig";
-import type { AvatarEdit } from "../../../shared/types/avatar";
+import type { AvatarEdit, FavoriteGroupEdit } from "../../../shared/types/avatar";
 
 export class ApiException extends Error {
   constructor(public readonly error: ApiError) {
@@ -78,8 +78,12 @@ export const api = {
     select: (avatarId: string) => call("avatar:select", avatarId),
     update: (avatarId: string, edit: AvatarEdit) => call("avatar:update", { avatarId, edit }),
     delete: (avatarId: string) => call("avatar:delete", avatarId),
-    setFavorited: (avatarId: string, favorited: boolean) =>
-      call("avatar:setFavorited", { avatarId, favorited }),
+    favorite: (avatarId: string, folder?: string) => call("avatar:favorite", { avatarId, folder }),
+    unfavorite: (avatarId: string) => call("avatar:unfavorite", avatarId),
+    moveFavorite: (avatarId: string, folder: string) =>
+      call("avatar:moveFavorite", { avatarId, folder }),
+    updateFavoriteFolder: (folder: string, edit: FavoriteGroupEdit) =>
+      call("avatar:updateFavoriteFolder", { folder, edit }),
   },
   group: {
     byUser: (userId: string) => call("group:byUser", userId),

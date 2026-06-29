@@ -21,6 +21,9 @@
     "wearing": "Wearing",
     "favorite": "Favorite",
     "unfavorite": "Unfavorite",
+    "manageFavorite": "Manage favorite",
+    "folderCount": "{{count}} avatars",
+    "folderFull": "Full",
     "edit": "Edit",
     "delete": "Delete",
     "save": "Save",
@@ -31,6 +34,17 @@
     "editTitle": "Edit avatar",
     "deleteTitle": "Delete avatar",
     "deleteBody": "Permanently delete \"{{name}}\"? This can't be undone."
+  },
+  "folder": {
+    "edit": "Edit folder",
+    "editTitle": "Edit folder",
+    "name": "Folder name",
+    "visibility": "Visibility"
+  },
+  "visibility": {
+    "private": "Private",
+    "friends": "Friends",
+    "public": "Public"
   },
   "performance": {
     "Excellent": "Excellent",
