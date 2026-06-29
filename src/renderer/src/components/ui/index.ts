@@ -27,4 +27,5 @@ export { Card } from "./Card";
 export { HoverImage } from "./HoverImage";
 export { ContextMenu } from "./ContextMenu";
 export type { ContextMenuEntry, ContextMenuItem } from "./ContextMenu";
+export { SelectionBar, SelectionBarButton } from "./SelectionBar";
 export { LABEL_HEADING, PAGE_TITLE } from "./styles";

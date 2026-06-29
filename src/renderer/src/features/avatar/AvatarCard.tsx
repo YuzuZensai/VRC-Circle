@@ -1,3 +1,4 @@
+import type { MouseEvent } from "react";
 import { Check, Star } from "lucide-react";
 import type { Avatar } from "../../../../shared/types/avatar";
 import { Card, HoverImage, IconLabel, Tag } from "../../components/ui";
@@ -12,6 +13,7 @@ export function AvatarCard({
   selectable,
   selected,
   onToggleSelect,
+  onContextMenu,
 }: {
   avatar: Avatar;
   showAuthor?: boolean;
@@ -19,14 +21,23 @@ export function AvatarCard({
   selectable?: boolean;
   selected?: boolean;
   onToggleSelect?: () => void;
+  onContextMenu?: (e: MouseEvent) => void;
 }) {
   const t = useT();
   const { openAvatar } = useNav();
   const img = avatar.thumbnailImageUrl || avatar.imageUrl;
   return (
-    <Card onClick={selectable ? onToggleSelect : () => openAvatar(avatar.id)}>
-      <div className="relative aspect-[4/3] bg-surface-hover">
-        {img ? <HoverImage src={img} loading="lazy" /> : null}
+    <Card
+      onClick={selectable ? onToggleSelect : () => openAvatar(avatar.id)}
+      onContextMenu={onContextMenu}
+      className={selected ? "outline outline-[3px] -outline-offset-[3px] outline-accent" : ""}
+    >
+      <div className="relative aspect-[4/3] overflow-hidden bg-surface-hover">
+        <div
+          className={`h-full w-full transition-transform duration-200 ease-fluid ${selected ? "scale-90" : ""}`}
+        >
+          {img ? <HoverImage src={img} loading="lazy" /> : null}
+        </div>
         {selectable ? (
           <span
             className={`absolute left-1.5 top-1.5 flex size-5 items-center justify-center rounded-md border transition-colors ${

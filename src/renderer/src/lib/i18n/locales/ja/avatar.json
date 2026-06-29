@@ -49,11 +49,23 @@
     "friends": "フレンド",
     "public": "公開"
   },
+  "context": {
+    "open": "アバターを開く",
+    "select": "アバターを選択",
+    "unfavoriteConfirm": "「{{name}}」をお気に入りから削除しますか？"
+  },
   "bulk": {
     "select": "選択",
     "done": "完了",
+    "selectPrivate": "非公開を選択",
+    "selectHidden": "Hiddenを選択",
     "selected": "{{count}} 件選択中",
     "move": "移動",
+    "moving": "お気に入りを移動中...",
+    "movingProgress": "{{done}} / {{total}} 件を移動中...",
+    "unfavoritingProgress": "{{done}} / {{total}} 件を削除中...",
+    "unfavoriteTitle": "お気に入りから削除",
+    "unfavoriteConfirm": "選択した {{count}} 体をお気に入りから削除しますか？",
     "moveTitle": "{{count}} 体を移動",
     "skipped": "{{count}} 体は移動できず（非公開または削除済み）、そのままになりました。"
   },

@@ -49,11 +49,23 @@
     "friends": "เพื่อน",
     "public": "สาธารณะ"
   },
+  "context": {
+    "open": "เปิดอวตาร",
+    "select": "เลือกอวตาร",
+    "unfavoriteConfirm": "ลบ \"{{name}}\" ออกจากรายการโปรดหรือไม่?"
+  },
   "bulk": {
     "select": "เลือก",
     "done": "เสร็จ",
+    "selectPrivate": "เลือกส่วนตัว",
+    "selectHidden": "เลือกที่ซ่อนไว้",
     "selected": "เลือก {{count}} รายการ",
     "move": "ย้าย",
+    "moving": "กำลังย้ายรายการโปรด...",
+    "movingProgress": "กำลังย้าย {{done}} / {{total}} รายการ...",
+    "unfavoritingProgress": "กำลังลบ {{done}} / {{total}} รายการ...",
+    "unfavoriteTitle": "ลบจากรายการโปรด",
+    "unfavoriteConfirm": "ลบอวตารที่เลือก {{count}} ตัวออกจากรายการโปรดหรือไม่?",
     "moveTitle": "ย้าย {{count}} ตัว",
     "skipped": "ย้ายไม่ได้ {{count}} ตัว (ส่วนตัวหรือถูกลบแล้ว) และยังอยู่ที่เดิม"
   },

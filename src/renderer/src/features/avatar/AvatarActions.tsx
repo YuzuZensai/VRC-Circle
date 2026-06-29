@@ -78,10 +78,10 @@ export function AvatarActions({ avatar }: { avatar: Avatar }) {
       ) : null}
 
       {editOpen ? (
-        <EditModal avatar={avatar} onClose={() => setEditOpen(false)} />
+        <EditAvatarModal avatar={avatar} onClose={() => setEditOpen(false)} />
       ) : null}
 
-      <DeleteModal
+      <DeleteAvatarModal
         avatar={avatar}
         open={deleteOpen}
         onClose={() => setDeleteOpen(false)}
@@ -91,7 +91,7 @@ export function AvatarActions({ avatar }: { avatar: Avatar }) {
   );
 }
 
-function EditModal({ avatar, onClose }: { avatar: Avatar; onClose: () => void }) {
+export function EditAvatarModal({ avatar, onClose }: { avatar: Avatar; onClose: () => void }) {
   const t = useT();
   const [name, setName] = useState(avatar.name);
   const [description, setDescription] = useState(avatar.description);
@@ -160,7 +160,7 @@ function EditModal({ avatar, onClose }: { avatar: Avatar; onClose: () => void })
   );
 }
 
-function DeleteModal({
+export function DeleteAvatarModal({
   avatar,
   open,
   onClose,

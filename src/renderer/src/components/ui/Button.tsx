@@ -19,6 +19,7 @@ export function Button({
   loading,
   block,
   className = "",
+  disabled,
   ...rest
 }: ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: keyof typeof VARIANT;
@@ -28,8 +29,8 @@ export function Button({
   return (
     <button
       className={`${BASE} ${VARIANT[variant]} ${block ? "w-full" : ""} ${className}`}
-      disabled={loading || rest.disabled}
       {...rest}
+      disabled={loading || disabled}
     >
       {loading ? (
         <span className="size-3.5 animate-[spin_0.7s_linear_infinite] rounded-full border-2 border-[color-mix(in_srgb,currentColor_35%,transparent)] border-t-current" />

@@ -145,7 +145,7 @@ export async function deleteAvatar(avatarId: string): Promise<void> {
   await vrc.deleteAvatar({ path: { avatarId }, throwOnError: true });
   invalidateAvatar(avatarId);
   avatarStore.removeAvatar(avatarId);
-  await refreshLists(vrc);
+  await refreshLists(vrc, new Set([avatarId]));
 }
 
 export async function favoriteAvatar(avatarId: string, folder = "avatars1"): Promise<void> {
@@ -278,8 +278,11 @@ function invalidateAvatar(avatarId: string): void {
   userCache.invalidate(cacheKeys.avatarFavorites());
 }
 
-async function refreshLists(vrc: VRChat): Promise<void> {
-  avatarStore.setMine((await getMyAvatarsRaw(vrc)).map(toAvatar));
+async function refreshLists(vrc: VRChat, exclude = new Set<string>()): Promise<void> {
+  avatarStore.setMine((await getMyAvatarsRaw(vrc)).map(toAvatar).filter((a) => !exclude.has(a.id)));
   const { folders, limits } = await fetchFavorites(vrc);
-  avatarStore.setFavorites(folders, limits);
+  avatarStore.setFavorites(
+    folders.map((f) => ({ ...f, avatars: f.avatars.filter((a) => !exclude.has(a.id)) })),
+    limits,
+  );
 }

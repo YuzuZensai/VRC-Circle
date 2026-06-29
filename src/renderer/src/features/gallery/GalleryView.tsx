@@ -2,7 +2,7 @@ import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Trans } from "react-i18next";
 import { Check, Globe, Images, RefreshCw, Search, Trash2, X } from "lucide-react";
 import type { Photo } from "../../../../shared/types/gallery";
-import { Banner, Loader } from "../../components/ui";
+import { Banner, Loader, SelectionBar, SelectionBarButton } from "../../components/ui";
 import { useI18n } from "../../lib/i18n";
 import { useGallery } from "./useGallery";
 import { Lightbox } from "./Lightbox";
@@ -293,17 +293,14 @@ export function GalleryView() {
       ) : null}
 
       {selecting ? (
-        <div className="gallery__selbar" role="toolbar">
-          <span className="gallery__selcount">
-            {t("gallery:selectedCount", { count: selected.size })}
-          </span>
-          <button className="gallery__selbtn" onClick={clearSel}>
+        <SelectionBar label={t("gallery:selectedCount", { count: selected.size })}>
+          <SelectionBarButton onClick={clearSel}>
             <X size={15} /> {t("gallery:deselect")}
-          </button>
-          <button className="gallery__selbtn is-danger" onClick={deleteSelected}>
+          </SelectionBarButton>
+          <SelectionBarButton danger onClick={deleteSelected}>
             <Trash2 size={15} /> {t("gallery:delete")}
-          </button>
-        </div>
+          </SelectionBarButton>
+        </SelectionBar>
       ) : null}
 
       {activeIndex >= 0 ? (

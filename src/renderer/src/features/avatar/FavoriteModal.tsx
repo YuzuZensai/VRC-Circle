@@ -62,6 +62,19 @@ export function FavoriteModal({
       icon={<Star size={16} />}
     >
       <div className="flex flex-col gap-1.5 text-left">
+        {skipped ? (
+          <p className="mb-1 text-[12px] font-medium text-danger">
+            {t("avatar:bulk.skipped", { count: 1 })}
+          </p>
+        ) : null}
+        {busy ? (
+          <div className="mb-2 flex flex-col gap-1.5">
+            <span className="text-[12px] text-muted">{t("avatar:bulk.moving")}</span>
+            <div className="h-1 overflow-hidden rounded-full bg-surface-hover">
+              <div className="h-full w-full rounded-full bg-accent" />
+            </div>
+          </div>
+        ) : null}
         {slots.map((slot) => {
           const isCurrent = slot.name === currentFolder;
           const disabled = busy !== null || (slot.full && !isCurrent);
@@ -99,7 +112,6 @@ export function FavoriteModal({
           </Button>
         ) : null}
 
-        {skipped ? <p className="text-[12px] text-muted">{t("avatar:bulk.skipped", { count: 1 })}</p> : null}
         {error ? <p className="text-[12px] text-danger">{error}</p> : null}
       </div>
     </Modal>

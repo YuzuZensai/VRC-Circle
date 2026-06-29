@@ -49,11 +49,23 @@
     "friends": "Friends",
     "public": "Public"
   },
+  "context": {
+    "open": "Open avatar",
+    "select": "Select avatar",
+    "unfavoriteConfirm": "Remove \"{{name}}\" from your favorites?"
+  },
   "bulk": {
     "select": "Select",
     "done": "Done",
+    "selectPrivate": "Select private",
+    "selectHidden": "Select hidden",
     "selected": "{{count}} selected",
     "move": "Move",
+    "moving": "Moving favorites...",
+    "movingProgress": "Moving {{done}} / {{total}} favorites...",
+    "unfavoritingProgress": "Removing {{done}} / {{total}} favorites...",
+    "unfavoriteTitle": "Remove favorites",
+    "unfavoriteConfirm": "Remove {{count}} selected avatars from your favorites?",
     "moveTitle": "Move {{count}} avatars",
     "skipped": "{{count}} couldn't be moved (private or deleted) and were left in place."
   },
