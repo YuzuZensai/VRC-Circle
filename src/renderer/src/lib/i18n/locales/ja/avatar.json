@@ -14,7 +14,8 @@
   "current": "使用中",
   "releaseStatus": {
     "public": "公開",
-    "private": "非公開"
+    "private": "非公開",
+    "hidden": "非表示"
   },
   "actions": {
     "wear": "着用",

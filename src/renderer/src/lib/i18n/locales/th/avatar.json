@@ -14,7 +14,8 @@
   "current": "ที่ใช้อยู่",
   "releaseStatus": {
     "public": "สาธารณะ",
-    "private": "ส่วนตัว"
+    "private": "ส่วนตัว",
+    "hidden": "ซ่อนไว้"
   },
   "actions": {
     "wear": "สวมใส่",

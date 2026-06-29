@@ -56,7 +56,7 @@ export function AvatarCard({
         ) : null}
         {avatar.releaseStatus !== "public" ? (
           <span className="absolute right-1.5 top-1.5">
-            <Tag color="var(--status-ask)">{avatar.releaseStatus}</Tag>
+            <Tag color="var(--status-ask)">{t(`avatar:releaseStatus.${avatar.releaseStatus}`)}</Tag>
           </span>
         ) : null}
       </div>

@@ -14,7 +14,8 @@
   "current": "Current",
   "releaseStatus": {
     "public": "Public",
-    "private": "Private"
+    "private": "Private",
+    "hidden": "Hidden"
   },
   "actions": {
     "wear": "Wear",
