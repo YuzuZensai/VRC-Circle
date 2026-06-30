@@ -54,7 +54,11 @@ export function toApiError(err: unknown): ApiError {
   else if (status === undefined && /network|fetch|ENOTFOUND|ECONN/i.test(message)) code = "network";
 
   if (status === 429) {
-    return { code, message: "VRChat API rate limit hit. Try again shortly.", retryAfter: retryAfterOf(e) };
+    return {
+      code,
+      message: "VRChat API rate limit hit. Try again shortly.",
+      retryAfter: retryAfterOf(e),
+    };
   }
   if (status !== undefined && status >= 500) {
     return { code, message: "VRChat API is temporarily unavailable. Try again shortly." };

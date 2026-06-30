@@ -347,10 +347,7 @@ function GameSection() {
             onChange={(e) => setPath(e.target.value)}
           />
         </div>
-        <Button
-          variant="ghost"
-          onClick={() => void run(pickGamePath(), t("settings:game.saved"))}
-        >
+        <Button variant="ghost" onClick={() => void run(pickGamePath(), t("settings:game.saved"))}>
           <FolderOpen size={14} />
           {t("settings:game.browse")}
         </Button>
@@ -380,9 +377,7 @@ function GameSection() {
       </div>
       <div className="mt-3 flex flex-wrap items-center gap-2.5">
         <Button
-          onClick={() =>
-            void run(setGamePath(path.trim() || null), t("settings:game.saved"))
-          }
+          onClick={() => void run(setGamePath(path.trim() || null), t("settings:game.saved"))}
           loading={busy}
           disabled={!dirty}
         >

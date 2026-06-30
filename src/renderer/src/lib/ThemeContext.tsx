@@ -45,11 +45,14 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const [accent, setAccentState] = useState<string | null>(null);
   const lastApplied = useRef<string>("");
 
-  const setAccent = useCallback((hex: string | null) => {
-    applyAccent(hex);
-    setAccentState(hex);
-    void setPreferences({ accent: hex });
-  }, [setPreferences]);
+  const setAccent = useCallback(
+    (hex: string | null) => {
+      applyAccent(hex);
+      setAccentState(hex);
+      void setPreferences({ accent: hex });
+    },
+    [setPreferences],
+  );
 
   const setTheme = useCallback(
     (id: string) => {

@@ -24,7 +24,11 @@ export function errorMessage(err: unknown, fallback: string): string {
 
 export function isRetryableApiError(err: unknown): boolean {
   if (!(err instanceof ApiException)) return false;
-  return err.error.code === "unknown" || err.error.code === "network" || err.error.code === "rate_limited";
+  return (
+    err.error.code === "unknown" ||
+    err.error.code === "network" ||
+    err.error.code === "rate_limited"
+  );
 }
 
 type DataOf<R> = R extends { ok: true; data: infer D } ? D : never;
@@ -163,7 +167,8 @@ export const api = {
   game: {
     status: () => call("game:status"),
     launch: () => call("game:launch"),
-    join: (location: string, shortName?: string | null) => call("game:join", { location, shortName }),
+    join: (location: string, shortName?: string | null) =>
+      call("game:join", { location, shortName }),
     openProtocol: (url: string) => call("game:openProtocol", url),
   },
   gallery: {

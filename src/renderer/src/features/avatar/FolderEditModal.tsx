@@ -65,7 +65,9 @@ export function FolderEditModal({
           onChange={(e) => setDisplayName(e.target.value)}
         />
         <label className="flex flex-col gap-1.5">
-          <span className="text-[12px] font-medium text-muted">{t("avatar:folder.visibility")}</span>
+          <span className="text-[12px] font-medium text-muted">
+            {t("avatar:folder.visibility")}
+          </span>
           <select
             className={INPUT_CLASS}
             value={visibility}

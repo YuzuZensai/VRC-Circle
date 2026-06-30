@@ -15,15 +15,9 @@ export function useAccountSettings(): {
   const [nonce, setNonce] = useState(0);
   const [override, setOverride] = useState<AccountSettings | null>(null);
 
-  const fetched = useAsync(
-    () => api.settings.get(),
-    [activeId, nonce],
-    "Failed to load settings.",
-  );
+  const fetched = useAsync(() => api.settings.get(), [activeId, nonce], "Failed to load settings.");
 
-  const state: Async<AccountSettings> = override
-    ? { status: "ready", data: override }
-    : fetched;
+  const state: Async<AccountSettings> = override ? { status: "ready", data: override } : fetched;
 
   const reload = useCallback(() => {
     setOverride(null);

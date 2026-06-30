@@ -38,7 +38,8 @@ export function useFavoriteWorlds(userId: string): {
 
   const fallbackFolders = useMemo<FavoriteWorldFolder[]>(() => [], []);
   const streamedFolders = streamed?.userId === userId ? streamed.folders : fallbackFolders;
-  const folders: FavoriteWorldFolder[] = fetched.status === "ready" ? fetched.data : streamedFolders;
+  const folders: FavoriteWorldFolder[] =
+    fetched.status === "ready" ? fetched.data : streamedFolders;
 
   const ids = useMemo(() => folders.flatMap((f) => f.worldIds), [folders]);
   const worlds = useWorlds(useShallow((s) => ids.map((id) => s.worlds[id]).filter(Boolean)));

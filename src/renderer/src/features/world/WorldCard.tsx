@@ -29,7 +29,11 @@ export function WorldCard({
   return (
     <Card
       onClick={
-        selectable ? onToggleSelect : world.deleted ? undefined : (onOpen ?? (() => openWorld(world.id)))
+        selectable
+          ? onToggleSelect
+          : world.deleted
+            ? undefined
+            : (onOpen ?? (() => openWorld(world.id)))
       }
       onContextMenu={onContextMenu}
       className={`${selected ? "outline outline-[3px] -outline-offset-[3px] outline-accent" : ""} ${

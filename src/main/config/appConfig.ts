@@ -27,7 +27,10 @@ function normalizePreferences(raw: Partial<AppPreferences> | undefined): AppPref
   const locale = raw?.locale;
   const accent = raw?.accent?.trim() || null;
   return {
-    schemeMode: schemeMode === "light" || schemeMode === "dark" || schemeMode === "auto" ? schemeMode : "auto",
+    schemeMode:
+      schemeMode === "light" || schemeMode === "dark" || schemeMode === "auto"
+        ? schemeMode
+        : "auto",
     accent: accent && /^#[\da-f]{6}$/i.test(accent) ? accent : null,
     locale: isAppLocale(locale) ? locale : DEFAULT_LOCALE,
     showDebugNav: raw?.showDebugNav === true,

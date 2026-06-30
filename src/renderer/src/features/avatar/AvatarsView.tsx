@@ -126,7 +126,13 @@ function BulkBar({ ids, onDone }: { ids: string[]; onDone: () => void }) {
   return (
     <SelectionBar label={t("avatar:bulk.selected", { count: ids.length })}>
       {busy ? (
-        <div className="selection-bar__progress" aria-label={t("avatar:bulk.unfavoritingProgress", { done: deleteProgress, total: ids.length })}>
+        <div
+          className="selection-bar__progress"
+          aria-label={t("avatar:bulk.unfavoritingProgress", {
+            done: deleteProgress,
+            total: ids.length,
+          })}
+        >
           <span className="selection-bar__progress-label">
             {t("avatar:bulk.unfavoritingProgress", { done: deleteProgress, total: ids.length })}
           </span>
@@ -164,7 +170,10 @@ function BulkBar({ ids, onDone }: { ids: string[]; onDone: () => void }) {
             {busy ? (
               <div className="flex flex-col gap-1.5">
                 <span className="text-[12px] text-muted">
-                  {t("avatar:bulk.unfavoritingProgress", { done: deleteProgress, total: ids.length })}
+                  {t("avatar:bulk.unfavoritingProgress", {
+                    done: deleteProgress,
+                    total: ids.length,
+                  })}
                 </span>
                 <div className="h-1 overflow-hidden rounded-full bg-surface-hover">
                   <div
@@ -205,8 +214,17 @@ function CurrentAvatarSection() {
 
   const isOwner = avatar.authorId === self?.id;
   const menuItems: ContextMenuEntry[] = [
-    { label: t("avatar:context.open"), icon: <Eye size={14} />, onClick: () => nav.openAvatar(avatar.id) },
-    { label: t("avatar:actions.wearing"), icon: <Shirt size={14} />, disabled: true, onClick: () => {} },
+    {
+      label: t("avatar:context.open"),
+      icon: <Eye size={14} />,
+      onClick: () => nav.openAvatar(avatar.id),
+    },
+    {
+      label: t("avatar:actions.wearing"),
+      icon: <Shirt size={14} />,
+      disabled: true,
+      onClick: () => {},
+    },
     { separator: true },
     {
       label: folder ? t("avatar:actions.manageFavorite") : t("avatar:actions.favorite"),
@@ -214,15 +232,19 @@ function CurrentAvatarSection() {
       onClick: () => setFavoriteOpen(true),
     },
     ...(isOwner
-      ? [
-          { label: t("avatar:actions.edit"), icon: <Pencil size={14} />, onClick: () => setEditOpen(true) },
+      ? ([
+          {
+            label: t("avatar:actions.edit"),
+            icon: <Pencil size={14} />,
+            onClick: () => setEditOpen(true),
+          },
           {
             label: t("avatar:actions.delete"),
             icon: <Trash2 size={14} />,
             danger: true,
             onClick: () => setDeleteOpen(true),
           },
-        ] satisfies ContextMenuEntry[]
+        ] satisfies ContextMenuEntry[])
       : []),
   ];
 
@@ -241,7 +263,11 @@ function CurrentAvatarSection() {
         />
       </div>
       {favoriteOpen ? (
-        <FavoriteModal avatar={avatar} currentFolder={folder} onClose={() => setFavoriteOpen(false)} />
+        <FavoriteModal
+          avatar={avatar}
+          currentFolder={folder}
+          onClose={() => setFavoriteOpen(false)}
+        />
       ) : null}
       {editOpen ? <EditAvatarModal avatar={avatar} onClose={() => setEditOpen(false)} /> : null}
       <DeleteAvatarModal
@@ -266,7 +292,9 @@ function UploadedTab({ filter }: { filter: AvatarFilter }) {
   const t = useT();
   const nav = useNav();
   const mine = useMyAvatars();
-  const [contextMenu, setContextMenu] = useState<{ x: number; y: number; avatar: Avatar } | null>(null);
+  const [contextMenu, setContextMenu] = useState<{ x: number; y: number; avatar: Avatar } | null>(
+    null,
+  );
   const [editAvatar, setEditAvatar] = useState<Avatar | null>(null);
   const [deleteAvatar, setDeleteAvatar] = useState<Avatar | null>(null);
 
@@ -276,9 +304,21 @@ function UploadedTab({ filter }: { filter: AvatarFilter }) {
   if (!shown.length) return <p className="text-[13px] text-faint">{t("avatar:empty")}</p>;
 
   const menuItems = (avatar: Avatar): ContextMenuEntry[] => [
-    { label: t("avatar:context.open"), icon: <Eye size={14} />, onClick: () => nav.openAvatar(avatar.id) },
-    { label: t("avatar:actions.wear"), icon: <Shirt size={14} />, onClick: () => void api.avatar.select(avatar.id) },
-    { label: t("avatar:actions.edit"), icon: <Pencil size={14} />, onClick: () => setEditAvatar(avatar) },
+    {
+      label: t("avatar:context.open"),
+      icon: <Eye size={14} />,
+      onClick: () => nav.openAvatar(avatar.id),
+    },
+    {
+      label: t("avatar:actions.wear"),
+      icon: <Shirt size={14} />,
+      onClick: () => void api.avatar.select(avatar.id),
+    },
+    {
+      label: t("avatar:actions.edit"),
+      icon: <Pencil size={14} />,
+      onClick: () => setEditAvatar(avatar),
+    },
     { separator: true },
     {
       label: t("avatar:actions.delete"),
@@ -363,7 +403,9 @@ function FavoritesTab({ filter, searching }: { filter: AvatarFilter; searching: 
     setSelected(
       new Set(
         shown.flatMap((folder) =>
-          folder.avatars.filter((avatar) => avatar.releaseStatus === status).map((avatar) => avatar.id),
+          folder.avatars
+            .filter((avatar) => avatar.releaseStatus === status)
+            .map((avatar) => avatar.id),
         ),
       ),
     );
@@ -387,7 +429,7 @@ function FavoritesTab({ filter, searching }: { filter: AvatarFilter; searching: 
     setSelected((s) => {
       const next = new Set(s);
       const all = ids.every((id) => next.has(id));
-      for (const id of ids) (all ? next.delete(id) : next.add(id));
+      for (const id of ids) all ? next.delete(id) : next.add(id);
       return next;
     });
 
@@ -398,9 +440,21 @@ function FavoritesTab({ filter, searching }: { filter: AvatarFilter; searching: 
   };
 
   const menuItems = (avatar: Avatar, folder: string): ContextMenuEntry[] => [
-    { label: t("avatar:context.open"), icon: <Eye size={14} />, onClick: () => nav.openAvatar(avatar.id) },
-    { label: t("avatar:context.select"), icon: <CheckSquare size={14} />, onClick: () => selectOne(avatar.id) },
-    { label: t("avatar:actions.wear"), icon: <Shirt size={14} />, onClick: () => void api.avatar.select(avatar.id) },
+    {
+      label: t("avatar:context.open"),
+      icon: <Eye size={14} />,
+      onClick: () => nav.openAvatar(avatar.id),
+    },
+    {
+      label: t("avatar:context.select"),
+      icon: <CheckSquare size={14} />,
+      onClick: () => selectOne(avatar.id),
+    },
+    {
+      label: t("avatar:actions.wear"),
+      icon: <Shirt size={14} />,
+      onClick: () => void api.avatar.select(avatar.id),
+    },
     { separator: true },
     {
       label: t("avatar:actions.manageFavorite"),
@@ -480,7 +534,12 @@ function FavoritesTab({ filter, searching }: { filter: AvatarFilter; searching: 
                       ? undefined
                       : (e) => {
                           e.preventDefault();
-                          setContextMenu({ x: e.clientX, y: e.clientY, avatar: a, folder: folder.name });
+                          setContextMenu({
+                            x: e.clientX,
+                            y: e.clientY,
+                            avatar: a,
+                            folder: folder.name,
+                          });
                         }
                   }
                 />
@@ -529,9 +588,7 @@ function FavoritesTab({ filter, searching }: { filter: AvatarFilter; searching: 
         />
       ) : null}
 
-      {selecting && selected.size > 0 ? (
-        <BulkBar ids={[...selected]} onDone={exitSelect} />
-      ) : null}
+      {selecting && selected.size > 0 ? <BulkBar ids={[...selected]} onDone={exitSelect} /> : null}
     </div>
   );
 }

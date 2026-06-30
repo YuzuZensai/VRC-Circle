@@ -17,7 +17,8 @@ export function AvatarView({ avatarId }: { avatarId: string }) {
   const { avatar, failed } = useAvatar(avatarId);
 
   if (avatar) return <AvatarDetail avatar={avatar} />;
-  if (failed) return <Banner className="m-10 max-w-[420px]">{t("avatar:detail.unavailable")}</Banner>;
+  if (failed)
+    return <Banner className="m-10 max-w-[420px]">{t("avatar:detail.unavailable")}</Banner>;
   return <AvatarSkeleton />;
 }
 
@@ -55,7 +56,9 @@ function AvatarDetail({ avatar }: { avatar: Avatar }) {
             {avatar.releaseStatus !== "public" ? (
               <Tag color="var(--status-ask)">{avatar.releaseStatus}</Tag>
             ) : null}
-            {avatar.featured ? <Tag color="var(--accent)">{t("avatar:detail.featured")}</Tag> : null}
+            {avatar.featured ? (
+              <Tag color="var(--accent)">{t("avatar:detail.featured")}</Tag>
+            ) : null}
             {avatar.platforms?.pc ? <Tag>PC</Tag> : null}
             {avatar.platforms?.android ? <Tag color="var(--status-join)">Quest</Tag> : null}
           </div>

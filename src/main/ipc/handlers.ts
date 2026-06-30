@@ -81,7 +81,8 @@ const handlers = {
   "avatar:select": (avatarId) => guard(() => avatars.selectAvatar(avatarId)),
   "avatar:update": ({ avatarId, edit }) => guard(() => avatars.updateAvatar(avatarId, edit)),
   "avatar:delete": (avatarId) => guard(() => avatars.deleteAvatar(avatarId)),
-  "avatar:favorite": ({ avatarId, folder }) => guard(() => avatars.favoriteAvatar(avatarId, folder)),
+  "avatar:favorite": ({ avatarId, folder }) =>
+    guard(() => avatars.favoriteAvatar(avatarId, folder)),
   "avatar:unfavorite": (avatarId) => guard(() => avatars.unfavoriteAvatar(avatarId)),
   "avatar:reloadFavorites": () => guard(() => avatars.reloadFavorites()),
   "avatar:moveFavorite": ({ avatarId, folder, reload }) =>

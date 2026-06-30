@@ -109,7 +109,10 @@ export interface IpcRequests {
   "avatar:unfavoriteMany": (avatarIds: string[]) => IpcResult<void>;
   "avatar:moveFavoriteMany": (p: { avatarIds: string[]; folder: string }) => IpcResult<MoveResult>;
   "avatar:clearFavoriteFolder": (folder: string) => IpcResult<void>;
-  "avatar:updateFavoriteFolder": (p: { folder: string; edit: FavoriteGroupEdit }) => IpcResult<void>;
+  "avatar:updateFavoriteFolder": (p: {
+    folder: string;
+    edit: FavoriteGroupEdit;
+  }) => IpcResult<void>;
 
   "group:byUser": (userId: string) => IpcResult<Group[]>;
   "group:represented": (userId: string) => IpcResult<Group | null>;

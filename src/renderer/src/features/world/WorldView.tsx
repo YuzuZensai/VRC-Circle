@@ -83,110 +83,121 @@ function WorldCard({ world }: { world: World }) {
         </div>
       }
     >
-      <CreateInstanceModal worldId={world.id} open={createOpen} onClose={() => setCreateOpen(false)} />
+      <CreateInstanceModal
+        worldId={world.id}
+        open={createOpen}
+        onClose={() => setCreateOpen(false)}
+      />
       {favoriteOpen ? (
-        <WorldFavoriteModal world={world} currentFolder={folder} onClose={() => setFavoriteOpen(false)} />
+        <WorldFavoriteModal
+          world={world}
+          currentFolder={folder}
+          onClose={() => setFavoriteOpen(false)}
+        />
       ) : null}
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          <StatTile
-            icon={<Users size={15} />}
-            label={t("world:detail.stats.playersNow")}
-            value={compactNumber(players)}
-            live={players > 0}
-          />
-          <StatTile
-            icon={<Heart size={15} />}
-            label={t("world:detail.stats.favorites")}
-            value={compactNumber(world.favorites)}
-          />
-          <StatTile
-            icon={<Globe size={15} />}
-            label={t("world:detail.stats.visits")}
-            value={world.visits ? compactNumber(world.visits) : "—"}
-          />
-          <StatTile
-            icon={<Users size={15} />}
-            label={t("world:detail.stats.capacity")}
-            value={`${world.capacity}`}
-          />
-        </div>
+        <StatTile
+          icon={<Users size={15} />}
+          label={t("world:detail.stats.playersNow")}
+          value={compactNumber(players)}
+          live={players > 0}
+        />
+        <StatTile
+          icon={<Heart size={15} />}
+          label={t("world:detail.stats.favorites")}
+          value={compactNumber(world.favorites)}
+        />
+        <StatTile
+          icon={<Globe size={15} />}
+          label={t("world:detail.stats.visits")}
+          value={world.visits ? compactNumber(world.visits) : "—"}
+        />
+        <StatTile
+          icon={<Users size={15} />}
+          label={t("world:detail.stats.capacity")}
+          value={`${world.capacity}`}
+        />
+      </div>
 
-        {world.description ? (
-          <Section title={t("world:detail.sections.description")}>
-            <p className="whitespace-pre-wrap text-[14px] leading-relaxed text-muted">
-              {world.description}
-            </p>
-          </Section>
-        ) : null}
+      {world.description ? (
+        <Section title={t("world:detail.sections.description")}>
+          <p className="whitespace-pre-wrap text-[14px] leading-relaxed text-muted">
+            {world.description}
+          </p>
+        </Section>
+      ) : null}
 
-        {world.previewYoutubeId ? (
-          <Section title={t("world:detail.sections.trailer")}>
-            <div className="aspect-video overflow-hidden rounded-lg border border-border">
-              <iframe
-                className="size-full"
-                src={`https://www.youtube.com/embed/${world.previewYoutubeId}`}
-                title={t("world:detail.sections.trailer")}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
+      {world.previewYoutubeId ? (
+        <Section title={t("world:detail.sections.trailer")}>
+          <div className="aspect-video overflow-hidden rounded-lg border border-border">
+            <iframe
+              className="size-full"
+              src={`https://www.youtube.com/embed/${world.previewYoutubeId}`}
+              title={t("world:detail.sections.trailer")}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          </div>
+        </Section>
+      ) : null}
+
+      <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-2">
+        <Section title={t("world:detail.sections.details")}>
+          <dl className="grid grid-cols-2 gap-x-6 gap-y-3">
+            {world.recommendedCapacity ? (
+              <Fact
+                label={t("world:detail.facts.recommended")}
+                value={t("world:detail.recommendedValue", { count: world.recommendedCapacity })}
               />
+            ) : null}
+            {typeof world.popularity === "number" ? (
+              <Fact label={t("world:detail.facts.popularity")} value={`${world.popularity} / 6`} />
+            ) : null}
+            {typeof world.heat === "number" ? (
+              <Fact label={t("world:detail.facts.heat")} value={`${world.heat} / 6`} />
+            ) : null}
+            {world.version ? (
+              <Fact label={t("world:detail.facts.version")} value={`${world.version}`} />
+            ) : null}
+            {world.publishedAt ? (
+              <Fact
+                label={t("world:detail.facts.published")}
+                value={formatDate(world.publishedAt)}
+              />
+            ) : null}
+            {world.labsPublishedAt ? (
+              <Fact
+                label={t("world:detail.facts.communityLabs")}
+                value={formatDate(world.labsPublishedAt)}
+              />
+            ) : null}
+            {world.createdAt ? (
+              <Fact label={t("world:detail.facts.created")} value={formatDate(world.createdAt)} />
+            ) : null}
+            {world.updatedAt ? (
+              <Fact label={t("world:detail.facts.updated")} value={formatDate(world.updatedAt)} />
+            ) : null}
+            <Fact label={t("world:detail.facts.worldId")} value={world.id} mono />
+          </dl>
+        </Section>
+
+        {world.tags.length ? (
+          <Section title={t("world:detail.sections.tags")}>
+            <div className="flex flex-wrap gap-1.5">
+              {tagsWithPrefix(world.tags, "author_tag_").length ? (
+                tagsWithPrefix(world.tags, "author_tag_").map((tag) => (
+                  <Tag key={tag}>{prettyTag(tag, "author_tag_")}</Tag>
+                ))
+              ) : (
+                <span className="inline-flex items-center gap-1.5 text-[13px] text-faint">
+                  <TagIcon size={13} /> {t("world:detail.noAuthorTags")}
+                </span>
+              )}
             </div>
           </Section>
         ) : null}
-
-        <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-2">
-          <Section title={t("world:detail.sections.details")}>
-            <dl className="grid grid-cols-2 gap-x-6 gap-y-3">
-              {world.recommendedCapacity ? (
-                <Fact
-                  label={t("world:detail.facts.recommended")}
-                  value={t("world:detail.recommendedValue", { count: world.recommendedCapacity })}
-                />
-              ) : null}
-              {typeof world.popularity === "number" ? (
-                <Fact label={t("world:detail.facts.popularity")} value={`${world.popularity} / 6`} />
-              ) : null}
-              {typeof world.heat === "number" ? (
-                <Fact label={t("world:detail.facts.heat")} value={`${world.heat} / 6`} />
-              ) : null}
-              {world.version ? (
-                <Fact label={t("world:detail.facts.version")} value={`${world.version}`} />
-              ) : null}
-              {world.publishedAt ? (
-                <Fact label={t("world:detail.facts.published")} value={formatDate(world.publishedAt)} />
-              ) : null}
-              {world.labsPublishedAt ? (
-                <Fact
-                  label={t("world:detail.facts.communityLabs")}
-                  value={formatDate(world.labsPublishedAt)}
-                />
-              ) : null}
-              {world.createdAt ? (
-                <Fact label={t("world:detail.facts.created")} value={formatDate(world.createdAt)} />
-              ) : null}
-              {world.updatedAt ? (
-                <Fact label={t("world:detail.facts.updated")} value={formatDate(world.updatedAt)} />
-              ) : null}
-              <Fact label={t("world:detail.facts.worldId")} value={world.id} mono />
-            </dl>
-          </Section>
-
-          {world.tags.length ? (
-            <Section title={t("world:detail.sections.tags")}>
-              <div className="flex flex-wrap gap-1.5">
-                {tagsWithPrefix(world.tags, "author_tag_").length ? (
-                  tagsWithPrefix(world.tags, "author_tag_").map((tag) => (
-                    <Tag key={tag}>{prettyTag(tag, "author_tag_")}</Tag>
-                  ))
-                ) : (
-                  <span className="inline-flex items-center gap-1.5 text-[13px] text-faint">
-                    <TagIcon size={13} /> {t("world:detail.noAuthorTags")}
-                  </span>
-                )}
-              </div>
-            </Section>
-          ) : null}
-        </div>
+      </div>
     </HeroHeader>
   );
 }

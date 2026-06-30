@@ -69,8 +69,7 @@ function toFolder(
   };
 }
 
-export const useWorldFavoriteLimits = (): FavoriteLimits =>
-  useWorldFavorites((s) => s.limits);
+export const useWorldFavoriteLimits = (): FavoriteLimits => useWorldFavorites((s) => s.limits);
 
 export const useWorldFavoritesLoaded = (): boolean => useWorldFavorites((s) => s.loaded);
 

@@ -65,7 +65,9 @@ function ProfileCard({ profile }: { profile: UserProfile }) {
       : presence.effective.label;
   const avatar = avatarOf(displayProfile);
   const banner = bannerOf(displayProfile);
-  const devLabel = displayProfile.developerType ? developerLabels[displayProfile.developerType] : undefined;
+  const devLabel = displayProfile.developerType
+    ? developerLabels[displayProfile.developerType]
+    : undefined;
   const bioLinks = (displayProfile.bioLinks ?? []).filter(Boolean);
   const showcasedBadges = (displayProfile.badges ?? []).filter((b) => b.showcased);
 
@@ -87,7 +89,9 @@ function ProfileCard({ profile }: { profile: UserProfile }) {
       body={
         <div className="min-w-0 flex-1 pb-2">
           <div className="flex flex-wrap items-center gap-2.5">
-            <h2 className="text-[32px] font-bold tracking-[-0.6px]">{displayProfile.displayName}</h2>
+            <h2 className="text-[32px] font-bold tracking-[-0.6px]">
+              {displayProfile.displayName}
+            </h2>
             {profile.isSelf ? <Tag color="var(--accent)">{t("profile:badge.you")}</Tag> : null}
             {profile.isFriend && !profile.isSelf ? (
               <Tag color="var(--status-join)">{t("profile:badge.friend")}</Tag>
@@ -141,173 +145,178 @@ function ProfileCard({ profile }: { profile: UserProfile }) {
     >
       <LocationSection location={displayProfile.location} />
 
-        <Tabs
-          tabs={[
-            { id: "overview", label: t("profile:tabs.overview") },
-            { id: "worlds", label: t("profile:tabs.worlds") },
-            { id: "favorites", label: t("profile:tabs.favorites") },
-            { id: "groups", label: t("profile:tabs.groups") },
-          ]}
-          active={tab}
-          onChange={setTab}
-        />
+      <Tabs
+        tabs={[
+          { id: "overview", label: t("profile:tabs.overview") },
+          { id: "worlds", label: t("profile:tabs.worlds") },
+          { id: "favorites", label: t("profile:tabs.favorites") },
+          { id: "groups", label: t("profile:tabs.groups") },
+        ]}
+        active={tab}
+        onChange={setTab}
+      />
 
-        {tab === "overview" ? (
-          <div className="flex flex-col gap-5 rise-in">
-            {displayProfile.note ? (
-              <Section title={t("profile:sections.note")}>
-                <p className="text-[14px] leading-relaxed whitespace-pre-wrap text-text">
-                  {displayProfile.note}
+      {tab === "overview" ? (
+        <div className="flex flex-col gap-5 rise-in">
+          {displayProfile.note ? (
+            <Section title={t("profile:sections.note")}>
+              <p className="text-[14px] leading-relaxed whitespace-pre-wrap text-text">
+                {displayProfile.note}
+              </p>
+            </Section>
+          ) : null}
+
+          {displayProfile.statusDescription || displayProfile.bio || bioLinks.length ? (
+            <Section title={t("profile:sections.about")}>
+              {displayProfile.statusDescription ? (
+                <p className="text-[15px] italic text-text">“{displayProfile.statusDescription}”</p>
+              ) : null}
+              {displayProfile.bio ? (
+                <p className="text-[14px] leading-relaxed whitespace-pre-wrap text-muted">
+                  {displayProfile.bio}
                 </p>
-              </Section>
-            ) : null}
-
-            {displayProfile.statusDescription || displayProfile.bio || bioLinks.length ? (
-              <Section title={t("profile:sections.about")}>
-                {displayProfile.statusDescription ? (
-                  <p className="text-[15px] italic text-text">“{displayProfile.statusDescription}”</p>
-                ) : null}
-                {displayProfile.bio ? (
-                  <p className="text-[14px] leading-relaxed whitespace-pre-wrap text-muted">
-                    {displayProfile.bio}
-                  </p>
-                ) : null}
-                {bioLinks.length ? (
-                  <div className="flex flex-wrap gap-2">
-                    {bioLinks.map((link) => (
-                      <LinkPill key={link} href={link}>
-                        {prettyLink(link)}
-                      </LinkPill>
-                    ))}
-                  </div>
-                ) : null}
-              </Section>
-            ) : null}
-
-            <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-2">
-              <Section title={t("profile:sections.details")}>
-                <dl className="grid grid-cols-2 gap-x-6 gap-y-3">
-                  {displayProfile.dateJoined ? (
-                    <Fact
-                      label={t("profile:facts.joined")}
-                      value={formatDate(displayProfile.dateJoined)}
-                    />
-                  ) : null}
-                  {displayProfile.lastLogin ? (
-                    <Fact
-                      label={t("profile:facts.lastLogin")}
-                      value={formatDateTime(displayProfile.lastLogin)}
-                    />
-                  ) : null}
-                  {displayProfile.lastActivity ? (
-                    <Fact
-                      label={t("profile:facts.lastActivity")}
-                      value={formatDateTime(displayProfile.lastActivity)}
-                    />
-                  ) : null}
-                  {displayProfile.lastPlatform ? (
-                    <Fact
-                      label={t("profile:facts.platform")}
-                      value={platformLabel(displayProfile.lastPlatform)}
-                    />
-                  ) : null}
-                  {displayProfile.state ? (
-                    <Fact label={t("profile:facts.state")} value={stateLabel(displayProfile.state, t)} />
-                  ) : null}
-                  {demoMode ? null : <Fact label={t("profile:facts.userId")} value={profile.id} mono />}
-                </dl>
-              </Section>
-
-              {displayProfile.languages?.length ? (
-                <Section title={t("profile:sections.languages")}>
-                  <div className="flex flex-wrap gap-1.5">
-                    {displayProfile.languages.map((code) => (
-                      <Tag key={code}>{languageLabel(code)}</Tag>
-                    ))}
-                  </div>
-                </Section>
               ) : null}
-
-              {displayProfile.currentAvatarTags?.length ? (
-                <Section title={t("profile:sections.avatarTags")}>
-                  <div className="flex flex-wrap gap-1.5">
-                    {displayProfile.currentAvatarTags.map((t) => (
-                      <Tag key={t}>{prettyTag(t, "content_")}</Tag>
-                    ))}
-                  </div>
-                </Section>
-              ) : null}
-
-              {displayProfile.badges?.length ? (
-                <Section title={t("profile:sections.badges")}>
-                  <div className="flex flex-wrap gap-2.5">
-                    {[...displayProfile.badges]
-                      .sort((a, b) => Number(b.showcased) - Number(a.showcased))
-                      .map((b) => (
-                        <div
-                          key={b.id}
-                          title={b.description}
-                          className="flex items-center gap-2.5 rounded-lg border border-border bg-surface px-2.5 py-1.5"
-                        >
-                          {b.imageUrl ? (
-                            <img
-                              src={b.imageUrl}
-                              alt=""
-                              className="size-10 shrink-0 object-contain"
-                            />
-                          ) : null}
-                          <span className="text-[13px] font-medium text-text">{b.name}</span>
-                        </div>
-                      ))}
-                  </div>
-                </Section>
-              ) : null}
-            </div>
-
-            {displayProfile.pastDisplayNames?.length ? (
-              <Section title={t("profile:sections.formerNames")} collapsible>
+              {bioLinks.length ? (
                 <div className="flex flex-wrap gap-2">
-                  {displayProfile.pastDisplayNames.map((p) => (
-                    <span
-                      key={`${p.displayName}-${p.updatedAt}`}
-                      className="rounded-lg border border-border bg-surface px-2.5 py-1 text-[13px] text-text"
-                    >
-                      {p.displayName}
-                      {p.updatedAt ? (
-                        <em className="text-xs not-italic text-faint">
-                          {" "}
-                          · {t("profile:formerName.until", { date: formatDate(p.updatedAt) })}
-                        </em>
-                      ) : null}
-                    </span>
+                  {bioLinks.map((link) => (
+                    <LinkPill key={link} href={link}>
+                      {prettyLink(link)}
+                    </LinkPill>
+                  ))}
+                </div>
+              ) : null}
+            </Section>
+          ) : null}
+
+          <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-2">
+            <Section title={t("profile:sections.details")}>
+              <dl className="grid grid-cols-2 gap-x-6 gap-y-3">
+                {displayProfile.dateJoined ? (
+                  <Fact
+                    label={t("profile:facts.joined")}
+                    value={formatDate(displayProfile.dateJoined)}
+                  />
+                ) : null}
+                {displayProfile.lastLogin ? (
+                  <Fact
+                    label={t("profile:facts.lastLogin")}
+                    value={formatDateTime(displayProfile.lastLogin)}
+                  />
+                ) : null}
+                {displayProfile.lastActivity ? (
+                  <Fact
+                    label={t("profile:facts.lastActivity")}
+                    value={formatDateTime(displayProfile.lastActivity)}
+                  />
+                ) : null}
+                {displayProfile.lastPlatform ? (
+                  <Fact
+                    label={t("profile:facts.platform")}
+                    value={platformLabel(displayProfile.lastPlatform)}
+                  />
+                ) : null}
+                {displayProfile.state ? (
+                  <Fact
+                    label={t("profile:facts.state")}
+                    value={stateLabel(displayProfile.state, t)}
+                  />
+                ) : null}
+                {demoMode ? null : (
+                  <Fact label={t("profile:facts.userId")} value={profile.id} mono />
+                )}
+              </dl>
+            </Section>
+
+            {displayProfile.languages?.length ? (
+              <Section title={t("profile:sections.languages")}>
+                <div className="flex flex-wrap gap-1.5">
+                  {displayProfile.languages.map((code) => (
+                    <Tag key={code}>{languageLabel(code)}</Tag>
                   ))}
                 </div>
               </Section>
             ) : null}
-          </div>
-        ) : null}
 
-        {tab === "worlds" ? (
-          <div className="rise-in">
-            <WorldSearch>
-              {(filter) => <WorldsSection userId={profile.id} filter={filter} />}
-            </WorldSearch>
-          </div>
-        ) : null}
+            {displayProfile.currentAvatarTags?.length ? (
+              <Section title={t("profile:sections.avatarTags")}>
+                <div className="flex flex-wrap gap-1.5">
+                  {displayProfile.currentAvatarTags.map((t) => (
+                    <Tag key={t}>{prettyTag(t, "content_")}</Tag>
+                  ))}
+                </div>
+              </Section>
+            ) : null}
 
-        {tab === "favorites" ? (
-          <div className="rise-in">
-            <WorldSearch>
-              {(filter) => <FavoriteWorldsSection userId={profile.id} filter={filter} />}
-            </WorldSearch>
+            {displayProfile.badges?.length ? (
+              <Section title={t("profile:sections.badges")}>
+                <div className="flex flex-wrap gap-2.5">
+                  {[...displayProfile.badges]
+                    .sort((a, b) => Number(b.showcased) - Number(a.showcased))
+                    .map((b) => (
+                      <div
+                        key={b.id}
+                        title={b.description}
+                        className="flex items-center gap-2.5 rounded-lg border border-border bg-surface px-2.5 py-1.5"
+                      >
+                        {b.imageUrl ? (
+                          <img
+                            src={b.imageUrl}
+                            alt=""
+                            className="size-10 shrink-0 object-contain"
+                          />
+                        ) : null}
+                        <span className="text-[13px] font-medium text-text">{b.name}</span>
+                      </div>
+                    ))}
+                </div>
+              </Section>
+            ) : null}
           </div>
-        ) : null}
 
-        {tab === "groups" ? (
-          <div className="rise-in">
-            <GroupsSection userId={profile.id} />
-          </div>
-        ) : null}
+          {displayProfile.pastDisplayNames?.length ? (
+            <Section title={t("profile:sections.formerNames")} collapsible>
+              <div className="flex flex-wrap gap-2">
+                {displayProfile.pastDisplayNames.map((p) => (
+                  <span
+                    key={`${p.displayName}-${p.updatedAt}`}
+                    className="rounded-lg border border-border bg-surface px-2.5 py-1 text-[13px] text-text"
+                  >
+                    {p.displayName}
+                    {p.updatedAt ? (
+                      <em className="text-xs not-italic text-faint">
+                        {" "}
+                        · {t("profile:formerName.until", { date: formatDate(p.updatedAt) })}
+                      </em>
+                    ) : null}
+                  </span>
+                ))}
+              </div>
+            </Section>
+          ) : null}
+        </div>
+      ) : null}
+
+      {tab === "worlds" ? (
+        <div className="rise-in">
+          <WorldSearch>
+            {(filter) => <WorldsSection userId={profile.id} filter={filter} />}
+          </WorldSearch>
+        </div>
+      ) : null}
+
+      {tab === "favorites" ? (
+        <div className="rise-in">
+          <WorldSearch>
+            {(filter) => <FavoriteWorldsSection userId={profile.id} filter={filter} />}
+          </WorldSearch>
+        </div>
+      ) : null}
+
+      {tab === "groups" ? (
+        <div className="rise-in">
+          <GroupsSection userId={profile.id} />
+        </div>
+      ) : null}
 
       {menu ? (
         <ContextMenu

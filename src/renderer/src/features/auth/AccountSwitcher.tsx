@@ -26,7 +26,9 @@ export function AccountSwitcher() {
   const status = self?.status ?? "offline";
   const activeName = active ? (demoMode ? demoName(active.id) : active.displayName) : "Account";
   const activeIcon = demoMode ? undefined : active?.userIcon;
-  const activeSub = demoMode ? statusMeta[status].label : self?.statusDescription || statusMeta[status].label;
+  const activeSub = demoMode
+    ? statusMeta[status].label
+    : self?.statusDescription || statusMeta[status].label;
 
   function close() {
     setOpen(false);
@@ -57,9 +59,7 @@ export function AccountSwitcher() {
           <span className="truncate text-left text-[13.5px] font-semibold leading-[1.25]">
             {activeName}
           </span>
-          <span className="truncate text-left text-[11px] font-medium text-faint">
-            {activeSub}
-          </span>
+          <span className="truncate text-left text-[11px] font-medium text-faint">{activeSub}</span>
         </span>
         <span
           className={`acct__chevron shrink-0 text-faint transition-transform duration-[var(--dur)] ease-[var(--ease)] ${

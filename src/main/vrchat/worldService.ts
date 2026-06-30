@@ -260,7 +260,13 @@ function fillSlots(existing: FavoriteGroupInput[], caps: WorldFavoriteCaps): Fav
     for (let i = 1; mine.length < max && i <= max; i++) {
       const name = `${prefix}${i}`;
       if (taken.has(name)) continue;
-      mine.push({ name, displayName: prettyFolderName(name), visibility: "private", worlds: [], vrcPlus });
+      mine.push({
+        name,
+        displayName: prettyFolderName(name),
+        visibility: "private",
+        worlds: [],
+        vrcPlus,
+      });
     }
     out.push(...mine);
   }
@@ -354,10 +360,7 @@ export async function unfavoriteWorlds(worldIds: string[]): Promise<void> {
   await reloadMyFavorites();
 }
 
-export async function moveWorldsToFolder(
-  worldIds: string[],
-  folder: string,
-): Promise<MoveResult> {
+export async function moveWorldsToFolder(worldIds: string[], folder: string): Promise<MoveResult> {
   const vrc = requireActiveClient();
   const me = await currentUser();
   const records = await favoriteRecords(vrc);
@@ -458,10 +461,11 @@ async function favoriteTypeForExistingFolder(
     query: { ownerId: userId, n: 100 },
     throwOnError: true,
   });
-  return (
-    data.find((g) => g.name === folder && isWorldGroupType(g.type))?.type ??
-    favoriteTypeForFolder(folder)
+  const group = data.find(
+    (g): g is (typeof data)[number] & { type: WorldFavoriteGroupType } =>
+      g.name === folder && isWorldGroupType(g.type),
   );
+  return group?.type ?? favoriteTypeForFolder(folder);
 }
 
 type AddFavoriteBody = NonNullable<Parameters<VRChat["addFavorite"]>[0]>["body"];
@@ -487,7 +491,9 @@ async function favoriteRecordEntries(vrc: VRChat): Promise<WorldFavoriteRecord[]
     query: { ownerId: me.id, n: 100 },
     throwOnError: true,
   });
-  const groups = rawGroups.filter((g) => isWorldGroupType(g.type));
+  const groups = rawGroups.filter((g): g is (typeof rawGroups)[number] & { type: WorldFavoriteGroupType } =>
+    isWorldGroupType(g.type),
+  );
   const pageSize = 100;
   const entries: WorldFavoriteRecord[] = [];
   for (const group of groups) {

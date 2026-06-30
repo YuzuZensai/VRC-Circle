@@ -41,9 +41,7 @@ export function AvatarCard({
         {selectable ? (
           <span
             className={`absolute left-1.5 top-1.5 flex size-5 items-center justify-center rounded-md border transition-colors ${
-              selected
-                ? "border-accent bg-accent text-on-accent"
-                : "border-border bg-surface-2/80"
+              selected ? "border-accent bg-accent text-on-accent" : "border-border bg-surface-2/80"
             }`}
           >
             {selected ? <Check size={13} /> : null}

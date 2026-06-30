@@ -23,7 +23,9 @@ export function CheckBox({
         onChange();
       }}
       className={`flex size-5 items-center justify-center rounded-md border transition-colors ${
-        on ? "border-accent bg-accent text-on-accent" : "border-border bg-surface-2/80 hover:border-accent"
+        on
+          ? "border-accent bg-accent text-on-accent"
+          : "border-border bg-surface-2/80 hover:border-accent"
       }`}
     >
       {indeterminate ? <Minus size={13} /> : checked ? <Check size={13} /> : null}

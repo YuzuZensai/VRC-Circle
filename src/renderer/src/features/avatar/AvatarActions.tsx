@@ -58,7 +58,11 @@ export function AvatarActions({ avatar }: { avatar: Avatar }) {
         </Button>
         {isOwner ? (
           <>
-            <Button variant="ghost" onClick={() => setEditOpen(true)} title={t("avatar:actions.edit")}>
+            <Button
+              variant="ghost"
+              onClick={() => setEditOpen(true)}
+              title={t("avatar:actions.edit")}
+            >
               <Pencil size={15} />
             </Button>
             <Button
@@ -74,12 +78,14 @@ export function AvatarActions({ avatar }: { avatar: Avatar }) {
       {error ? <p className="text-[12px] text-danger">{error}</p> : null}
 
       {favoriteOpen ? (
-        <FavoriteModal avatar={avatar} currentFolder={folder} onClose={() => setFavoriteOpen(false)} />
+        <FavoriteModal
+          avatar={avatar}
+          currentFolder={folder}
+          onClose={() => setFavoriteOpen(false)}
+        />
       ) : null}
 
-      {editOpen ? (
-        <EditAvatarModal avatar={avatar} onClose={() => setEditOpen(false)} />
-      ) : null}
+      {editOpen ? <EditAvatarModal avatar={avatar} onClose={() => setEditOpen(false)} /> : null}
 
       <DeleteAvatarModal
         avatar={avatar}

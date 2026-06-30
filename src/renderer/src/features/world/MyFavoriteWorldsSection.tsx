@@ -102,7 +102,7 @@ export function MyFavoriteWorldsSection({ filter }: { filter?: WorldFilter }) {
     setSelected((s) => {
       const next = new Set(s);
       const all = ids.every((id) => next.has(id));
-      for (const id of ids) (all ? next.delete(id) : next.add(id));
+      for (const id of ids) all ? next.delete(id) : next.add(id);
       return next;
     });
 
@@ -118,7 +118,11 @@ export function MyFavoriteWorldsSection({ filter }: { filter?: WorldFilter }) {
   };
 
   const menuItems = (world: World, folder: string): ContextMenuEntry[] => [
-    { label: t("world:context.open"), icon: <Eye size={14} />, onClick: () => nav.openWorld(world.id) },
+    {
+      label: t("world:context.open"),
+      icon: <Eye size={14} />,
+      onClick: () => nav.openWorld(world.id),
+    },
     {
       label: t("world:context.select"),
       icon: <CheckSquare size={14} />,
@@ -144,7 +148,10 @@ export function MyFavoriteWorldsSection({ filter }: { filter?: WorldFilter }) {
         <div className="flex flex-wrap justify-end gap-2">
           {selecting ? (
             <>
-              <Button variant="ghost" onClick={() => selectWhere((w) => w.releaseStatus === "private")}>
+              <Button
+                variant="ghost"
+                onClick={() => selectWhere((w) => w.releaseStatus === "private")}
+              >
                 {t("world:bulk.selectPrivate")}
               </Button>
               {hasDeleted ? (
@@ -201,7 +208,12 @@ export function MyFavoriteWorldsSection({ filter }: { filter?: WorldFilter }) {
                       ? undefined
                       : (e) => {
                           e.preventDefault();
-                          setContextMenu({ x: e.clientX, y: e.clientY, world: w, folder: folder.name });
+                          setContextMenu({
+                            x: e.clientX,
+                            y: e.clientY,
+                            world: w,
+                            folder: folder.name,
+                          });
                         }
                   }
                 />

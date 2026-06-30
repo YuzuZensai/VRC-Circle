@@ -40,11 +40,18 @@ export function FriendsSidebar({ onOpen }: { onOpen: (id: string) => void }) {
   const [contextMenu, setContextMenu] = useState<ContextMenuState | null>(null);
   const { buildItems, modal } = useUserMenu();
 
-  const openContextMenu = useCallback((e: React.MouseEvent, friend: UserProfile) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setContextMenu({ x: e.clientX, y: e.clientY, friend: demoMode ? anonymizeUserForDemo(friend) : friend });
-  }, [demoMode]);
+  const openContextMenu = useCallback(
+    (e: React.MouseEvent, friend: UserProfile) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setContextMenu({
+        x: e.clientX,
+        y: e.clientY,
+        friend: demoMode ? anonymizeUserForDemo(friend) : friend,
+      });
+    },
+    [demoMode],
+  );
 
   return (
     <aside className="friendsbar flex h-full flex-col overflow-hidden border-l border-border bg-surface">
@@ -56,7 +63,9 @@ export function FriendsSidebar({ onOpen }: { onOpen: (id: string) => void }) {
       </header>
 
       <div className="flex-1 overflow-y-auto p-2">
-        {selfAlone ? <FriendRow friend={self} onOpen={onOpen} isSelf selfChrome demoMode={demoMode} /> : null}
+        {selfAlone ? (
+          <FriendRow friend={self} onOpen={onOpen} isSelf selfChrome demoMode={demoMode} />
+        ) : null}
 
         {friends.length === 0 ? (
           <p className="p-3 text-[13px] text-faint">{t("nav:friends.noFriendsOnline")}</p>

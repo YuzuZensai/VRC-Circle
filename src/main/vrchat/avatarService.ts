@@ -305,7 +305,11 @@ async function restoreAvatarFavorite(
   fav: { favoriteId: string; tags: string[] },
 ): Promise<void> {
   await vrc.addFavorite({
-    body: { type: "avatar", favoriteId: fav.favoriteId, tags: fav.tags.length ? fav.tags : ["avatars1"] },
+    body: {
+      type: "avatar",
+      favoriteId: fav.favoriteId,
+      tags: fav.tags.length ? fav.tags : ["avatars1"],
+    },
     throwOnError: true,
   });
 }
