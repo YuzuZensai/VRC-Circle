@@ -139,8 +139,15 @@ function subscribe(vrc: VRChat & Pipeline): void {
     const d = asRecord(data);
     const id = (d.userId ?? userOf(data).id) as string | undefined;
     if (!id) return;
+    const loc = d.location as string | undefined;
     const fromUser = patchFromUser(userOf(data)) ?? { id };
-    entityStore.upsert({ ...fromUser, id, location: d.location as string, state: "online" });
+    const offline = !loc || loc.startsWith("offline");
+    entityStore.upsert({
+      ...fromUser,
+      id,
+      location: offline ? "offline" : loc,
+      state: offline ? "offline" : "online",
+    });
   };
   vrc.on("friend-location", location);
   vrc.on("user-location", location);
