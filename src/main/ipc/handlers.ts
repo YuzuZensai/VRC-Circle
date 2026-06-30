@@ -153,9 +153,15 @@ const handlers = {
 
   "game:status": () => guard(() => game.status()),
   "game:launch": () => guard(() => game.launch()),
-  "game:join": ({ location }) =>
+  "game:join": ({ location, shortName }) =>
     guard(async () => {
-      await game.joinInstance(`vrchat://launch?ref=vrchat.com&id=${location}`);
+      const suffix = shortName ? `&shortName=${encodeURIComponent(shortName)}` : "";
+      await game.joinInstance(`vrchat://launch?ref=vrchat.com&id=${location}${suffix}&attach=1`);
+    }),
+  "game:openProtocol": (url) =>
+    guard(async () => {
+      if (!url.startsWith("vrchat://")) throw new Error("Invalid VRChat link");
+      await shell.openExternal(url);
     }),
 
   "gallery:snapshot": () => guard(async () => gallery.snapshot()),

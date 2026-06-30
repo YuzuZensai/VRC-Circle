@@ -22,6 +22,11 @@ function launchLink(inst: Instance, name: string): string {
   return `https://vrchat.com/home/launch?${params.toString()}`;
 }
 
+function protocolLink(inst: Instance): string {
+  const shortName = inst.shortName ? `&shortName=${encodeURIComponent(inst.shortName)}` : "";
+  return `vrchat://launch?ref=vrchat.com&id=${inst.location}${shortName}&attach=1`;
+}
+
 export function CreateInstanceModal({
   worldId,
   open,
@@ -195,7 +200,7 @@ function ResultView({ instance }: { instance: Instance }) {
     if (!running) markLaunching();
     setLaunchError(null);
     try {
-      await api.game.join(instance.location);
+      await api.game.openProtocol(protocolLink(instance));
     } catch (err) {
       setLaunchError(errorMessage(err, "Failed to launch VRChat"));
     }
@@ -219,10 +224,10 @@ function ResultView({ instance }: { instance: Instance }) {
 
       {canLaunch ? (
         <div className="flex flex-col gap-1.5">
-          <Button variant="primary" onClick={launch} loading={launching} disabled={running} block>
+          <Button variant="primary" onClick={launch} loading={launching} block>
             {!launching ? <Play size={15} /> : null}
             {running
-              ? t("world:create.running")
+              ? t("world:create.join")
               : launching
                 ? t("world:create.launching")
                 : t("world:create.launch")}

@@ -141,7 +141,7 @@ function JoinActions({ instance }: { instance: Instance }) {
     if (!running) markLaunching();
     setJoinError(null);
     try {
-      await api.game.join(instance.location);
+      await api.game.join(instance.location, instance.shortName);
     } catch (err) {
       setJoinError(errorMessage(err, "Failed to launch VRChat"));
     }

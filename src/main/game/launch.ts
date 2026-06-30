@@ -1,6 +1,7 @@
 import { shell } from "electron";
 import { exec, spawn } from "node:child_process";
 import { promisify } from "node:util";
+import { readFile, readdir } from "node:fs/promises";
 import { VRCHAT_APPID, vrchatLaunchExe, vrchatProton, vrchatPrefix, steamRoot } from "./steam";
 import type { GameStatus } from "../../shared/types/game";
 import { broadcast } from "../windows";
@@ -16,8 +17,12 @@ async function isRunning(): Promise<boolean> {
       const { stdout } = await sh('tasklist /fi "imagename eq VRChat.exe" /nh');
       return /vrchat\.exe/i.test(stdout);
     }
-    const { stdout } = await sh("ps -A -o args=");
-    return stdout.split("\n").some((line) => /vrchat\.exe/i.test(line) && !/grep/i.test(line));
+    const { stdout } = await sh("ps -A -o stat=,args=");
+    return stdout.split("\n").some((line) => {
+      if (!/vrchat\.exe/i.test(line) || /grep/i.test(line)) return false;
+      const stat = line.trim().split(/\s+/, 1)[0] ?? "";
+      return !stat.startsWith("Z");
+    });
   } catch {
     return false;
   }
@@ -70,20 +75,26 @@ export async function joinInstance(url: string): Promise<JoinResult> {
   }
 
   if (running) {
-    linuxHandoff(url);
+    await linuxHandoff(url);
     await focus();
     return { launched: true, alreadyRunning: true };
   }
 
+  if (coldStartInFlight) {
+    await focus();
+    return { launched: false, alreadyRunning: true };
+  }
+  coldStartInFlight = true;
+  setTimeout(() => {
+    coldStartInFlight = false;
+  }, 90_000).unref();
   broadcast("game:changed", { running: false, supported: true, launching: true });
   spawn("steam", ["-applaunch", VRCHAT_APPID, url], { detached: true, stdio: "ignore" }).unref();
   logger.info("game", "cold join via steam -applaunch");
   return { launched: true, alreadyRunning: false };
 }
 
-// reaches a live VRChat through its named pipe by running launch.exe inside the
-// same proton prefix; steam -applaunch is a no-op once the game is up.
-function linuxHandoff(url: string): void {
+async function linuxHandoff(url: string): Promise<void> {
   const proton = vrchatProton();
   const exe = vrchatLaunchExe();
   const prefix = vrchatPrefix();
@@ -95,11 +106,18 @@ function linuxHandoff(url: string): void {
     });
     return;
   }
+
+  const inherited = await vrchatGameEnv();
+  if (!inherited) {
+    logger.warn("game", "cannot read running VRChat env; skipping warm join to avoid a duplicate");
+    return;
+  }
+
   spawn(proton, ["run", exe, url], {
     detached: true,
     stdio: "ignore",
     env: {
-      ...process.env,
+      ...inherited,
       STEAM_COMPAT_DATA_PATH: prefix,
       STEAM_COMPAT_CLIENT_INSTALL_PATH: steamRoot(),
     },
@@ -107,9 +125,35 @@ function linuxHandoff(url: string): void {
   logger.info("game", "warm join via proton launch.exe");
 }
 
+async function vrchatGameEnv(): Promise<NodeJS.ProcessEnv | null> {
+  let pids: string[];
+  try {
+    pids = (await readdir("/proc")).filter((p) => /^\d+$/.test(p));
+  } catch {
+    return null;
+  }
+  for (const pid of pids) {
+    try {
+      const cmd = await readFile(`/proc/${pid}/cmdline`, "utf8");
+      if (!/VRChat\.exe/i.test(cmd)) continue;
+      const raw = await readFile(`/proc/${pid}/environ`, "utf8");
+      const env: NodeJS.ProcessEnv = {};
+      for (const pair of raw.split("\0")) {
+        const eq = pair.indexOf("=");
+        if (eq < 0) continue;
+        env[pair.slice(0, eq)] = pair.slice(eq + 1);
+      }
+      return env;
+    } catch {}
+  }
+  return null;
+}
+
 let lastRunning = false;
+let coldStartInFlight = false;
 
 function setRunning(running: boolean): GameStatus {
+  if (running) coldStartInFlight = false;
   if (running !== lastRunning) {
     lastRunning = running;
     broadcast("game:changed", { running, supported: true });

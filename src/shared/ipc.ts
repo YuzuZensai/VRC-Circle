@@ -159,7 +159,8 @@ export interface IpcRequests {
 
   "game:status": () => IpcResult<GameStatus>;
   "game:launch": () => IpcResult<GameStatus>;
-  "game:join": (p: { location: string }) => IpcResult<void>;
+  "game:join": (p: { location: string; shortName?: string | null }) => IpcResult<void>;
+  "game:openProtocol": (url: string) => IpcResult<void>;
 
   "gallery:snapshot": () => IpcResult<GallerySnapshot>;
   "gallery:reveal": (path: string) => IpcResult<void>;

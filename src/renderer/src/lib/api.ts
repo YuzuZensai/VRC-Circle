@@ -162,7 +162,8 @@ export const api = {
   game: {
     status: () => call("game:status"),
     launch: () => call("game:launch"),
-    join: (location: string) => call("game:join", { location }),
+    join: (location: string, shortName?: string | null) => call("game:join", { location, shortName }),
+    openProtocol: (url: string) => call("game:openProtocol", url),
   },
   gallery: {
     snapshot: () => call("gallery:snapshot"),
