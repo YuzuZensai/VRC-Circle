@@ -5,6 +5,8 @@ import { Avatar, StatusDot } from "../../components/ui";
 import { useSelf } from "../../store/social";
 import { statusMeta } from "../../lib/vrchat";
 import { api } from "../../lib/api";
+import { useDemoMode } from "../../lib/debugSettings";
+import { demoName } from "../../lib/demoMode";
 import type { UserStatus } from "../../../../shared/types/user";
 
 const STATUS_CHOICES: UserStatus[] = ["join me", "active", "ask me", "busy"];
@@ -15,12 +17,16 @@ const MENU_ROW =
 export function AccountSwitcher() {
   const { accounts, switchAccount, removeAccount, beginAddAccount, logout } = useAuth();
   const self = useSelf();
+  const demoMode = useDemoMode();
   const [open, setOpen] = useState(false);
   const [showAccounts, setShowAccounts] = useState(false);
 
   const active = accounts.accounts.find((a) => a.id === accounts.activeId);
   const others = accounts.accounts.filter((a) => a.id !== accounts.activeId);
   const status = self?.status ?? "offline";
+  const activeName = active ? (demoMode ? demoName(active.id) : active.displayName) : "Account";
+  const activeIcon = demoMode ? undefined : active?.userIcon;
+  const activeSub = demoMode ? statusMeta[status].label : self?.statusDescription || statusMeta[status].label;
 
   function close() {
     setOpen(false);
@@ -39,7 +45,7 @@ export function AccountSwitcher() {
         aria-expanded={open}
       >
         <span className="acct__current relative shrink-0 leading-[0]">
-          <Avatar src={active?.userIcon} name={active?.displayName} size={32} />
+          <Avatar src={activeIcon} name={activeName} size={32} />
           <StatusDot
             color={statusMeta[status].color}
             ring="var(--surface)"
@@ -49,10 +55,10 @@ export function AccountSwitcher() {
         </span>
         <span className="acct__current-text flex min-w-0 flex-1 flex-col">
           <span className="truncate text-left text-[13.5px] font-semibold leading-[1.25]">
-            {active?.displayName ?? "Account"}
+            {activeName}
           </span>
           <span className="truncate text-left text-[11px] font-medium text-faint">
-            {self?.statusDescription || statusMeta[status].label}
+            {activeSub}
           </span>
         </span>
         <span
@@ -73,31 +79,34 @@ export function AccountSwitcher() {
             <>
               <Separator />
               <div className="flex flex-col gap-px">
-                {others.map((a) => (
-                  <div
-                    key={a.id}
-                    className="group/row flex items-center rounded-sm transition-colors hover:bg-surface-2"
-                  >
-                    <button
-                      className="flex min-w-0 flex-1 items-center gap-2.5 px-2 py-[7px]"
-                      onClick={() => {
-                        void switchAccount(a.id);
-                        close();
-                      }}
+                {others.map((a) => {
+                  const name = demoMode ? demoName(a.id) : a.displayName;
+                  return (
+                    <div
+                      key={a.id}
+                      className="group/row flex items-center rounded-sm transition-colors hover:bg-surface-2"
                     >
-                      <Avatar src={a.userIcon} name={a.displayName} size={28} />
-                      <span className="truncate text-[13px] font-semibold">{a.displayName}</span>
-                    </button>
-                    <button
-                      className="grid w-[30px] shrink-0 self-stretch place-items-center rounded-sm text-faint opacity-0 transition-[opacity,color,background] duration-[var(--dur)] ease-[var(--ease)] hover:bg-[color-mix(in_srgb,var(--danger)_12%,transparent)] hover:text-danger group-hover/row:opacity-100"
-                      title="Remove account"
-                      aria-label={`Remove ${a.displayName}`}
-                      onClick={() => void removeAccount(a.id)}
-                    >
-                      <X size={15} />
-                    </button>
-                  </div>
-                ))}
+                      <button
+                        className="flex min-w-0 flex-1 items-center gap-2.5 px-2 py-[7px]"
+                        onClick={() => {
+                          void switchAccount(a.id);
+                          close();
+                        }}
+                      >
+                        <Avatar src={demoMode ? undefined : a.userIcon} name={name} size={28} />
+                        <span className="truncate text-[13px] font-semibold">{name}</span>
+                      </button>
+                      <button
+                        className="grid w-[30px] shrink-0 self-stretch place-items-center rounded-sm text-faint opacity-0 transition-[opacity,color,background] duration-[var(--dur)] ease-[var(--ease)] hover:bg-[color-mix(in_srgb,var(--danger)_12%,transparent)] hover:text-danger group-hover/row:opacity-100"
+                        title="Remove account"
+                        aria-label={`Remove ${name}`}
+                        onClick={() => void removeAccount(a.id)}
+                      >
+                        <X size={15} />
+                      </button>
+                    </div>
+                  );
+                })}
               </div>
             </>
           ) : null}

@@ -6,6 +6,8 @@ import { useFriends, useSelf } from "../../store/social";
 import { useWorldName } from "../../store/worlds";
 import { parseLocation, type UserProfile } from "../../../../shared/types/user";
 import { useT } from "../../lib/i18n";
+import { useDemoMode } from "../../lib/debugSettings";
+import { anonymizeUserForDemo } from "../../lib/demoMode";
 import { useUserMenu } from "./useUserMenu";
 import { useFriendsGrouped } from "./useFriendsGrouped";
 
@@ -19,6 +21,7 @@ export function FriendsSidebar({ onOpen }: { onOpen: (id: string) => void }) {
   const t = useT();
   const friends = useFriends();
   const self = useSelf();
+  const demoMode = useDemoMode();
   const selfId = self?.id;
 
   const { online, offline, instances, alone } = useFriendsGrouped(friends, self);
@@ -40,8 +43,8 @@ export function FriendsSidebar({ onOpen }: { onOpen: (id: string) => void }) {
   const openContextMenu = useCallback((e: React.MouseEvent, friend: UserProfile) => {
     e.preventDefault();
     e.stopPropagation();
-    setContextMenu({ x: e.clientX, y: e.clientY, friend });
-  }, []);
+    setContextMenu({ x: e.clientX, y: e.clientY, friend: demoMode ? anonymizeUserForDemo(friend) : friend });
+  }, [demoMode]);
 
   return (
     <aside className="friendsbar flex h-full flex-col overflow-hidden border-l border-border bg-surface">
@@ -53,7 +56,7 @@ export function FriendsSidebar({ onOpen }: { onOpen: (id: string) => void }) {
       </header>
 
       <div className="flex-1 overflow-y-auto p-2">
-        {selfAlone ? <FriendRow friend={self} onOpen={onOpen} isSelf selfChrome /> : null}
+        {selfAlone ? <FriendRow friend={self} onOpen={onOpen} isSelf selfChrome demoMode={demoMode} /> : null}
 
         {friends.length === 0 ? (
           <p className="p-3 text-[13px] text-faint">{t("nav:friends.noFriendsOnline")}</p>
@@ -74,6 +77,7 @@ export function FriendsSidebar({ onOpen }: { onOpen: (id: string) => void }) {
                     onOpen={onOpen}
                     hideLocation
                     isSelf={f.id === selfId}
+                    demoMode={demoMode}
                     onContextMenu={f.id !== selfId ? openContextMenu : undefined}
                   />
                 ))}
@@ -92,6 +96,7 @@ export function FriendsSidebar({ onOpen }: { onOpen: (id: string) => void }) {
                     key={f.id}
                     friend={f}
                     onOpen={onOpen}
+                    demoMode={demoMode}
                     onContextMenu={openContextMenu}
                   />
                 ))}
@@ -111,6 +116,7 @@ export function FriendsSidebar({ onOpen }: { onOpen: (id: string) => void }) {
                     friend={f}
                     onOpen={onOpen}
                     dim
+                    demoMode={demoMode}
                     onContextMenu={openContextMenu}
                   />
                 ))}
@@ -199,6 +205,7 @@ function FriendRow({
   selfChrome,
   hideLocation,
   onContextMenu,
+  demoMode,
 }: {
   friend: UserProfile;
   onOpen: (id: string) => void;
@@ -207,20 +214,22 @@ function FriendRow({
   selfChrome?: boolean;
   hideLocation?: boolean;
   onContextMenu?: (e: React.MouseEvent, friend: UserProfile) => void;
+  demoMode?: boolean;
 }) {
   const t = useT();
-  const presence = presenceOf({ ...friend, isSelf });
-  const sub = friend.statusDescription || presence.effective.label;
-  const parsed = parseLocation(friend.location);
+  const displayFriend = demoMode ? anonymizeUserForDemo(friend) : friend;
+  const presence = presenceOf({ ...displayFriend, isSelf });
+  const sub = displayFriend.statusDescription || presence.effective.label;
+  const parsed = parseLocation(displayFriend.location);
   const worldName = useWorldName(parsed?.worldId);
   const location = parsed
     ? `${worldName ? `in ${worldName}` : t("nav:friends.inAWorld")} (#${parsed.instanceId})`
-    : locationLabel(friend.location);
+    : locationLabel(displayFriend.location);
   return (
     <button
       onClick={() => onOpen(isSelf ? "me" : friend.id)}
       onContextMenu={onContextMenu ? (e) => onContextMenu(e, friend) : undefined}
-      title={friend.displayName}
+      title={displayFriend.displayName}
       className={[
         "friend-row flex w-full items-center gap-2.5 rounded-md px-2 py-1.5 text-left transition-colors hover:bg-surface-2",
         dim ? "opacity-55 hover:opacity-100" : "",
@@ -229,13 +238,13 @@ function FriendRow({
           : "",
       ].join(" ")}
     >
-      <PresenceAvatar user={friend} size={32} />
+      <PresenceAvatar user={displayFriend} size={32} />
 
       <span className="friend-row__text flex min-w-0 flex-col">
         <span
           className={`flex min-w-0 items-center gap-1.5 text-[13.5px] ${isSelf ? "font-semibold" : "font-medium"}`}
         >
-          <span className="truncate">{friend.displayName}</span>
+          <span className="truncate">{displayFriend.displayName}</span>
           {isSelf ? <Badge tone="accent">You</Badge> : null}
         </span>
         <span className="truncate text-[12px] text-muted">{sub}</span>

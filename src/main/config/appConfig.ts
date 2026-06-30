@@ -14,6 +14,7 @@ const DEFAULT_PREFERENCES: AppPreferences = {
   accent: null,
   locale: DEFAULT_LOCALE,
   showDebugNav: false,
+  demoMode: false,
 };
 const DEFAULTS: StoredConfig = {
   gamePath: null,
@@ -30,6 +31,7 @@ function normalizePreferences(raw: Partial<AppPreferences> | undefined): AppPref
     accent: accent && /^#[\da-f]{6}$/i.test(accent) ? accent : null,
     locale: isAppLocale(locale) ? locale : DEFAULT_LOCALE,
     showDebugNav: raw?.showDebugNav === true,
+    demoMode: raw?.demoMode === true,
   };
 }
 

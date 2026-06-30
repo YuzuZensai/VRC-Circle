@@ -88,7 +88,9 @@
     "title": "Debug",
     "description": "Developer and troubleshooting options.",
     "sidebar": "Show Debug in the sidebar",
-    "sidebarHint": "Adds the Debug shortcut back to the left navigation."
+    "sidebarHint": "Adds the Debug shortcut back to the left navigation.",
+    "demoMode": "Demo mode",
+    "demoModeHint": "Anonymize user-facing details for screenshots."
   },
   "region": {
     "title": "Instance Region",

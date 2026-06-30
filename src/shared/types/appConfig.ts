@@ -9,6 +9,7 @@ export interface AppPreferences {
   accent: string | null;
   locale: AppLocale;
   showDebugNav: boolean;
+  demoMode: boolean;
 }
 
 export interface AppConfig {

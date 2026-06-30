@@ -28,6 +28,8 @@ import {
   trustMeta,
 } from "../../lib/vrchat";
 import { useProfile } from "./useProfile";
+import { useDemoMode } from "../../lib/debugSettings";
+import { anonymizeUserForDemo } from "../../lib/demoMode";
 import { WorldsSection, FavoriteWorldsSection, WorldSearch } from "./WorldsSection";
 import { GroupsSection } from "./GroupsSection";
 import { LocationSection } from "./LocationSection";
@@ -48,22 +50,24 @@ export function ProfileView({ target }: { target: "me" | string }) {
 
 function ProfileCard({ profile }: { profile: UserProfile }) {
   const t = useT();
+  const demoMode = useDemoMode();
+  const displayProfile = demoMode ? anonymizeUserForDemo(profile) : profile;
   const [tab, setTab] = useViewState<TabId>(`profile:${profile.id}:tab`, "overview");
   const [menu, setMenu] = useState<{ x: number; y: number } | null>(null);
   const canAdd = !profile.isSelf && !profile.isFriend;
   const addFriend = useAddFriend(profile.id);
   const { buildItems, modal } = useUserMenu();
-  const trust = trustMeta[profile.trustRank];
-  const presence = presenceOf(profile);
+  const trust = trustMeta[displayProfile.trustRank];
+  const presence = presenceOf(displayProfile);
   const statusLabel =
-    !presence.online && profile.status !== "offline"
+    !presence.online && displayProfile.status !== "offline"
       ? t("profile:status.offlineWas", { status: presence.status.label })
       : presence.effective.label;
-  const avatar = avatarOf(profile);
-  const banner = bannerOf(profile);
-  const devLabel = profile.developerType ? developerLabels[profile.developerType] : undefined;
-  const bioLinks = (profile.bioLinks ?? []).filter(Boolean);
-  const showcasedBadges = (profile.badges ?? []).filter((b) => b.showcased);
+  const avatar = avatarOf(displayProfile);
+  const banner = bannerOf(displayProfile);
+  const devLabel = displayProfile.developerType ? developerLabels[displayProfile.developerType] : undefined;
+  const bioLinks = (displayProfile.bioLinks ?? []).filter(Boolean);
+  const showcasedBadges = (displayProfile.badges ?? []).filter((b) => b.showcased);
 
   return (
     <HeroHeader
@@ -72,7 +76,7 @@ function ProfileCard({ profile }: { profile: UserProfile }) {
       overlap={-72}
       media={
         <div className="profile__avatar" style={{ "--ring": trust.color } as React.CSSProperties}>
-          <Avatar src={avatar} name={profile.displayName} size={116} />
+          <Avatar src={avatar} name={displayProfile.displayName} size={116} />
           <span
             className="profile__status-dot"
             style={{ background: presence.color }}
@@ -83,21 +87,21 @@ function ProfileCard({ profile }: { profile: UserProfile }) {
       body={
         <div className="min-w-0 flex-1 pb-2">
           <div className="flex flex-wrap items-center gap-2.5">
-            <h2 className="text-[32px] font-bold tracking-[-0.6px]">{profile.displayName}</h2>
+            <h2 className="text-[32px] font-bold tracking-[-0.6px]">{displayProfile.displayName}</h2>
             {profile.isSelf ? <Tag color="var(--accent)">{t("profile:badge.you")}</Tag> : null}
             {profile.isFriend && !profile.isSelf ? (
               <Tag color="var(--status-join)">{t("profile:badge.friend")}</Tag>
             ) : null}
             {devLabel ? <Tag color="var(--accent)">{devLabel}</Tag> : null}
-            {profile.ageVerified ? (
+            {displayProfile.ageVerified ? (
               <Tag color="var(--trust-trusted)">{t("profile:badge.ageVerified")}</Tag>
             ) : null}
           </div>
           <div className="mt-2.5 flex flex-wrap items-center gap-3">
             <Tag color={trust.color}>{trust.label}</Tag>
             <PresenceLabel label={statusLabel} color={presence.color} />
-            {profile.pronouns ? (
-              <span className="text-[13px] text-muted">{profile.pronouns}</span>
+            {displayProfile.pronouns ? (
+              <span className="text-[13px] text-muted">{displayProfile.pronouns}</span>
             ) : null}
           </div>
           {showcasedBadges.length ? (
@@ -135,7 +139,7 @@ function ProfileCard({ profile }: { profile: UserProfile }) {
         ) : null
       }
     >
-      <LocationSection location={profile.location} />
+      <LocationSection location={displayProfile.location} />
 
         <Tabs
           tabs={[
@@ -150,22 +154,22 @@ function ProfileCard({ profile }: { profile: UserProfile }) {
 
         {tab === "overview" ? (
           <div className="flex flex-col gap-5 rise-in">
-            {profile.note ? (
+            {displayProfile.note ? (
               <Section title={t("profile:sections.note")}>
                 <p className="text-[14px] leading-relaxed whitespace-pre-wrap text-text">
-                  {profile.note}
+                  {displayProfile.note}
                 </p>
               </Section>
             ) : null}
 
-            {profile.statusDescription || profile.bio || bioLinks.length ? (
+            {displayProfile.statusDescription || displayProfile.bio || bioLinks.length ? (
               <Section title={t("profile:sections.about")}>
-                {profile.statusDescription ? (
-                  <p className="text-[15px] italic text-text">“{profile.statusDescription}”</p>
+                {displayProfile.statusDescription ? (
+                  <p className="text-[15px] italic text-text">“{displayProfile.statusDescription}”</p>
                 ) : null}
-                {profile.bio ? (
+                {displayProfile.bio ? (
                   <p className="text-[14px] leading-relaxed whitespace-pre-wrap text-muted">
-                    {profile.bio}
+                    {displayProfile.bio}
                   </p>
                 ) : null}
                 {bioLinks.length ? (
@@ -183,61 +187,61 @@ function ProfileCard({ profile }: { profile: UserProfile }) {
             <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-2">
               <Section title={t("profile:sections.details")}>
                 <dl className="grid grid-cols-2 gap-x-6 gap-y-3">
-                  {profile.dateJoined ? (
+                  {displayProfile.dateJoined ? (
                     <Fact
                       label={t("profile:facts.joined")}
-                      value={formatDate(profile.dateJoined)}
+                      value={formatDate(displayProfile.dateJoined)}
                     />
                   ) : null}
-                  {profile.lastLogin ? (
+                  {displayProfile.lastLogin ? (
                     <Fact
                       label={t("profile:facts.lastLogin")}
-                      value={formatDateTime(profile.lastLogin)}
+                      value={formatDateTime(displayProfile.lastLogin)}
                     />
                   ) : null}
-                  {profile.lastActivity ? (
+                  {displayProfile.lastActivity ? (
                     <Fact
                       label={t("profile:facts.lastActivity")}
-                      value={formatDateTime(profile.lastActivity)}
+                      value={formatDateTime(displayProfile.lastActivity)}
                     />
                   ) : null}
-                  {profile.lastPlatform ? (
+                  {displayProfile.lastPlatform ? (
                     <Fact
                       label={t("profile:facts.platform")}
-                      value={platformLabel(profile.lastPlatform)}
+                      value={platformLabel(displayProfile.lastPlatform)}
                     />
                   ) : null}
-                  {profile.state ? (
-                    <Fact label={t("profile:facts.state")} value={stateLabel(profile.state, t)} />
+                  {displayProfile.state ? (
+                    <Fact label={t("profile:facts.state")} value={stateLabel(displayProfile.state, t)} />
                   ) : null}
-                  <Fact label={t("profile:facts.userId")} value={profile.id} mono />
+                  {demoMode ? null : <Fact label={t("profile:facts.userId")} value={profile.id} mono />}
                 </dl>
               </Section>
 
-              {profile.languages?.length ? (
+              {displayProfile.languages?.length ? (
                 <Section title={t("profile:sections.languages")}>
                   <div className="flex flex-wrap gap-1.5">
-                    {profile.languages.map((code) => (
+                    {displayProfile.languages.map((code) => (
                       <Tag key={code}>{languageLabel(code)}</Tag>
                     ))}
                   </div>
                 </Section>
               ) : null}
 
-              {profile.currentAvatarTags?.length ? (
+              {displayProfile.currentAvatarTags?.length ? (
                 <Section title={t("profile:sections.avatarTags")}>
                   <div className="flex flex-wrap gap-1.5">
-                    {profile.currentAvatarTags.map((t) => (
+                    {displayProfile.currentAvatarTags.map((t) => (
                       <Tag key={t}>{prettyTag(t, "content_")}</Tag>
                     ))}
                   </div>
                 </Section>
               ) : null}
 
-              {profile.badges?.length ? (
+              {displayProfile.badges?.length ? (
                 <Section title={t("profile:sections.badges")}>
                   <div className="flex flex-wrap gap-2.5">
-                    {[...profile.badges]
+                    {[...displayProfile.badges]
                       .sort((a, b) => Number(b.showcased) - Number(a.showcased))
                       .map((b) => (
                         <div
@@ -260,10 +264,10 @@ function ProfileCard({ profile }: { profile: UserProfile }) {
               ) : null}
             </div>
 
-            {profile.pastDisplayNames?.length ? (
+            {displayProfile.pastDisplayNames?.length ? (
               <Section title={t("profile:sections.formerNames")} collapsible>
                 <div className="flex flex-wrap gap-2">
-                  {profile.pastDisplayNames.map((p) => (
+                  {displayProfile.pastDisplayNames.map((p) => (
                     <span
                       key={`${p.displayName}-${p.updatedAt}`}
                       className="rounded-lg border border-border bg-surface px-2.5 py-1 text-[13px] text-text"
@@ -309,7 +313,7 @@ function ProfileCard({ profile }: { profile: UserProfile }) {
         <ContextMenu
           x={menu.x}
           y={menu.y}
-          items={buildItems(profile)}
+          items={buildItems(displayProfile)}
           onClose={() => setMenu(null)}
         />
       ) : null}

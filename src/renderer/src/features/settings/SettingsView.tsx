@@ -27,7 +27,12 @@ import type { AppConfig, PreferredRegion, RegionPing } from "../../../../shared/
 import type { UnityStatus } from "../../../../shared/types/unity";
 import { api, errorMessage } from "../../lib/api";
 import { useAsync } from "../../lib/useAsync";
-import { useSetDebugNavVisible, useDebugNavVisible } from "../../lib/debugSettings";
+import {
+  useDemoMode,
+  useSetDemoMode,
+  useSetDebugNavVisible,
+  useDebugNavVisible,
+} from "../../lib/debugSettings";
 import { useAppConfig } from "../../lib/AppConfigContext";
 import { regionFlag, regionLabel } from "../../lib/vrchat";
 import {
@@ -107,6 +112,8 @@ function DebugSection() {
   const { t } = useI18n();
   const showDebugNav = useDebugNavVisible();
   const setDebugNavVisible = useSetDebugNavVisible();
+  const demoMode = useDemoMode();
+  const setDemoMode = useSetDemoMode();
   return (
     <Section
       title={t("settings:debug.title")}
@@ -119,6 +126,13 @@ function DebugSection() {
           <div className="mt-0.5 text-[12px] text-muted">{t("settings:debug.sidebarHint")}</div>
         </div>
         <Toggle checked={showDebugNav} onChange={setDebugNavVisible} />
+      </div>
+      <div className="mt-3 flex items-center justify-between gap-4 rounded-lg border border-border bg-surface-2 p-3">
+        <div>
+          <div className="text-[13px] font-semibold text-text">{t("settings:debug.demoMode")}</div>
+          <div className="mt-0.5 text-[12px] text-muted">{t("settings:debug.demoModeHint")}</div>
+        </div>
+        <Toggle checked={demoMode} onChange={setDemoMode} />
       </div>
     </Section>
   );
