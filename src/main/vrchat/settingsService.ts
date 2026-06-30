@@ -46,12 +46,8 @@ function toSettings(u: CurrentUser): AccountSettings {
     isAdult: u.isAdult,
     contentFilters: filters,
     contentFiltersLocked: u.hideContentFilterSettings ?? false,
-    sharedConnectionsHidden: Boolean(
-      (u as { hasSharedConnectionsOptOut?: boolean }).hasSharedConnectionsOptOut,
-    ),
-    discordFriendsHidden: Boolean(
-      (u as { hasDiscordFriendsOptOut?: boolean }).hasDiscordFriendsOptOut,
-    ),
+    sharedConnectionsHidden: Boolean(u.hasSharedConnectionsOptOut),
+    discordFriendsHidden: Boolean(u.hasDiscordFriendsOptOut),
     discord: { linked: Boolean(u.discordId), label: u.discordDetails?.global_name },
     google: { linked: Boolean(u.googleId) },
     accountDeletionDate: toIso(u.accountDeletionDate) ?? null,
@@ -134,11 +130,11 @@ export function setPrivacy(p: {
   sharedConnectionsHidden?: boolean;
   discordFriendsHidden?: boolean;
 }): Promise<AccountSettings> {
-  const body: Record<string, boolean> = {};
+  const body: UpdateBody = {};
   if (p.sharedConnectionsHidden !== undefined)
     body.hasSharedConnectionsOptOut = p.sharedConnectionsHidden;
   if (p.discordFriendsHidden !== undefined) body.hasDiscordFriendsOptOut = p.discordFriendsHidden;
-  return patch(body as UpdateBody);
+  return patch(body);
 }
 
 export async function setPresence(status: UserStatus, statusDescription: string): Promise<void> {

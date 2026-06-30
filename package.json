@@ -29,7 +29,7 @@
     "lucide-react": "^1.21.0",
     "react-i18next": "^17.0.8",
     "sharp": "^0.35.2",
-    "vrchat": "^2.1.0",
+    "vrchat": "2.21.8-nightly.16",
     "ws": "^8.18.0",
     "zustand": "^5.0.14"
   },

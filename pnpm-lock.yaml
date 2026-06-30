@@ -30,8 +30,8 @@ importers:
         specifier: ^0.35.2
         version: 0.35.2
       vrchat:
-        specifier: ^2.1.0
-        version: 2.21.7
+        specifier: 2.21.8-nightly.16
+        version: 2.21.8-nightly.16
       ws:
         specifier: ^8.18.0
         version: 8.21.0
@@ -2871,8 +2871,8 @@ packages:
     resolution: {integrity: sha512-Dhxzh5HZuiHQhbvTW9AMetFfBHDMYpo23Uo9btPXgdYP+3T5S+p+jgNy7spra+veYhBP2dCSgxR/i2Y02h5/6w==}
     engines: {node: '>=0.10.0'}
 
-  vrchat@2.21.7:
-    resolution: {integrity: sha512-ErfMhTnHR1uG4H7bUWxe2Vl6XnOdBxC7gqNL+yQufvFgIU0uTWzKf4D5sV8ibFlH8KKkB6AFUOmeKg7F6VnLMg==}
+  vrchat@2.21.8-nightly.16:
+    resolution: {integrity: sha512-KhJIDBFEdFomp/56h/ZLrDcRdPCsUuRe/vLroE7d2fEhEYmccX6bPmCkX3X0bgBXL7Sy+OQWqH9APUTwqsT/gw==}
 
   wcwidth@1.0.1:
     resolution: {integrity: sha512-XHPEwS0q6TaxcvG85+8EYkbiCux2XtWG2mkc47Ng2A77BQu9+DqIOJldST4HgPkuea7dvKSj5VgX3P1d4rW8Tg==}
@@ -5768,7 +5768,7 @@ snapshots:
 
   void-elements@3.1.0: {}
 
-  vrchat@2.21.7:
+  vrchat@2.21.8-nightly.16:
     dependencies:
       cacheable: 1.10.4
       debug: 4.4.3
