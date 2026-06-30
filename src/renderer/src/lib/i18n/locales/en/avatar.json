@@ -58,6 +58,7 @@
   "bulk": {
     "select": "Select",
     "done": "Done",
+    "selectFolder": "Select all in {{name}}",
     "selectPrivate": "Select private",
     "selectHidden": "Select hidden",
     "selected": "{{count}} selected",
@@ -68,7 +69,9 @@
     "unfavoriteTitle": "Remove favorites",
     "unfavoriteConfirm": "Remove {{count}} selected avatars from your favorites?",
     "moveTitle": "Move {{count}} avatars",
-    "skipped": "{{count}} couldn't be moved (private or deleted) and were left in place."
+    "skipped": "{{count}} couldn't be moved (private or deleted) and were left in place.",
+    "moved": "Moved {{count}} avatars.",
+    "partialConfirm": "Only {{fits}} of {{total}} will fit in this folder. Move them?"
   },
   "performance": {
     "Excellent": "Excellent",

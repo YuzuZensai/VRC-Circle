@@ -26,7 +26,8 @@
     "visibility": "公開設定",
     "clear": "フォルダを空にする",
     "clearConfirm": "{{count}} 件すべて削除しますか？",
-    "empty": "このフォルダは空です。"
+    "empty": "このフォルダは空です。",
+    "vrcPlus": "VRC+"
   },
   "visibility": {
     "private": "非公開",
@@ -41,6 +42,7 @@
   "bulk": {
     "select": "選択",
     "done": "完了",
+    "selectFolder": "{{name}} をすべて選択",
     "selectPrivate": "非公開を選択",
     "selectDeleted": "削除済みを選択",
     "selected": "{{count}} 件選択中",
@@ -50,7 +52,9 @@
     "unfavoriteTitle": "お気に入りから削除",
     "unfavoriteConfirm": "選択した {{count}} 件をお気に入りから削除しますか？",
     "moveTitle": "{{count}} 件を移動",
-    "skipped": "{{count}} 件は移動できず（非公開または削除済み）、そのままになりました。"
+    "skipped": "{{count}} 件は移動できず（非公開または削除済み）、そのままになりました。",
+    "moved": "{{count}} 件のワールドを移動しました。",
+    "partialConfirm": "{{total}} 件のうち {{fits}} 件だけがこのフォルダに入ります。移動しますか？"
   },
   "regions": {
     "us": "米国西部",

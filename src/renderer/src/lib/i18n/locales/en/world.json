@@ -26,7 +26,8 @@
     "visibility": "Visibility",
     "clear": "Empty folder",
     "clearConfirm": "Remove all {{count}} worlds?",
-    "empty": "This folder is empty."
+    "empty": "This folder is empty.",
+    "vrcPlus": "VRC+"
   },
   "visibility": {
     "private": "Private",
@@ -41,6 +42,7 @@
   "bulk": {
     "select": "Select",
     "done": "Done",
+    "selectFolder": "Select all in {{name}}",
     "selectPrivate": "Select private",
     "selectDeleted": "Select deleted",
     "selected": "{{count}} selected",
@@ -50,7 +52,9 @@
     "unfavoriteTitle": "Remove favorites",
     "unfavoriteConfirm": "Remove {{count}} selected worlds from your favorites?",
     "moveTitle": "Move {{count}} worlds",
-    "skipped": "{{count}} couldn't be moved (private or deleted) and were left in place."
+    "skipped": "{{count}} couldn't be moved (private or deleted) and were left in place.",
+    "moved": "Moved {{count}} worlds.",
+    "partialConfirm": "Only {{fits}} of {{total}} will fit in this folder. Move them?"
   },
   "regions": {
     "us": "US West",

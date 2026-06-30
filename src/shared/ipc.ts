@@ -68,9 +68,14 @@ export interface IpcRequests {
   "world:snapshot": () => IpcResult<WorldSnapshot>;
   "world:favoritesSnapshot": () => IpcResult<WorldFavoritesSnapshot>;
   "world:loadFavorites": () => IpcResult<void>;
+  "world:reloadFavorites": () => IpcResult<void>;
   "world:favorite": (p: { worldId: string; folder?: string }) => IpcResult<void>;
   "world:unfavorite": (worldId: string) => IpcResult<void>;
-  "world:moveFavorite": (p: { worldId: string; folder: string }) => IpcResult<WorldMoveResult>;
+  "world:moveFavorite": (p: {
+    worldId: string;
+    folder: string;
+    reload?: boolean;
+  }) => IpcResult<WorldMoveResult>;
   "world:unfavoriteMany": (worldIds: string[]) => IpcResult<void>;
   "world:moveFavoriteMany": (p: {
     worldIds: string[];
@@ -90,12 +95,17 @@ export interface IpcRequests {
   "avatar:snapshot": () => IpcResult<AvatarSnapshot>;
   "avatar:loadMine": () => IpcResult<void>;
   "avatar:loadFavorites": () => IpcResult<void>;
+  "avatar:reloadFavorites": () => IpcResult<void>;
   "avatar:select": (avatarId: string) => IpcResult<void>;
   "avatar:update": (p: { avatarId: string; edit: AvatarEdit }) => IpcResult<Avatar>;
   "avatar:delete": (avatarId: string) => IpcResult<void>;
   "avatar:favorite": (p: { avatarId: string; folder?: string }) => IpcResult<void>;
   "avatar:unfavorite": (avatarId: string) => IpcResult<void>;
-  "avatar:moveFavorite": (p: { avatarId: string; folder: string }) => IpcResult<MoveResult>;
+  "avatar:moveFavorite": (p: {
+    avatarId: string;
+    folder: string;
+    reload?: boolean;
+  }) => IpcResult<MoveResult>;
   "avatar:unfavoriteMany": (avatarIds: string[]) => IpcResult<void>;
   "avatar:moveFavoriteMany": (p: { avatarIds: string[]; folder: string }) => IpcResult<MoveResult>;
   "avatar:clearFavoriteFolder": (folder: string) => IpcResult<void>;

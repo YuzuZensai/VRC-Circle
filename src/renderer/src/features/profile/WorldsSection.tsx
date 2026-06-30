@@ -8,9 +8,9 @@ import { useFavoriteWorlds } from "./useFavoriteWorlds";
 
 type WorldFilter = (world: World) => boolean;
 
-function matchWorld(query: string): WorldFilter {
+function matchWorld(query: string): WorldFilter | undefined {
   const q = query.trim().toLowerCase();
-  if (!q) return () => true;
+  if (!q) return undefined;
   const terms = q.split(/\s+/);
   return (w) => {
     const haystack = `${w.name} ${w.authorName} ${w.description} ${w.tags.join(" ")}`.toLowerCase();
@@ -18,7 +18,11 @@ function matchWorld(query: string): WorldFilter {
   };
 }
 
-export function WorldSearch({ children }: { children: (filter: WorldFilter) => React.ReactNode }) {
+export function WorldSearch({
+  children,
+}: {
+  children: (filter: WorldFilter | undefined) => React.ReactNode;
+}) {
   const t = useT();
   const [query, setQuery] = useState("");
   const filter = useMemo(() => matchWorld(query), [query]);
@@ -73,11 +77,15 @@ export function FavoriteWorldsSection({
     <div className="flex flex-col gap-5">
       {shown.map((folder) => (
         <CollapsibleCard key={folder.name} title={folder.displayName} count={folder.worlds.length}>
-          <CardGrid>
-            {folder.worlds.map((w) => (
-              <WorldCard key={w.id} world={w} />
-            ))}
-          </CardGrid>
+          {folder.worlds.length ? (
+            <CardGrid>
+              {folder.worlds.map((w) => (
+                <WorldCard key={w.id} world={w} />
+              ))}
+            </CardGrid>
+          ) : (
+            <p className="text-[13px] text-faint">{t("world:folder.empty")}</p>
+          )}
         </CollapsibleCard>
       ))}
       {loading ? <SkeletonGrid count={3} /> : null}

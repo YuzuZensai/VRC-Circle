@@ -9,7 +9,7 @@ import type {
   MoveResult,
 } from "../../shared/types/avatar";
 import { toAvatar } from "./mappers";
-import { httpStatusOf } from "./errors";
+import { httpStatusOf, isTransientError } from "./errors";
 import { cachedRead } from "./cachedRead";
 import { requireActiveClient } from "./client";
 import { userCache, currentUser } from "./userService";
@@ -70,7 +70,7 @@ async function fetchFavorites(vrc: VRChat): Promise<{
   ]);
   const avatarGroups = groups.filter((g) => g.type === "avatar");
 
-  const folders: FavoriteFolder[] = [];
+  const existing: FavoriteFolder[] = [];
   for (const group of avatarGroups) {
     let raw: Awaited<ReturnType<typeof getFavoritedAvatarsRaw>> = [];
     try {
@@ -78,14 +78,37 @@ async function fetchFavorites(vrc: VRChat): Promise<{
     } catch (err) {
       if (httpStatusOf(err) !== 401 && httpStatusOf(err) !== 403) throw err;
     }
-    folders.push({
+    existing.push({
       name: group.name,
       displayName: group.displayName || prettyFolderName(group.name),
       visibility: normalizeVisibility(group.visibility),
       avatars: raw.map(toAvatar),
     });
   }
-  return { folders, limits };
+  return { folders: fillAvatarSlots(existing, limits.maxGroups), limits };
+}
+
+function fillAvatarSlots(existing: FavoriteFolder[], max: number): FavoriteFolder[] {
+  const out = orderSlots(existing, "avatars");
+  const taken = new Set(out.map((f) => f.name));
+  for (let i = 1; out.length < max && i <= max; i++) {
+    const name = `avatars${i}`;
+    if (taken.has(name)) continue;
+    out.push({ name, displayName: prettyFolderName(name), visibility: "private", avatars: [] });
+  }
+  return out;
+}
+
+function orderSlots<T extends { name: string }>(groups: T[], prefix: string): T[] {
+  const slotNum = (name: string) => {
+    const m = new RegExp(`^${prefix}(\\d+)$`).exec(name);
+    return m ? Number(m[1]) : null;
+  };
+  const custom = groups.filter((g) => slotNum(g.name) === null);
+  const numbered = groups
+    .filter((g) => slotNum(g.name) !== null)
+    .sort((a, b) => slotNum(a.name)! - slotNum(b.name)!);
+  return [...custom, ...numbered];
 }
 
 async function fetchFavoriteLimits(vrc: VRChat): Promise<FavoriteLimits> {
@@ -164,17 +187,28 @@ export async function unfavoriteAvatar(avatarId: string): Promise<void> {
   await reloadFavorites();
 }
 
-export async function moveAvatarToFolder(avatarId: string, folder: string): Promise<MoveResult> {
+export async function moveAvatarToFolder(
+  avatarId: string,
+  folder: string,
+  reload = true,
+): Promise<MoveResult> {
   const vrc = requireActiveClient();
   const fav = await findFavoriteRecord(vrc, avatarId);
   if (fav?.tags?.includes(folder)) return { moved: 0, skipped: [] };
   if (!(await canRefavorite(vrc, avatarId))) return { moved: 0, skipped: [avatarId] };
   if (fav) await vrc.removeFavorite({ path: { favoriteId: fav.id }, throwOnError: true });
-  await vrc.addFavorite({
-    body: { type: "avatar", favoriteId: avatarId, tags: [folder] },
-    throwOnError: true,
-  });
-  await reloadFavorites();
+  try {
+    await vrc.addFavorite({
+      body: { type: "avatar", favoriteId: avatarId, tags: [folder] },
+      throwOnError: true,
+    });
+  } catch (err) {
+    if (fav) await restoreAvatarFavorite(vrc, fav);
+    if (reload) await reloadFavorites();
+    if (isTransientError(err)) throw err;
+    return { moved: 0, skipped: [avatarId] };
+  }
+  if (reload) await reloadFavorites();
   return { moved: 1, skipped: [] };
 }
 
@@ -183,7 +217,7 @@ export async function unfavoriteAvatars(avatarIds: string[]): Promise<void> {
   const records = await favoriteRecords(vrc);
   for (const id of avatarIds) {
     const fav = records.get(id);
-    if (fav) await vrc.removeFavorite({ path: { favoriteId: fav }, throwOnError: true });
+    if (fav) await vrc.removeFavorite({ path: { favoriteId: fav.id }, throwOnError: true });
   }
   await reloadFavorites();
 }
@@ -202,11 +236,22 @@ export async function moveAvatarsToFolder(
       continue;
     }
     const fav = records.get(id);
-    if (fav) await vrc.removeFavorite({ path: { favoriteId: fav }, throwOnError: true });
-    await vrc.addFavorite({
-      body: { type: "avatar", favoriteId: id, tags: [folder] },
-      throwOnError: true,
-    });
+    if (fav?.tags?.includes(folder)) continue;
+    if (fav) await vrc.removeFavorite({ path: { favoriteId: fav.id }, throwOnError: true });
+    try {
+      await vrc.addFavorite({
+        body: { type: "avatar", favoriteId: id, tags: [folder] },
+        throwOnError: true,
+      });
+    } catch (err) {
+      if (fav) await restoreAvatarFavorite(vrc, fav);
+      if (isTransientError(err)) {
+        await reloadFavorites();
+        throw err;
+      }
+      skipped.push(id);
+      continue;
+    }
     moved++;
   }
   await reloadFavorites();
@@ -217,7 +262,8 @@ async function canRefavorite(vrc: VRChat, avatarId: string): Promise<boolean> {
   try {
     await getAvatarRaw(vrc, avatarId);
     return true;
-  } catch {
+  } catch (err) {
+    if (isTransientError(err)) throw err;
     return false;
   }
 }
@@ -250,8 +296,18 @@ async function findFavoriteRecord(vrc: VRChat, avatarId: string) {
   return (await favoriteRecordEntries(vrc)).find((f) => f.favoriteId === avatarId);
 }
 
-async function favoriteRecords(vrc: VRChat): Promise<Map<string, string>> {
-  return new Map((await favoriteRecordEntries(vrc)).map((f) => [f.favoriteId, f.id]));
+async function favoriteRecords(vrc: VRChat) {
+  return new Map((await favoriteRecordEntries(vrc)).map((f) => [f.favoriteId, f]));
+}
+
+async function restoreAvatarFavorite(
+  vrc: VRChat,
+  fav: { favoriteId: string; tags: string[] },
+): Promise<void> {
+  await vrc.addFavorite({
+    body: { type: "avatar", favoriteId: fav.favoriteId, tags: fav.tags.length ? fav.tags : ["avatars1"] },
+    throwOnError: true,
+  });
 }
 
 async function favoriteRecordEntries(vrc: VRChat) {
@@ -267,7 +323,7 @@ async function favoriteRecordEntries(vrc: VRChat) {
   }
 }
 
-async function reloadFavorites(): Promise<void> {
+export async function reloadFavorites(): Promise<void> {
   userCache.invalidate(cacheKeys.avatarFavorites());
   await loadFavoritedAvatars();
 }

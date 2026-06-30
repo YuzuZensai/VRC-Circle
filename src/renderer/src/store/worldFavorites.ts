@@ -39,6 +39,7 @@ export interface FavoriteFolder {
   visibility: FavoriteWorldGroup["visibility"];
   count: number;
   full: boolean;
+  vrcPlus: boolean;
   worlds: World[];
 }
 
@@ -63,6 +64,7 @@ function toFolder(
     visibility: g.visibility,
     count: g.worldIds.length,
     full: g.worldIds.length >= maxPerGroup,
+    vrcPlus: g.vrcPlus,
     worlds: g.worldIds.map((id) => worlds[id]).filter((w): w is World => Boolean(w)),
   };
 }
@@ -81,6 +83,7 @@ export interface FolderSlot {
   displayName: string;
   count: number;
   full: boolean;
+  vrcPlus: boolean;
 }
 
 export function useWorldFolderSlots(): FolderSlot[] {
@@ -93,6 +96,7 @@ export function useWorldFolderSlots(): FolderSlot[] {
         displayName: g.displayName,
         count: g.worldIds.length,
         full: g.worldIds.length >= maxPerGroup,
+        vrcPlus: g.vrcPlus,
       })),
     [groups, maxPerGroup],
   );

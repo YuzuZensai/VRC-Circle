@@ -28,6 +28,12 @@ export function httpStatusOf(err: unknown): number | undefined {
   return statusOf((err ?? {}) as HttpLike);
 }
 
+export function isTransientError(err: unknown): boolean {
+  const status = httpStatusOf(err);
+  if (status === undefined) return true;
+  return status === 429 || status >= 500;
+}
+
 function retryAfterOf(e: HttpLike): number | undefined {
   const raw = e.response?.headers?.["retry-after"] ?? e.headers?.["retry-after"];
   const n = raw != null ? Number(raw) : NaN;
@@ -46,6 +52,13 @@ export function toApiError(err: unknown): ApiError {
   else if (status === 404) code = "not_found";
   else if (status === 429) code = "rate_limited";
   else if (status === undefined && /network|fetch|ENOTFOUND|ECONN/i.test(message)) code = "network";
+
+  if (status === 429) {
+    return { code, message: "VRChat API rate limit hit. Try again shortly.", retryAfter: retryAfterOf(e) };
+  }
+  if (status !== undefined && status >= 500) {
+    return { code, message: "VRChat API is temporarily unavailable. Try again shortly." };
+  }
 
   return { code, message, retryAfter: retryAfterOf(e) };
 }

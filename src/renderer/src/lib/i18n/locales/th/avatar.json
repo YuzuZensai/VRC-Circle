@@ -58,6 +58,7 @@
   "bulk": {
     "select": "เลือก",
     "done": "เสร็จ",
+    "selectFolder": "เลือกทั้งหมดใน {{name}}",
     "selectPrivate": "เลือกส่วนตัว",
     "selectHidden": "เลือกที่ซ่อนไว้",
     "selected": "เลือก {{count}} รายการ",
@@ -68,7 +69,9 @@
     "unfavoriteTitle": "ลบจากรายการโปรด",
     "unfavoriteConfirm": "ลบอวตารที่เลือก {{count}} ตัวออกจากรายการโปรดหรือไม่?",
     "moveTitle": "ย้าย {{count}} ตัว",
-    "skipped": "ย้ายไม่ได้ {{count}} ตัว (ส่วนตัวหรือถูกลบแล้ว) และยังอยู่ที่เดิม"
+    "skipped": "ย้ายไม่ได้ {{count}} ตัว (ส่วนตัวหรือถูกลบแล้ว) และยังอยู่ที่เดิม",
+    "moved": "ย้าย {{count}} อวตารแล้ว",
+    "partialConfirm": "ใส่ได้แค่ {{fits}} จาก {{total}} ในโฟลเดอร์นี้ ย้ายเลยไหม?"
   },
   "performance": {
     "Excellent": "ดีเยี่ยม",

@@ -14,6 +14,7 @@ export type FavoriteGroupInput = {
   displayName: string;
   visibility: FavoriteVisibility;
   worlds: World[];
+  vrcPlus: boolean;
 };
 
 type Listener = (snapshot: WorldFavoritesSnapshot) => void;
@@ -34,10 +35,24 @@ class WorldFavoritesStore {
       displayName: g.displayName,
       visibility: g.visibility,
       worldIds: g.worlds.map((w) => w.id),
+      vrcPlus: g.vrcPlus,
     }));
     if (limits) this.limits = limits;
     for (const g of groups) for (const w of g.worlds) worldStore.addWorld(w);
     this.emit();
+  }
+
+  moveWorld(worldId: string, folder: string): void {
+    let changed = false;
+    this.groups = this.groups.map((g) => {
+      const without = g.worldIds.filter((id) => id !== worldId);
+      const worldIds = g.name === folder ? [...without, worldId] : without;
+      if (worldIds.length !== g.worldIds.length || worldIds.some((id, i) => id !== g.worldIds[i])) {
+        changed = true;
+      }
+      return { ...g, worldIds };
+    });
+    if (changed) this.emit();
   }
 
   snapshot(): WorldFavoritesSnapshot {

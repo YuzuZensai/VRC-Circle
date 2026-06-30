@@ -58,6 +58,7 @@ export function WorldFavoriteModal({
     <Modal
       open
       onClose={onClose}
+      dismissible={busy === null}
       title={currentFolder ? t("world:favorite.manage") : t("world:favorite.add")}
       icon={<Star size={16} />}
     >
@@ -106,6 +107,7 @@ export function WorldFavoriteModal({
             className="mt-1 justify-center"
             block
             loading={busy === "unfavorite"}
+            disabled={busy !== null}
             onClick={() => run("unfavorite", () => api.world.unfavorite(world.id))}
           >
             {t("world:favorite.unfavorite")}

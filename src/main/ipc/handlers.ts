@@ -58,8 +58,9 @@ const handlers = {
   "world:loadFavorites": () => guard(() => worlds.loadMyFavoriteWorlds()),
   "world:favorite": ({ worldId, folder }) => guard(() => worlds.favoriteWorld(worldId, folder)),
   "world:unfavorite": (worldId) => guard(() => worlds.unfavoriteWorld(worldId)),
-  "world:moveFavorite": ({ worldId, folder }) =>
-    guard(() => worlds.moveWorldToFolder(worldId, folder)),
+  "world:reloadFavorites": () => guard(() => worlds.reloadMyFavorites()),
+  "world:moveFavorite": ({ worldId, folder, reload }) =>
+    guard(() => worlds.moveWorldToFolder(worldId, folder, reload)),
   "world:unfavoriteMany": (worldIds) => guard(() => worlds.unfavoriteWorlds(worldIds)),
   "world:moveFavoriteMany": ({ worldIds, folder }) =>
     guard(() => worlds.moveWorldsToFolder(worldIds, folder)),
@@ -82,8 +83,9 @@ const handlers = {
   "avatar:delete": (avatarId) => guard(() => avatars.deleteAvatar(avatarId)),
   "avatar:favorite": ({ avatarId, folder }) => guard(() => avatars.favoriteAvatar(avatarId, folder)),
   "avatar:unfavorite": (avatarId) => guard(() => avatars.unfavoriteAvatar(avatarId)),
-  "avatar:moveFavorite": ({ avatarId, folder }) =>
-    guard(() => avatars.moveAvatarToFolder(avatarId, folder)),
+  "avatar:reloadFavorites": () => guard(() => avatars.reloadFavorites()),
+  "avatar:moveFavorite": ({ avatarId, folder, reload }) =>
+    guard(() => avatars.moveAvatarToFolder(avatarId, folder, reload)),
   "avatar:unfavoriteMany": (avatarIds) => guard(() => avatars.unfavoriteAvatars(avatarIds)),
   "avatar:moveFavoriteMany": ({ avatarIds, folder }) =>
     guard(() => avatars.moveAvatarsToFolder(avatarIds, folder)),

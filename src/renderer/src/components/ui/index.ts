@@ -12,6 +12,7 @@ export { Stat } from "./Stat";
 export { PresenceAvatar } from "./PresenceAvatar";
 export { PresenceLabel } from "./PresenceLabel";
 export { CollapsibleCard } from "./CollapsibleCard";
+export { CheckBox } from "./CheckBox";
 export { Modal } from "./Modal";
 export { Toggle } from "./Toggle";
 export { Section, Fact } from "./Section";

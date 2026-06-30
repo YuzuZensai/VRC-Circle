@@ -4,6 +4,7 @@ import type { World } from "../../../../shared/types/world";
 import {
   Button,
   CardGrid,
+  CheckBox,
   CollapsibleCard,
   ContextMenu,
   IconButton,
@@ -11,6 +12,7 @@ import {
   SelectionBar,
   SelectionBarButton,
   SkeletonGrid,
+  Tag,
   type ContextMenuEntry,
 } from "../../components/ui";
 import { api } from "../../lib/api";
@@ -88,6 +90,22 @@ export function MyFavoriteWorldsSection({ filter }: { filter?: WorldFilter }) {
     setSelecting(true);
   };
 
+  const folderState = (ids: string[]) => {
+    const picked = ids.filter((id) => selected.has(id)).length;
+    return {
+      checked: picked > 0 && picked === ids.length,
+      indeterminate: picked > 0 && picked < ids.length,
+    };
+  };
+
+  const toggleFolder = (ids: string[]) =>
+    setSelected((s) => {
+      const next = new Set(s);
+      const all = ids.every((id) => next.has(id));
+      for (const id of ids) (all ? next.delete(id) : next.add(id));
+      return next;
+    });
+
   const exitSelect = () => {
     setSelecting(false);
     setSelected(new Set());
@@ -149,13 +167,23 @@ export function MyFavoriteWorldsSection({ filter }: { filter?: WorldFilter }) {
           title={folder.displayName}
           count={`${folder.count} / ${maxPerGroup}`}
           action={
-            <IconButton
-              title={t("world:folder.edit")}
-              onClick={() => setEditFolder(folder)}
-              aria-label={t("world:folder.edit")}
-            >
-              <Pencil size={14} />
-            </IconButton>
+            <div className="flex items-center gap-2">
+              {selecting && folder.worlds.length ? (
+                <CheckBox
+                  {...folderState(folder.worlds.map((w) => w.id))}
+                  onChange={() => toggleFolder(folder.worlds.map((w) => w.id))}
+                  aria-label={t("world:bulk.selectFolder", { name: folder.displayName })}
+                />
+              ) : null}
+              {folder.vrcPlus ? <Tag color="var(--accent)">{t("world:folder.vrcPlus")}</Tag> : null}
+              <IconButton
+                title={t("world:folder.edit")}
+                onClick={() => setEditFolder(folder)}
+                aria-label={t("world:folder.edit")}
+              >
+                <Pencil size={14} />
+              </IconButton>
+            </div>
           }
         >
           {folder.worlds.length ? (

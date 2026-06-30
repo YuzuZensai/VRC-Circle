@@ -4,6 +4,7 @@ import { CheckSquare, Eye, FolderInput, Pencil, Shirt, Star, Trash2, X } from "l
 import {
   Button,
   CardGrid,
+  CheckBox,
   CollapsibleCard,
   ContextMenu,
   Field,
@@ -374,6 +375,22 @@ function FavoritesTab({ filter, searching }: { filter: AvatarFilter; searching: 
     setSelecting(true);
   };
 
+  const folderState = (ids: string[]) => {
+    const picked = ids.filter((id) => selected.has(id)).length;
+    return {
+      checked: picked > 0 && picked === ids.length,
+      indeterminate: picked > 0 && picked < ids.length,
+    };
+  };
+
+  const toggleFolder = (ids: string[]) =>
+    setSelected((s) => {
+      const next = new Set(s);
+      const all = ids.every((id) => next.has(id));
+      for (const id of ids) (all ? next.delete(id) : next.add(id));
+      return next;
+    });
+
   const removeFavorite = async () => {
     if (!removeAvatar) return;
     await api.avatar.unfavorite(removeAvatar.id);
@@ -430,13 +447,22 @@ function FavoritesTab({ filter, searching }: { filter: AvatarFilter; searching: 
           title={folder.displayName}
           count={`${folder.count} / ${maxPerGroup}`}
           action={
-            <IconButton
-              title={t("avatar:folder.edit")}
-              onClick={() => setEditFolder(folder)}
-              aria-label={t("avatar:folder.edit")}
-            >
-              <Pencil size={14} />
-            </IconButton>
+            <div className="flex items-center gap-2">
+              {selecting && folder.avatars.length ? (
+                <CheckBox
+                  {...folderState(folder.avatars.map((a) => a.id))}
+                  onChange={() => toggleFolder(folder.avatars.map((a) => a.id))}
+                  aria-label={t("avatar:bulk.selectFolder", { name: folder.displayName })}
+                />
+              ) : null}
+              <IconButton
+                title={t("avatar:folder.edit")}
+                onClick={() => setEditFolder(folder)}
+                aria-label={t("avatar:folder.edit")}
+              >
+                <Pencil size={14} />
+              </IconButton>
+            </div>
           }
         >
           {folder.avatars.length ? (

@@ -8,7 +8,7 @@ import type {
   MoveResult,
   World,
 } from "../../shared/types/world";
-import { httpStatusOf } from "./errors";
+import { httpStatusOf, isTransientError } from "./errors";
 import {
   getCategoryWorlds,
   getFavoriteGroupWorlds,
@@ -71,6 +71,7 @@ async function loadFavoriteWorlds(vrc: VRChat, userId: string): Promise<CachedFa
   const seen = new Set<string>();
   const members: { id: string; group: string }[] = [];
   const names = new Map<string, string>();
+  const order = groups.map((g) => g.name);
   for (const group of groups) {
     if (group.displayName) names.set(group.name, group.displayName);
     let raw;
@@ -91,12 +92,12 @@ async function loadFavoriteWorlds(vrc: VRChat, userId: string): Promise<CachedFa
     }
     broadcast("world:favoriteFolders", {
       userId,
-      folders: groupIntoFolders(members, names),
+      folders: groupIntoFolders(order, members, names),
       done: false,
     });
   }
 
-  const folders = groupIntoFolders(members, names);
+  const folders = groupIntoFolders(order, members, names);
   broadcast("world:favoriteFolders", { userId, folders, done: true });
   return { worlds, folders };
 }
@@ -111,27 +112,26 @@ function isPrivateFavorites(err: unknown): boolean {
 }
 
 function groupIntoFolders(
+  order: string[],
   members: { id: string; group: string }[],
   names: Map<string, string>,
 ): FavoriteWorldFolder[] {
-  const order: string[] = [];
   const byGroup = new Map<string, string[]>();
   for (const { id, group } of members) {
     const ids = byGroup.get(group);
     if (ids) ids.push(id);
-    else {
-      byGroup.set(group, [id]);
-      order.push(group);
-    }
+    else byGroup.set(group, [id]);
   }
   return order.map((name) => ({
     name,
     displayName: names.get(name) ?? prettyFolderName(name),
-    worldIds: byGroup.get(name)!,
+    worldIds: byGroup.get(name) ?? [],
   }));
 }
 
 function prettyFolderName(key: string): string {
+  const vp = /^vrcPlusWorlds(\d+)$/.exec(key);
+  if (vp) return `VRC+ Group ${vp[1]}`;
   const m = /^worlds(\d+)$/.exec(key);
   if (m) return `Group ${m[1]}`;
   return key.charAt(0).toUpperCase() + key.slice(1);
@@ -175,6 +175,13 @@ async function loadCategory(
 
 const DEFAULT_FOLDER = "worlds1";
 
+type WorldFavoriteRecord = {
+  id: string;
+  favoriteId: string;
+  tags: string[];
+  type: WorldFavoriteGroupType;
+};
+
 export async function loadMyFavoriteWorlds(): Promise<void> {
   const me = await currentUser();
   const { groups, limits } = await cachedRead(
@@ -208,13 +215,13 @@ async function fetchMyFavorites(
   vrc: VRChat,
   userId: string,
 ): Promise<{ groups: FavoriteGroupInput[]; limits: FavoriteLimits }> {
-  const [{ data: rawGroups }, limits] = await Promise.all([
+  const [{ data: rawGroups }, { limits, caps }] = await Promise.all([
     vrc.getFavoriteGroups({ query: { ownerId: userId, n: 100 }, throwOnError: true }),
     fetchFavoriteLimits(vrc),
   ]);
   const worldGroups = rawGroups.filter((g) => isWorldGroupType(g.type));
 
-  const groups: FavoriteGroupInput[] = [];
+  const existing: FavoriteGroupInput[] = [];
   for (const group of worldGroups) {
     let worlds: World[] = [];
     try {
@@ -228,21 +235,64 @@ async function fetchMyFavorites(
     } catch (err) {
       if (!isPrivateFavorites(err)) throw err;
     }
-    groups.push({
+    existing.push({
       name: group.name,
       displayName: group.displayName || prettyFolderName(group.name),
       visibility: normalizeVisibility(group.visibility),
       worlds,
+      vrcPlus: (group.type as WorldFavoriteGroupType) === "vrcPlusWorld",
     });
   }
-  return { groups, limits };
+  return { groups: fillSlots(existing, caps), limits };
 }
 
-async function fetchFavoriteLimits(vrc: VRChat): Promise<FavoriteLimits> {
+function fillSlots(existing: FavoriteGroupInput[], caps: WorldFavoriteCaps): FavoriteGroupInput[] {
+  const out: FavoriteGroupInput[] = [];
+  for (const [prefix, vrcPlus, max] of [
+    ["worlds", false, caps.world],
+    ["vrcPlusWorlds", true, caps.vrcPlusWorld],
+  ] as const) {
+    const mine = orderSlots(
+      existing.filter((g) => g.vrcPlus === vrcPlus),
+      prefix,
+    );
+    const taken = new Set(mine.map((g) => g.name));
+    for (let i = 1; mine.length < max && i <= max; i++) {
+      const name = `${prefix}${i}`;
+      if (taken.has(name)) continue;
+      mine.push({ name, displayName: prettyFolderName(name), visibility: "private", worlds: [], vrcPlus });
+    }
+    out.push(...mine);
+  }
+  return out;
+}
+
+function orderSlots<T extends { name: string }>(groups: T[], prefix: string): T[] {
+  const slotNum = (name: string) => {
+    const m = new RegExp(`^${prefix}(\\d+)$`).exec(name);
+    return m ? Number(m[1]) : null;
+  };
+  const custom = groups.filter((g) => slotNum(g.name) === null);
+  const numbered = groups
+    .filter((g) => slotNum(g.name) !== null)
+    .sort((a, b) => slotNum(a.name)! - slotNum(b.name)!);
+  return [...custom, ...numbered];
+}
+
+type WorldFavoriteCaps = { world: number; vrcPlusWorld: number };
+
+async function fetchFavoriteLimits(
+  vrc: VRChat,
+): Promise<{ limits: FavoriteLimits; caps: WorldFavoriteCaps }> {
   const { data } = await vrc.getFavoriteLimits({ throwOnError: true });
+  const world = data.maxFavoriteGroups?.world ?? data.defaultMaxFavoriteGroups;
+  const vrcPlusWorld = data.maxFavoriteGroups?.vrcPlusWorld ?? 0;
   return {
-    maxGroups: data.maxFavoriteGroups?.world ?? data.defaultMaxFavoriteGroups,
-    maxPerGroup: data.maxFavoritesPerGroup?.world ?? data.defaultMaxFavoritesPerGroup,
+    limits: {
+      maxGroups: world + vrcPlusWorld,
+      maxPerGroup: data.maxFavoritesPerGroup?.world ?? data.defaultMaxFavoritesPerGroup,
+    },
+    caps: { world, vrcPlusWorld },
   };
 }
 
@@ -253,7 +303,7 @@ function normalizeVisibility(v: string): FavoriteVisibility {
 export async function favoriteWorld(worldId: string, folder = DEFAULT_FOLDER): Promise<void> {
   const vrc = requireActiveClient();
   await vrc.addFavorite({
-    body: { type: "world", favoriteId: worldId, tags: [folder] },
+    body: favoriteBody(favoriteTypeForFolder(folder), worldId, [folder]),
     throwOnError: true,
   });
   await reloadMyFavorites();
@@ -266,17 +316,31 @@ export async function unfavoriteWorld(worldId: string): Promise<void> {
   await reloadMyFavorites();
 }
 
-export async function moveWorldToFolder(worldId: string, folder: string): Promise<MoveResult> {
+export async function moveWorldToFolder(
+  worldId: string,
+  folder: string,
+  reload = true,
+): Promise<MoveResult> {
   const vrc = requireActiveClient();
+  const me = await currentUser();
   const fav = await findFavoriteRecord(vrc, worldId);
-  if (fav?.tags?.includes(folder)) return { moved: 0, skipped: [] };
+  if (isOnlyInFolder(fav, folder)) return { moved: 0, skipped: [] };
   if (!(await canRefavorite(vrc, worldId))) return { moved: 0, skipped: [worldId] };
+  const type = await favoriteTypeForExistingFolder(vrc, me.id, folder);
   if (fav) await vrc.removeFavorite({ path: { favoriteId: fav.id }, throwOnError: true });
-  await vrc.addFavorite({
-    body: { type: "world", favoriteId: worldId, tags: [folder] },
-    throwOnError: true,
-  });
-  await reloadMyFavorites();
+  try {
+    await vrc.addFavorite({
+      body: favoriteBody(type, worldId, [folder]),
+      throwOnError: true,
+    });
+  } catch (err) {
+    if (fav) await restoreWorldFavorite(vrc, fav);
+    if (reload) await reloadMyFavorites();
+    if (isTransientError(err)) throw err;
+    return { moved: 0, skipped: [worldId] };
+  }
+  if (reload) await reloadMyFavorites();
+  worldFavoritesStore.moveWorld(worldId, folder);
   return { moved: 1, skipped: [] };
 }
 
@@ -284,8 +348,8 @@ export async function unfavoriteWorlds(worldIds: string[]): Promise<void> {
   const vrc = requireActiveClient();
   const records = await favoriteRecords(vrc);
   for (const id of worldIds) {
-    const recordId = records.get(id);
-    if (recordId) await vrc.removeFavorite({ path: { favoriteId: recordId }, throwOnError: true });
+    const fav = records.get(id);
+    if (fav) await vrc.removeFavorite({ path: { favoriteId: fav.id }, throwOnError: true });
   }
   await reloadMyFavorites();
 }
@@ -295,7 +359,9 @@ export async function moveWorldsToFolder(
   folder: string,
 ): Promise<MoveResult> {
   const vrc = requireActiveClient();
+  const me = await currentUser();
   const records = await favoriteRecords(vrc);
+  const type = await favoriteTypeForExistingFolder(vrc, me.id, folder);
   const skipped: string[] = [];
   let moved = 0;
   for (const id of worldIds) {
@@ -303,23 +369,48 @@ export async function moveWorldsToFolder(
       skipped.push(id);
       continue;
     }
-    const recordId = records.get(id);
-    if (recordId) await vrc.removeFavorite({ path: { favoriteId: recordId }, throwOnError: true });
-    await vrc.addFavorite({
-      body: { type: "world", favoriteId: id, tags: [folder] },
-      throwOnError: true,
-    });
+    const fav = records.get(id);
+    if (isOnlyInFolder(fav, folder)) continue;
+    if (fav) await vrc.removeFavorite({ path: { favoriteId: fav.id }, throwOnError: true });
+    try {
+      await vrc.addFavorite({
+        body: favoriteBody(type, id, [folder]),
+        throwOnError: true,
+      });
+    } catch (err) {
+      if (fav) await restoreWorldFavorite(vrc, fav);
+      if (isTransientError(err)) {
+        await reloadMyFavorites();
+        throw err;
+      }
+      skipped.push(id);
+      continue;
+    }
     moved++;
   }
   await reloadMyFavorites();
+  for (const id of worldIds) if (!skipped.includes(id)) worldFavoritesStore.moveWorld(id, folder);
   return { moved, skipped };
+}
+
+async function restoreWorldFavorite(vrc: VRChat, fav: WorldFavoriteRecord): Promise<void> {
+  const tags = fav.tags.length ? fav.tags : [DEFAULT_FOLDER];
+  await vrc.addFavorite({
+    body: favoriteBody(fav.type, fav.favoriteId, tags),
+    throwOnError: true,
+  });
+}
+
+function isOnlyInFolder(fav: WorldFavoriteRecord | undefined, folder: string): boolean {
+  return fav?.tags.length === 1 && fav.tags[0] === folder;
 }
 
 export async function clearFavoriteWorldFolder(folder: string): Promise<void> {
   const vrc = requireActiveClient();
   const me = await currentUser();
+  const type = await favoriteTypeForExistingFolder(vrc, me.id, folder);
   await vrc.clearFavoriteGroup({
-    path: { favoriteGroupType: "world", favoriteGroupName: folder, userId: me.id },
+    path: { favoriteGroupType: type, favoriteGroupName: folder, userId: me.id },
     throwOnError: true,
   });
   await reloadMyFavorites();
@@ -331,8 +422,9 @@ export async function updateFavoriteWorldFolder(
 ): Promise<void> {
   const vrc = requireActiveClient();
   const me = await currentUser();
+  const type = await favoriteTypeForExistingFolder(vrc, me.id, folder);
   await vrc.updateFavoriteGroup({
-    path: { favoriteGroupType: "world", favoriteGroupName: folder, userId: me.id },
+    path: { favoriteGroupType: type, favoriteGroupName: folder, userId: me.id },
     body: {
       displayName: edit.displayName,
       visibility: edit.visibility as never,
@@ -344,35 +436,79 @@ export async function updateFavoriteWorldFolder(
 
 async function canRefavorite(vrc: VRChat, worldId: string): Promise<boolean> {
   try {
-    await vrc.getWorld({ path: { worldId }, throwOnError: true });
-    return true;
-  } catch {
+    const { data } = await vrc.getWorld({ path: { worldId }, throwOnError: true });
+    const me = await currentUser();
+    return data.releaseStatus !== "private" || data.authorId === me.id;
+  } catch (err) {
+    if (isTransientError(err)) throw err;
     return false;
   }
+}
+
+function favoriteTypeForFolder(folder: string): WorldFavoriteGroupType {
+  return folder.startsWith("vrcPlusWorlds") ? "vrcPlusWorld" : "world";
+}
+
+async function favoriteTypeForExistingFolder(
+  vrc: VRChat,
+  userId: string,
+  folder: string,
+): Promise<WorldFavoriteGroupType> {
+  const { data } = await vrc.getFavoriteGroups({
+    query: { ownerId: userId, n: 100 },
+    throwOnError: true,
+  });
+  return (
+    data.find((g) => g.name === folder && isWorldGroupType(g.type))?.type ??
+    favoriteTypeForFolder(folder)
+  );
+}
+
+type AddFavoriteBody = NonNullable<Parameters<VRChat["addFavorite"]>[0]>["body"];
+function favoriteBody(
+  type: WorldFavoriteGroupType,
+  favoriteId: string,
+  tags: string[],
+): AddFavoriteBody {
+  return { type, favoriteId, tags } as AddFavoriteBody;
 }
 
 async function findFavoriteRecord(vrc: VRChat, worldId: string) {
   return (await favoriteRecordEntries(vrc)).find((f) => f.favoriteId === worldId);
 }
 
-async function favoriteRecords(vrc: VRChat): Promise<Map<string, string>> {
-  return new Map((await favoriteRecordEntries(vrc)).map((f) => [f.favoriteId, f.id]));
+async function favoriteRecords(vrc: VRChat): Promise<Map<string, WorldFavoriteRecord>> {
+  return new Map((await favoriteRecordEntries(vrc)).map((f) => [f.favoriteId, f]));
 }
 
-async function favoriteRecordEntries(vrc: VRChat) {
+async function favoriteRecordEntries(vrc: VRChat): Promise<WorldFavoriteRecord[]> {
+  const me = await currentUser();
+  const { data: rawGroups } = await vrc.getFavoriteGroups({
+    query: { ownerId: me.id, n: 100 },
+    throwOnError: true,
+  });
+  const groups = rawGroups.filter((g) => isWorldGroupType(g.type));
   const pageSize = 100;
-  const entries = [];
-  for (let offset = 0; ; offset += pageSize) {
-    const { data } = await vrc.getFavorites({
-      query: { type: "world", n: pageSize, offset },
-      throwOnError: true,
-    });
-    entries.push(...data);
-    if (data.length < pageSize) return entries;
+  const entries: WorldFavoriteRecord[] = [];
+  for (const group of groups) {
+    let groupCount = 0;
+    for (let offset = 0; ; offset += pageSize) {
+      const res = await vrc.client.get({
+        url: `/favorites/groups/${group.type}/${encodeURIComponent(group.name)}`,
+        query: { ownerId: me.id, n: pageSize, offset },
+        throwOnError: true,
+      });
+      const data = res.data as { favorites?: WorldFavoriteRecord[]; totalCount?: number };
+      const page = (data.favorites ?? []).map((f) => ({ ...f, type: group.type }));
+      entries.push(...page);
+      groupCount += page.length;
+      if (page.length < pageSize || groupCount >= (data.totalCount ?? groupCount)) break;
+    }
   }
+  return entries;
 }
 
-async function reloadMyFavorites(): Promise<void> {
+export async function reloadMyFavorites(): Promise<void> {
   userCache.invalidate(cacheKeys.myFavoriteWorlds());
   const me = await currentUser();
   userCache.invalidate(cacheKeys.favoriteWorlds(me.id));

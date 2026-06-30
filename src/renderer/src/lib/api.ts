@@ -22,6 +22,11 @@ export function errorMessage(err: unknown, fallback: string): string {
   return err instanceof ApiException ? err.error.message : fallback;
 }
 
+export function isRetryableApiError(err: unknown): boolean {
+  if (!(err instanceof ApiException)) return false;
+  return err.error.code === "unknown" || err.error.code === "network" || err.error.code === "rate_limited";
+}
+
 type DataOf<R> = R extends { ok: true; data: infer D } ? D : never;
 
 async function call<C extends keyof IpcRequests>(
@@ -69,10 +74,11 @@ export const api = {
     snapshot: () => call("world:snapshot"),
     favoritesSnapshot: () => call("world:favoritesSnapshot"),
     loadFavorites: () => call("world:loadFavorites"),
+    reloadFavorites: () => call("world:reloadFavorites"),
     favorite: (worldId: string, folder?: string) => call("world:favorite", { worldId, folder }),
     unfavorite: (worldId: string) => call("world:unfavorite", worldId),
-    moveFavorite: (worldId: string, folder: string): Promise<WorldMoveResult> =>
-      call("world:moveFavorite", { worldId, folder }),
+    moveFavorite: (worldId: string, folder: string, reload = true): Promise<WorldMoveResult> =>
+      call("world:moveFavorite", { worldId, folder, reload }),
     unfavoriteMany: (worldIds: string[]) => call("world:unfavoriteMany", worldIds),
     moveFavoriteMany: (worldIds: string[], folder: string): Promise<WorldMoveResult> =>
       call("world:moveFavoriteMany", { worldIds, folder }),
@@ -91,13 +97,14 @@ export const api = {
     snapshot: () => call("avatar:snapshot"),
     loadMine: () => call("avatar:loadMine"),
     loadFavorites: () => call("avatar:loadFavorites"),
+    reloadFavorites: () => call("avatar:reloadFavorites"),
     select: (avatarId: string) => call("avatar:select", avatarId),
     update: (avatarId: string, edit: AvatarEdit) => call("avatar:update", { avatarId, edit }),
     delete: (avatarId: string) => call("avatar:delete", avatarId),
     favorite: (avatarId: string, folder?: string) => call("avatar:favorite", { avatarId, folder }),
     unfavorite: (avatarId: string) => call("avatar:unfavorite", avatarId),
-    moveFavorite: (avatarId: string, folder: string): Promise<MoveResult> =>
-      call("avatar:moveFavorite", { avatarId, folder }),
+    moveFavorite: (avatarId: string, folder: string, reload = true): Promise<MoveResult> =>
+      call("avatar:moveFavorite", { avatarId, folder, reload }),
     unfavoriteMany: (avatarIds: string[]) => call("avatar:unfavoriteMany", avatarIds),
     moveFavoriteMany: (avatarIds: string[], folder: string): Promise<MoveResult> =>
       call("avatar:moveFavoriteMany", { avatarIds, folder }),

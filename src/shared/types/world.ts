@@ -54,6 +54,7 @@ export interface FavoriteWorldGroup {
   displayName: string;
   visibility: FavoriteVisibility;
   worldIds: string[];
+  vrcPlus: boolean;
 }
 
 export interface FavoriteLimits {

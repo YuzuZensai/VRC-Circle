@@ -58,6 +58,7 @@ export function FavoriteModal({
     <Modal
       open
       onClose={onClose}
+      dismissible={busy === null}
       title={currentFolder ? t("avatar:actions.manageFavorite") : t("avatar:actions.favorite")}
       icon={<Star size={16} />}
     >
@@ -106,6 +107,7 @@ export function FavoriteModal({
             className="mt-1 justify-center"
             block
             loading={busy === "unfavorite"}
+            disabled={busy !== null}
             onClick={() => run("unfavorite", () => api.avatar.unfavorite(avatar.id))}
           >
             {t("avatar:actions.unfavorite")}

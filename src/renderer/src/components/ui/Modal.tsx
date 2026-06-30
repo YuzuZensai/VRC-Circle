@@ -16,6 +16,7 @@ type ModalProps = {
   onConfirm?: () => void;
   confirmLoading?: boolean;
   confirmDisabled?: boolean;
+  dismissible?: boolean;
 };
 
 export function Modal({
@@ -30,16 +31,18 @@ export function Modal({
   onConfirm,
   confirmLoading,
   confirmDisabled,
+  dismissible = true,
 }: ModalProps) {
   const t = useT();
+  const close = dismissible ? onClose : () => {};
   useEffect(() => {
-    if (!open) return;
+    if (!open || !dismissible) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [open, onClose]);
+  }, [open, dismissible, onClose]);
 
   if (!open) return null;
 
@@ -53,7 +56,7 @@ export function Modal({
       <button
         aria-hidden
         tabIndex={-1}
-        onClick={onClose}
+        onClick={close}
         className="absolute inset-0 animate-[fade-in_var(--dur)_var(--ease-out)_both] bg-[color-mix(in_srgb,var(--surface)_30%,#000_55%)] backdrop-blur-[2px]"
       />
       <div className="animate-[pop-in_var(--dur)_var(--ease-out)_both] relative w-full max-w-md rounded-xl border border-border bg-surface p-5 shadow-[0_24px_60px_-20px_rgba(0,0,0,0.5)]">
@@ -66,20 +69,22 @@ export function Modal({
             {icon}
             {title}
           </h2>
-          <button
-            onClick={onClose}
-            aria-label="Close"
-            className="grid size-7 shrink-0 place-items-center rounded-md text-faint transition-colors hover:bg-surface-hover hover:text-text"
-          >
-            <X size={16} />
-          </button>
+          {dismissible ? (
+            <button
+              onClick={onClose}
+              aria-label="Close"
+              className="grid size-7 shrink-0 place-items-center rounded-md text-faint transition-colors hover:bg-surface-hover hover:text-text"
+            >
+              <X size={16} />
+            </button>
+          ) : null}
         </div>
 
         <div className="text-[13px] text-muted">{children}</div>
 
         {onConfirm ? (
           <div className="mt-5 flex justify-end gap-2.5">
-            <Button variant="ghost" onClick={onClose} disabled={confirmLoading}>
+            <Button variant="ghost" onClick={onClose} disabled={confirmLoading || !dismissible}>
               {cancelLabel ?? t("common:cancel")}
             </Button>
             <Button

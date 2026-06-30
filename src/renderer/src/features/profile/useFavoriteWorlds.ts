@@ -18,35 +18,38 @@ export function useFavoriteWorlds(userId: string): {
   folders: FavoriteFolder[];
   message?: string;
 } {
-  const [streamed, setStreamed] = useState<FavoriteWorldFolder[] | null>(null);
+  const [streamed, setStreamed] = useState<{
+    userId: string;
+    folders: FavoriteWorldFolder[];
+  } | null>(null);
   const fetched = useAsync(
     () => api.world.favorites(userId),
     [userId],
     "Failed to load favorite worlds.",
   );
 
-  useEffect(() => {
-    setStreamed(null);
-    return events.on("world:favoriteFolders", (p) => {
-      if (p.userId === userId) setStreamed(p.folders);
-    });
-  }, [userId]);
+  useEffect(
+    () =>
+      events.on("world:favoriteFolders", (p) => {
+        if (p.userId === userId) setStreamed({ userId, folders: p.folders });
+      }),
+    [userId],
+  );
 
-  const folders: FavoriteWorldFolder[] =
-    fetched.status === "ready" ? fetched.data : (streamed ?? []);
+  const fallbackFolders = useMemo<FavoriteWorldFolder[]>(() => [], []);
+  const streamedFolders = streamed?.userId === userId ? streamed.folders : fallbackFolders;
+  const folders: FavoriteWorldFolder[] = fetched.status === "ready" ? fetched.data : streamedFolders;
 
   const ids = useMemo(() => folders.flatMap((f) => f.worldIds), [folders]);
   const worlds = useWorlds(useShallow((s) => ids.map((id) => s.worlds[id]).filter(Boolean)));
 
   const assembled = useMemo<FavoriteFolder[]>(() => {
     const byId = new Map(worlds.map((w) => [w.id, w]));
-    return folders
-      .map((f) => ({
-        name: f.name,
-        displayName: f.displayName,
-        worlds: f.worldIds.map((id) => byId.get(id)).filter((w): w is World => Boolean(w)),
-      }))
-      .filter((f) => f.worlds.length);
+    return folders.map((f) => ({
+      name: f.name,
+      displayName: f.displayName,
+      worlds: f.worldIds.map((id) => byId.get(id)).filter((w): w is World => Boolean(w)),
+    }));
   }, [folders, worlds]);
 
   return {
