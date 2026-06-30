@@ -395,7 +395,8 @@ function FavoritesTab({ filter, searching }: { filter: AvatarFilter; searching: 
   const toggle = (id: string) =>
     setSelected((s) => {
       const next = new Set(s);
-      next.has(id) ? next.delete(id) : next.add(id);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
       return next;
     });
 
@@ -429,7 +430,10 @@ function FavoritesTab({ filter, searching }: { filter: AvatarFilter; searching: 
     setSelected((s) => {
       const next = new Set(s);
       const all = ids.every((id) => next.has(id));
-      for (const id of ids) all ? next.delete(id) : next.add(id);
+      for (const id of ids) {
+        if (all) next.delete(id);
+        else next.add(id);
+      }
       return next;
     });
 
