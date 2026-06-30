@@ -174,6 +174,7 @@ export function MyFavoriteWorldsSection({ filter }: { filter?: WorldFilter }) {
       {shown.map((folder) => (
         <CollapsibleCard
           key={folder.name}
+          persistKey={`fav-worlds:${folder.name}`}
           title={folder.displayName}
           count={`${folder.count} / ${maxPerGroup}`}
           action={
