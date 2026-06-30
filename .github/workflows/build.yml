@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        check: [lint, typecheck]
+        check: [lint, typecheck, format]
 
     runs-on: ubuntu-latest
 
