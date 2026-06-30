@@ -491,8 +491,9 @@ async function favoriteRecordEntries(vrc: VRChat): Promise<WorldFavoriteRecord[]
     query: { ownerId: me.id, n: 100 },
     throwOnError: true,
   });
-  const groups = rawGroups.filter((g): g is (typeof rawGroups)[number] & { type: WorldFavoriteGroupType } =>
-    isWorldGroupType(g.type),
+  const groups = rawGroups.filter(
+    (g): g is (typeof rawGroups)[number] & { type: WorldFavoriteGroupType } =>
+      isWorldGroupType(g.type),
   );
   const pageSize = 100;
   const entries: WorldFavoriteRecord[] = [];
