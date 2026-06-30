@@ -3,6 +3,7 @@ import {
   AlertTriangle,
   Boxes,
   Check,
+  Bug,
   Download,
   Droplet,
   FolderOpen,
@@ -26,6 +27,8 @@ import type { AppConfig, PreferredRegion, RegionPing } from "../../../../shared/
 import type { UnityStatus } from "../../../../shared/types/unity";
 import { api, errorMessage } from "../../lib/api";
 import { useAsync } from "../../lib/useAsync";
+import { useSetDebugNavVisible, useDebugNavVisible } from "../../lib/debugSettings";
+import { useAppConfig } from "../../lib/AppConfigContext";
 import { regionFlag, regionLabel } from "../../lib/vrchat";
 import {
   Button,
@@ -34,12 +37,13 @@ import {
   PAGE_TITLE,
   SettingsSection as Section,
   Tabs,
+  Toggle,
 } from "../../components/ui";
 
 const SHELL = "mx-auto flex w-full max-w-[760px] flex-col gap-[18px] px-12 pb-16 pt-10";
 const SECTIONS = "animate-rise flex flex-col gap-[18px]";
 
-type SettingsTab = "appearance" | "game" | "creator" | "about";
+type SettingsTab = "appearance" | "game" | "creator" | "debug" | "about";
 
 export function SettingsView() {
   const { t } = useI18n();
@@ -56,6 +60,7 @@ export function SettingsView() {
           { id: "appearance", label: t("settings:tabs.appearance") },
           { id: "game", label: t("settings:tabs.game") },
           { id: "creator", label: t("settings:tabs.creator") },
+          { id: "debug", label: t("settings:tabs.debug") },
           { id: "about", label: t("settings:tabs.about") },
         ]}
         active={tab}
@@ -83,12 +88,39 @@ export function SettingsView() {
         </div>
       ) : null}
 
+      {tab === "debug" ? (
+        <div className={SECTIONS}>
+          <DebugSection />
+        </div>
+      ) : null}
+
       {tab === "about" ? (
         <div className={SECTIONS}>
           <AboutSection />
         </div>
       ) : null}
     </div>
+  );
+}
+
+function DebugSection() {
+  const { t } = useI18n();
+  const showDebugNav = useDebugNavVisible();
+  const setDebugNavVisible = useSetDebugNavVisible();
+  return (
+    <Section
+      title={t("settings:debug.title")}
+      icon={<Bug size={16} />}
+      description={t("settings:debug.description")}
+    >
+      <div className="flex items-center justify-between gap-4 rounded-lg border border-border bg-surface-2 p-3">
+        <div>
+          <div className="text-[13px] font-semibold text-text">{t("settings:debug.sidebar")}</div>
+          <div className="mt-0.5 text-[12px] text-muted">{t("settings:debug.sidebarHint")}</div>
+        </div>
+        <Toggle checked={showDebugNav} onChange={setDebugNavVisible} />
+      </div>
+    </Section>
   );
 }
 
@@ -259,18 +291,15 @@ function LanguageSection() {
 
 function GameSection() {
   const { t } = useI18n();
-  const [config, setConfig] = useState<AppConfig | null>(null);
+  const { config, setGamePath, pickGamePath } = useAppConfig();
   const [path, setPath] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [ok, setOk] = useState<string | null>(null);
 
   useEffect(() => {
-    api.config.get().then((c) => {
-      setConfig(c);
-      setPath(c.gamePath ?? "");
-    });
-  }, []);
+    setPath(config?.gamePath ?? "");
+  }, [config?.gamePath]);
 
   async function run(p: Promise<AppConfig>, okMsg: string) {
     setBusy(true);
@@ -278,7 +307,6 @@ function GameSection() {
     setOk(null);
     try {
       const next = await p;
-      setConfig(next);
       setPath(next.gamePath ?? "");
       setOk(okMsg);
     } catch (e) {
@@ -307,7 +335,7 @@ function GameSection() {
         </div>
         <Button
           variant="ghost"
-          onClick={() => void run(api.config.pickGamePath(), t("settings:game.saved"))}
+          onClick={() => void run(pickGamePath(), t("settings:game.saved"))}
         >
           <FolderOpen size={14} />
           {t("settings:game.browse")}
@@ -339,7 +367,7 @@ function GameSection() {
       <div className="mt-3 flex flex-wrap items-center gap-2.5">
         <Button
           onClick={() =>
-            void run(api.config.setGamePath(path.trim() || null), t("settings:game.saved"))
+            void run(setGamePath(path.trim() || null), t("settings:game.saved"))
           }
           loading={busy}
           disabled={!dirty}
@@ -349,7 +377,7 @@ function GameSection() {
         {config?.gamePath ? (
           <Button
             variant="ghost"
-            onClick={() => void run(api.config.setGamePath(null), t("settings:game.resetDone"))}
+            onClick={() => void run(setGamePath(null), t("settings:game.resetDone"))}
             disabled={busy}
           >
             {t("settings:game.reset")}
@@ -365,20 +393,16 @@ const REGION_OPTIONS: PreferredRegion[] = ["auto", "us", "use", "eu", "jp"];
 
 function RegionSection() {
   const { t } = useI18n();
-  const [region, setRegion] = useState<PreferredRegion>("auto");
+  const { config, setPreferredRegion } = useAppConfig();
   const [ok, setOk] = useState<string | null>(null);
   const [pings, setPings] = useState<RegionPing[] | null>(null);
   const [testing, setTesting] = useState(false);
 
-  useEffect(() => {
-    api.config.get().then((c) => setRegion(c.preferredRegion));
-  }, []);
+  const region = config?.preferredRegion ?? "auto";
 
   const choose = async (r: PreferredRegion) => {
-    setRegion(r);
     setOk(null);
-    const next = await api.config.setPreferredRegion(r);
-    setRegion(next.preferredRegion);
+    await setPreferredRegion(r);
     setOk(t("settings:region.saved"));
   };
 

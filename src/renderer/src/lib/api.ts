@@ -4,7 +4,7 @@ import type { ContentFilterKey } from "../../../shared/types/settings";
 import type { UserStatus } from "../../../shared/types/user";
 import type { EnhancementId } from "../../../shared/types/enhancements";
 import type { CreateInstanceInput } from "../../../shared/types/instance";
-import type { PreferredRegion } from "../../../shared/types/appConfig";
+import type { AppPreferences, PreferredRegion } from "../../../shared/types/appConfig";
 import type { AvatarEdit, FavoriteGroupEdit, MoveResult } from "../../../shared/types/avatar";
 import type {
   FavoriteGroupEdit as WorldFavoriteGroupEdit,
@@ -150,6 +150,7 @@ export const api = {
     setGamePath: (gamePath: string | null) => call("config:setGamePath", { gamePath }),
     pickGamePath: () => call("config:pickGamePath"),
     setPreferredRegion: (region: PreferredRegion) => call("config:setPreferredRegion", { region }),
+    setPreferences: (p: Partial<AppPreferences>) => call("config:setPreferences", p),
   },
   region: {
     detect: () => call("region:detect"),

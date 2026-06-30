@@ -4,6 +4,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
@@ -12,13 +13,11 @@ import {
   applyTheme,
   builtInThemes,
   initialTheme,
-  persistScheme,
-  storedAccent,
-  storedScheme,
   systemScheme,
   type SchemeMode,
   type Theme,
 } from "./theme";
+import { useAppConfig } from "./AppConfigContext";
 
 interface ThemeContextValue {
   theme: Theme;
@@ -34,43 +33,63 @@ interface ThemeContextValue {
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
+  const { config, setPreferences } = useAppConfig();
   const [themes, setThemes] = useState<Theme[]>(builtInThemes);
   const [theme, setActive] = useState<Theme>(() => {
-    const t = initialTheme(builtInThemes);
+    const t = initialTheme(builtInThemes, "auto");
     applyTheme(t);
+    applyAccent(null);
     return t;
   });
-  const [schemeMode, setMode] = useState<SchemeMode>(() => storedScheme());
-  const [accent, setAccentState] = useState<string | null>(() => storedAccent());
+  const [schemeMode, setMode] = useState<SchemeMode>("auto");
+  const [accent, setAccentState] = useState<string | null>(null);
+  const lastApplied = useRef<string>("");
 
   const setAccent = useCallback((hex: string | null) => {
     applyAccent(hex);
     setAccentState(hex);
-  }, []);
+    void setPreferences({ accent: hex });
+  }, [setPreferences]);
 
   const setTheme = useCallback(
     (id: string) => {
       const next = themes.find((t) => t.id === id);
       if (!next) return;
       applyTheme(next);
+      applyAccent(accent);
       setActive(next);
     },
-    [themes],
+    [themes, accent],
   );
 
   const setSchemeMode = useCallback(
     (mode: SchemeMode) => {
-      persistScheme(mode);
       setMode(mode);
       const target = mode === "auto" ? systemScheme() : mode;
       const next = themes.find((t) => t.scheme === target);
       if (next) {
         applyTheme(next);
+        applyAccent(accent);
         setActive(next);
       }
+      void setPreferences({ schemeMode: mode });
     },
-    [themes],
+    [themes, accent, setPreferences],
   );
+
+  useEffect(() => {
+    const prefs = config?.preferences;
+    if (!prefs) return;
+    const key = `${prefs.schemeMode}:${prefs.accent ?? ""}`;
+    if (key === lastApplied.current) return;
+    lastApplied.current = key;
+    setMode(prefs.schemeMode);
+    setAccentState(prefs.accent);
+    const next = initialTheme(themes, prefs.schemeMode);
+    applyTheme(next);
+    applyAccent(prefs.accent);
+    setActive(next);
+  }, [config?.preferences, themes]);
 
   useEffect(() => {
     if (schemeMode !== "auto") return;
@@ -79,12 +98,13 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       const next = themes.find((t) => t.scheme === systemScheme());
       if (next) {
         applyTheme(next);
+        applyAccent(accent);
         setActive(next);
       }
     };
     mq.addEventListener("change", onChange);
     return () => mq.removeEventListener("change", onChange);
-  }, [schemeMode, themes]);
+  }, [schemeMode, themes, accent]);
 
   const registerTheme = useCallback((custom: Theme, activate = false) => {
     setThemes((prev) => {

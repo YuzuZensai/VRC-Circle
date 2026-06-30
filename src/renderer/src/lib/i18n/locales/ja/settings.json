@@ -5,6 +5,7 @@
     "appearance": "外観",
     "game": "ゲーム",
     "creator": "クリエイター",
+    "debug": "デバッグ",
     "about": "情報"
   },
   "appearance": {
@@ -82,6 +83,12 @@
     "appName": "VRC Circle",
     "version": "バージョン",
     "disclaimer": "非公式です。VRChat Inc. とは提携しておらず、承認も受けていません。"
+  },
+  "debug": {
+    "title": "デバッグ",
+    "description": "開発者向けとトラブルシューティング用の設定です。",
+    "sidebar": "サイドバーにデバッグを表示",
+    "sidebarHint": "左のナビゲーションにデバッグのショートカットを表示します。"
   },
   "region": {
     "title": "インスタンスのリージョン",

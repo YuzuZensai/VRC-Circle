@@ -88,10 +88,6 @@ export const lightTheme: Theme = {
 
 export const builtInThemes: Theme[] = [darkTheme, lightTheme];
 
-const STORAGE_KEY = "vrc-circle.theme";
-const ACCENT_KEY = "vrc-circle.accent";
-const SCHEME_KEY = "vrc-circle.scheme";
-
 export type SchemeMode = "light" | "dark" | "auto";
 
 export const ACCENT_PRESETS: { key: string; name: string; value: string }[] = [
@@ -114,10 +110,6 @@ export function applyTheme(theme: Theme): void {
   }
   root.style.colorScheme = theme.scheme;
   root.dataset.theme = theme.id;
-  try {
-    localStorage.setItem(STORAGE_KEY, theme.id);
-  } catch {}
-  applyAccent(storedAccent());
 }
 
 export function applyAccent(hex: string | null): void {
@@ -126,18 +118,6 @@ export function applyAccent(hex: string | null): void {
   root.style.setProperty("--accent", accent);
   root.style.setProperty("--on-accent", readableOn(accent));
   root.style.setProperty("--accent-weak", withAlpha(accent, 0.14));
-  try {
-    if (hex) localStorage.setItem(ACCENT_KEY, hex);
-    else localStorage.removeItem(ACCENT_KEY);
-  } catch {}
-}
-
-export function storedAccent(): string | null {
-  try {
-    return localStorage.getItem(ACCENT_KEY);
-  } catch {
-    return null;
-  }
 }
 
 function parseHex(hex: string): [number, number, number] | null {
@@ -164,20 +144,10 @@ function readableOn(hex: string): string {
   return luminance > 0.45 ? "#15151b" : "#ffffff";
 }
 
-export function initialTheme(registry: Theme[]): Theme {
-  const mode = storedScheme();
+export function initialTheme(registry: Theme[], mode: SchemeMode): Theme {
   if (mode !== "auto") {
     const pick = registry.find((t) => t.scheme === mode);
     if (pick) return pick;
-  }
-
-  let storedId: string | null = null;
-  try {
-    storedId = localStorage.getItem(STORAGE_KEY);
-  } catch {}
-  if (mode !== "auto") {
-    const stored = registry.find((t) => t.id === storedId);
-    if (stored) return stored;
   }
   return systemScheme() === "light" ? lightTheme : darkTheme;
 }
@@ -186,18 +156,4 @@ export function systemScheme(): "light" | "dark" {
   const prefersLight =
     typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: light)").matches;
   return prefersLight ? "light" : "dark";
-}
-
-export function storedScheme(): SchemeMode {
-  try {
-    const v = localStorage.getItem(SCHEME_KEY);
-    if (v === "light" || v === "dark" || v === "auto") return v;
-  } catch {}
-  return "auto";
-}
-
-export function persistScheme(mode: SchemeMode): void {
-  try {
-    localStorage.setItem(SCHEME_KEY, mode);
-  } catch {}
 }

@@ -1,4 +1,6 @@
-export type LocaleCode = "en" | "ja" | "th";
+import type { AppLocale } from "../../../../shared/locales";
+
+export type LocaleCode = AppLocale;
 
 export interface LocaleMeta {
   code: LocaleCode;

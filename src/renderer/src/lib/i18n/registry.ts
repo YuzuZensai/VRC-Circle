@@ -1,16 +1,9 @@
 import i18n, { type Resource, type ResourceLanguage } from "i18next";
 import { initReactI18next } from "react-i18next";
-import type { Locale, LocaleCode, LocaleMeta } from "./types";
+import { DEFAULT_LOCALE, LOCALES } from "../../../../shared/locales";
+import type { Locale, LocaleCode } from "./types";
 
-export const DEFAULT_LOCALE: LocaleCode = "en";
-
-const STORAGE_KEY = "vrc-circle.locale";
-
-const META: Record<LocaleCode, LocaleMeta> = {
-  en: { code: "en", nativeName: "English", englishName: "English" },
-  ja: { code: "ja", nativeName: "日本語", englishName: "Japanese" },
-  th: { code: "th", nativeName: "ไทย", englishName: "Thai" },
-};
+export { DEFAULT_LOCALE } from "../../../../shared/locales";
 
 const files = import.meta.glob<{ default: Record<string, unknown> }>("./locales/*/*.json", {
   eager: true,
@@ -29,11 +22,11 @@ export const NAMESPACES = [
 ];
 
 function buildLocale(code: LocaleCode): Locale {
-  return { meta: META[code], messages: resources[code] ?? {} };
+  return { meta: LOCALES.find((locale) => locale.code === code)!, messages: resources[code] ?? {} };
 }
 
 const registry = new Map<LocaleCode, Locale>(
-  (Object.keys(META) as LocaleCode[]).map((code) => [code, buildLocale(code)]),
+  LOCALES.map((locale) => [locale.code, buildLocale(locale.code)]),
 );
 
 export function availableLocales(): Locale[] {
@@ -44,22 +37,8 @@ export function getLocale(code: LocaleCode): Locale {
   return registry.get(code) ?? registry.get(DEFAULT_LOCALE)!;
 }
 
-export function storedLocale(): LocaleCode {
-  try {
-    const v = localStorage.getItem(STORAGE_KEY);
-    if (v && registry.has(v as LocaleCode)) return v as LocaleCode;
-  } catch {}
-  return DEFAULT_LOCALE;
-}
-
-export function persistLocale(code: LocaleCode): void {
-  try {
-    localStorage.setItem(STORAGE_KEY, code);
-  } catch {}
-}
-
 void i18n.use(initReactI18next).init({
-  lng: storedLocale(),
+  lng: DEFAULT_LOCALE,
   fallbackLng: DEFAULT_LOCALE,
   ns: NAMESPACES,
   defaultNS: "common",

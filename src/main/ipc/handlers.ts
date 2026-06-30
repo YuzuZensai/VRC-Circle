@@ -135,6 +135,7 @@ const handlers = {
       if (p.region === "auto") void region.detectBestRegion();
       return next;
     }),
+  "config:setPreferences": (p) => guard(async () => appConfig.setPreferences(p)),
 
   "region:detect": () => guard(() => region.detectBestRegion()),
   "region:ping": () =>

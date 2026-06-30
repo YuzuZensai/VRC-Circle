@@ -2,18 +2,48 @@ import { app } from "electron";
 import { join } from "node:path";
 import { existsSync } from "node:fs";
 import { jsonFile } from "../lib/jsonFile";
-import type { AppConfig, PreferredRegion } from "../../shared/types/appConfig";
+import type { AppConfig, AppPreferences, PreferredRegion } from "../../shared/types/appConfig";
+import { DEFAULT_LOCALE, isAppLocale } from "../../shared/locales";
 import { detectedGamePath } from "../game/steam";
 
 const path = () => join(app.getPath("userData"), "app-config.json");
 
 type StoredConfig = Omit<AppConfig, "version" | "detectedGamePath">;
-const DEFAULTS: StoredConfig = { gamePath: null, preferredRegion: "auto" };
+const DEFAULT_PREFERENCES: AppPreferences = {
+  schemeMode: "auto",
+  accent: null,
+  locale: DEFAULT_LOCALE,
+  showDebugNav: false,
+};
+const DEFAULTS: StoredConfig = {
+  gamePath: null,
+  preferredRegion: "auto",
+  preferences: DEFAULT_PREFERENCES,
+};
+
+function normalizePreferences(raw: Partial<AppPreferences> | undefined): AppPreferences {
+  const schemeMode = raw?.schemeMode;
+  const locale = raw?.locale;
+  const accent = raw?.accent?.trim() || null;
+  return {
+    schemeMode: schemeMode === "light" || schemeMode === "dark" || schemeMode === "auto" ? schemeMode : "auto",
+    accent: accent && /^#[\da-f]{6}$/i.test(accent) ? accent : null,
+    locale: isAppLocale(locale) ? locale : DEFAULT_LOCALE,
+    showDebugNav: raw?.showDebugNav === true,
+  };
+}
 
 const configFile = jsonFile<StoredConfig>(
   path,
   () => ({ ...DEFAULTS }),
-  (raw) => ({ ...DEFAULTS, ...(raw as Partial<StoredConfig>) }),
+  (raw) => {
+    const stored = raw as Partial<StoredConfig>;
+    return {
+      ...DEFAULTS,
+      ...stored,
+      preferences: normalizePreferences(stored.preferences),
+    };
+  },
 );
 const readStored = configFile.read;
 
@@ -35,6 +65,16 @@ export function preferredRegion(): PreferredRegion {
 
 export function setPreferredRegion(region: PreferredRegion): AppConfig {
   const next: StoredConfig = { ...readStored(), preferredRegion: region };
+  writeStored(next);
+  return withDerived(next);
+}
+
+export function setPreferences(patch: Partial<AppPreferences>): AppConfig {
+  const stored = readStored();
+  const next: StoredConfig = {
+    ...stored,
+    preferences: normalizePreferences({ ...stored.preferences, ...patch }),
+  };
   writeStored(next);
   return withDerived(next);
 }

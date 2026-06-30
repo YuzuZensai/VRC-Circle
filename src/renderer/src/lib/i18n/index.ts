@@ -4,8 +4,6 @@ export {
   NAMESPACES,
   availableLocales,
   getLocale,
-  storedLocale,
-  persistLocale,
   i18n,
 } from "./registry";
 export type { Locale, LocaleCode, LocaleMeta, Messages } from "./types";

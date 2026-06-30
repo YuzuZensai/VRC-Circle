@@ -5,6 +5,7 @@
     "appearance": "Appearance",
     "game": "Game",
     "creator": "Creator",
+    "debug": "Debug",
     "about": "About"
   },
   "appearance": {
@@ -82,6 +83,12 @@
     "appName": "VRC Circle",
     "version": "Version",
     "disclaimer": "Unofficial. Not affiliated with or endorsed by VRChat Inc."
+  },
+  "debug": {
+    "title": "Debug",
+    "description": "Developer and troubleshooting options.",
+    "sidebar": "Show Debug in the sidebar",
+    "sidebarHint": "Adds the Debug shortcut back to the left navigation."
   },
   "region": {
     "title": "Instance Region",

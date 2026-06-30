@@ -2,6 +2,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { ThemeProvider } from "./lib/ThemeContext";
 import { I18nProvider } from "./lib/i18n";
+import { AppConfigProvider } from "./lib/AppConfigContext";
 import { AuthProvider } from "./features/auth/AuthContext";
 import { App } from "./App";
 import { MAC_CONTENT_INSET } from "../../shared/window";
@@ -19,16 +20,18 @@ if (window.api.platform === "darwin") {
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <ThemeProvider>
-      <I18nProvider>
-        {isDebugWindow ? (
-          <DebugWindow />
-        ) : (
-          <AuthProvider>
-            <App />
-          </AuthProvider>
-        )}
-      </I18nProvider>
-    </ThemeProvider>
+    <AppConfigProvider>
+      <ThemeProvider>
+        <I18nProvider>
+          {isDebugWindow ? (
+            <DebugWindow />
+          ) : (
+            <AuthProvider>
+              <App />
+            </AuthProvider>
+          )}
+        </I18nProvider>
+      </ThemeProvider>
+    </AppConfigProvider>
   </StrictMode>,
 );

@@ -33,6 +33,7 @@ import { LaunchButton } from "../features/game/LaunchButton";
 import { NavProvider, useNav, type View } from "../features/navigation/NavContext";
 import { useI18n } from "../lib/i18n";
 import { api, events } from "../lib/api";
+import { useDebugNavVisible } from "../lib/debugSettings";
 import "../styles/app-shell.css";
 
 export function AppShell() {
@@ -58,6 +59,7 @@ function Shell() {
   const { t } = useI18n();
   const [leftOpen, setLeftOpen] = useState(true);
   const [friendsOpen, setFriendsOpen] = useState(true);
+  const showDebugNav = useDebugNavVisible();
 
   useEffect(
     () =>
@@ -119,16 +121,20 @@ function Shell() {
       divider: true,
       onClick: () => nav.openSettings(),
     },
-    {
-      id: "debug",
-      label: t("nav:debug"),
-      icon: Settings,
-      external: true,
-      onClick: (e) => {
-        if (e.ctrlKey || e.metaKey) void api.debug.cacheClear();
-        else void api.debug.openWindow();
-      },
-    },
+    ...(showDebugNav
+      ? [
+          {
+            id: "debug",
+            label: t("nav:debug"),
+            icon: Settings,
+            external: true,
+            onClick: (e) => {
+              if (e.ctrlKey || e.metaKey) void api.debug.cacheClear();
+              else void api.debug.openWindow();
+            },
+          } satisfies NavItem,
+        ]
+      : []),
   ];
 
   const openProfile = (id: "me" | string) => nav.openUser(id);
