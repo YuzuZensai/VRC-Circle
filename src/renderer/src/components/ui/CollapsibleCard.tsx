@@ -20,16 +20,11 @@ export function CollapsibleCard({
 }) {
   const local = useState(defaultOpen);
   const persisted = useCollapsed(persistKey ?? "", defaultOpen);
-  const [open, toggle] = persistKey
-    ? persisted
-    : [local[0], () => local[1]((v) => !v)];
+  const [open, toggle] = persistKey ? persisted : [local[0], () => local[1]((v) => !v)];
   return (
     <section className="rounded-xl border border-border bg-surface-2 p-5 shadow-sm">
       <div className={`flex items-center gap-1.5 ${open ? "mb-3" : ""}`}>
-        <button
-          onClick={toggle}
-          className={`flex flex-1 items-center gap-1.5 ${LABEL_HEADING}`}
-        >
+        <button onClick={toggle} className={`flex flex-1 items-center gap-1.5 ${LABEL_HEADING}`}>
           <span className="text-faint">
             {open ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
           </span>
