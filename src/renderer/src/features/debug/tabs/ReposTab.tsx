@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { ChevronDown, ChevronRight, Trash2 } from "lucide-react";
 import type { RepoStats, StoredEntity } from "../../../../../shared/types/repository";
 import { Button, CodeBlock, Panel, Stat } from "../../../components/ui";
@@ -137,16 +137,28 @@ function RepoInspector({ name, onBack, now }: { name: string; onBack: () => void
   const [entities, setEntities] = useState<StoredEntity<{ id: string }>[]>([]);
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(true);
+  const [prevName, setPrevName] = useState(name);
 
-  const reload = () => {
+  if (prevName !== name) {
+    setPrevName(name);
     setLoading(true);
-    api.debug
+  }
+
+  const fetchEntities = useCallback(() => {
+    return api.debug
       .repoInspect(name)
       .then((e) => setEntities(e))
       .finally(() => setLoading(false));
+  }, [name]);
+
+  const reload = () => {
+    setLoading(true);
+    void fetchEntities();
   };
 
-  useEffect(reload, [name]);
+  useEffect(() => {
+    void fetchEntities();
+  }, [fetchEntities]);
 
   const shown = useMemo(() => {
     const q = query.trim().toLowerCase();

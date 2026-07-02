@@ -10,7 +10,7 @@ type Listener = (change: Change) => void;
 class EntityStore {
   private readonly listeners = new Set<Listener>();
   private selfId: string | null = null;
-  private wired = false;
+  private unwire: (() => void) | null = null;
 
   onChange(fn: Listener): () => void {
     this.wire();
@@ -19,16 +19,20 @@ class EntityStore {
   }
 
   private wire(): void {
-    if (this.wired || !repos.hasActive) return;
-    this.wired = true;
-    repos.active.users.onChange((c) => {
+    if (this.unwire || !repos.hasActive) return;
+    this.unwire = repos.active.users.onChange((c) => {
       this.emit({ type: "upsert", user: c.entity });
     });
   }
 
-  seed(self: UserProfile, friends: UserProfile[]): void {
-    this.wired = false;
+  private rewire(): void {
+    this.unwire?.();
+    this.unwire = null;
     this.wire();
+  }
+
+  seed(self: UserProfile, friends: UserProfile[]): void {
+    this.rewire();
     this.selfId = self.id;
     const users = repos.active.users;
     users.upsert(self, "rest:detail");
@@ -70,8 +74,7 @@ class EntityStore {
 
   reset(): void {
     this.selfId = null;
-    this.wired = false;
-    this.wire();
+    this.rewire();
     this.emit({ type: "seed", snapshot: this.snapshot() });
   }
 

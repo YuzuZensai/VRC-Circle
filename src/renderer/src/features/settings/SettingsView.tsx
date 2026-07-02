@@ -310,10 +310,12 @@ function GameSection() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [ok, setOk] = useState<string | null>(null);
+  const [prevPath, setPrevPath] = useState<string | null>(null);
 
-  useEffect(() => {
+  if ((config?.gamePath ?? "") !== prevPath) {
+    setPrevPath(config?.gamePath ?? "");
     setPath(config?.gamePath ?? "");
-  }, [config?.gamePath]);
+  }
 
   async function run(p: Promise<AppConfig>, okMsg: string) {
     setBusy(true);

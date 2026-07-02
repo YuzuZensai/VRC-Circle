@@ -9,6 +9,8 @@ import type {
   MoveResult,
 } from "../../shared/types/avatar";
 import { toAvatar } from "./mappers";
+import { fillSlots, normalizeVisibility } from "./favoriteFolders";
+import { moveOneFavorite, moveManyFavorites, pause, type FavoriteMover } from "./favoriteMove";
 import { httpStatusOf, isTransientError } from "./errors";
 import { cachedRead } from "./cachedRead";
 import { requireActiveClient } from "./client";
@@ -89,26 +91,12 @@ async function fetchFavorites(vrc: VRChat): Promise<{
 }
 
 function fillAvatarSlots(existing: FavoriteFolder[], max: number): FavoriteFolder[] {
-  const out = orderSlots(existing, "avatars");
-  const taken = new Set(out.map((f) => f.name));
-  for (let i = 1; out.length < max && i <= max; i++) {
-    const name = `avatars${i}`;
-    if (taken.has(name)) continue;
-    out.push({ name, displayName: prettyFolderName(name), visibility: "private", avatars: [] });
-  }
-  return out;
-}
-
-function orderSlots<T extends { name: string }>(groups: T[], prefix: string): T[] {
-  const slotNum = (name: string) => {
-    const m = new RegExp(`^${prefix}(\\d+)$`).exec(name);
-    return m ? Number(m[1]) : null;
-  };
-  const custom = groups.filter((g) => slotNum(g.name) === null);
-  const numbered = groups
-    .filter((g) => slotNum(g.name) !== null)
-    .sort((a, b) => slotNum(a.name)! - slotNum(b.name)!);
-  return [...custom, ...numbered];
+  return fillSlots(existing, "avatars", max, (name) => ({
+    name,
+    displayName: prettyFolderName(name),
+    visibility: "private",
+    avatars: [],
+  }));
 }
 
 async function fetchFavoriteLimits(vrc: VRChat): Promise<FavoriteLimits> {
@@ -117,10 +105,6 @@ async function fetchFavoriteLimits(vrc: VRChat): Promise<FavoriteLimits> {
     maxGroups: data.maxFavoriteGroups?.avatar ?? data.defaultMaxFavoriteGroups,
     maxPerGroup: data.maxFavoritesPerGroup?.avatar ?? data.defaultMaxFavoritesPerGroup,
   };
-}
-
-function normalizeVisibility(v: string): FavoriteVisibility {
-  return v === "friends" || v === "public" ? v : "private";
 }
 
 function prettyFolderName(key: string): string {
@@ -187,6 +171,26 @@ export async function unfavoriteAvatar(avatarId: string): Promise<void> {
   await reloadFavorites();
 }
 
+type AvatarFavoriteRecord = { id: string; favoriteId: string; tags: string[] };
+
+function avatarMover(vrc: VRChat): FavoriteMover<AvatarFavoriteRecord> {
+  return {
+    skip: (fav, folder) => Boolean(fav?.tags?.includes(folder)),
+    canRefavorite: (id) => canRefavorite(vrc, id),
+    remove: async (fav) => {
+      await vrc.removeFavorite({ path: { favoriteId: fav.id }, throwOnError: true });
+    },
+    add: async (id, folder) => {
+      await vrc.addFavorite({
+        body: { type: "avatar", favoriteId: id, tags: [folder] },
+        throwOnError: true,
+      });
+    },
+    restore: (fav) => restoreAvatarFavorite(vrc, fav),
+    reload: () => reloadFavorites(),
+  };
+}
+
 export async function moveAvatarToFolder(
   avatarId: string,
   folder: string,
@@ -194,30 +198,19 @@ export async function moveAvatarToFolder(
 ): Promise<MoveResult> {
   const vrc = requireActiveClient();
   const fav = await findFavoriteRecord(vrc, avatarId);
-  if (fav?.tags?.includes(folder)) return { moved: 0, skipped: [] };
-  if (!(await canRefavorite(vrc, avatarId))) return { moved: 0, skipped: [avatarId] };
-  if (fav) await vrc.removeFavorite({ path: { favoriteId: fav.id }, throwOnError: true });
-  try {
-    await vrc.addFavorite({
-      body: { type: "avatar", favoriteId: avatarId, tags: [folder] },
-      throwOnError: true,
-    });
-  } catch (err) {
-    if (fav) await restoreAvatarFavorite(vrc, fav);
-    if (reload) await reloadFavorites();
-    if (isTransientError(err)) throw err;
-    return { moved: 0, skipped: [avatarId] };
-  }
-  if (reload) await reloadFavorites();
-  return { moved: 1, skipped: [] };
+  return moveOneFavorite(avatarMover(vrc), fav, avatarId, folder, reload);
 }
 
 export async function unfavoriteAvatars(avatarIds: string[]): Promise<void> {
   const vrc = requireActiveClient();
   const records = await favoriteRecords(vrc);
+  let first = true;
   for (const id of avatarIds) {
     const fav = records.get(id);
-    if (fav) await vrc.removeFavorite({ path: { favoriteId: fav.id }, throwOnError: true });
+    if (!fav) continue;
+    if (!first) await pause();
+    first = false;
+    await vrc.removeFavorite({ path: { favoriteId: fav.id }, throwOnError: true });
   }
   await reloadFavorites();
 }
@@ -228,34 +221,7 @@ export async function moveAvatarsToFolder(
 ): Promise<MoveResult> {
   const vrc = requireActiveClient();
   const records = await favoriteRecords(vrc);
-  const skipped: string[] = [];
-  let moved = 0;
-  for (const id of avatarIds) {
-    if (!(await canRefavorite(vrc, id))) {
-      skipped.push(id);
-      continue;
-    }
-    const fav = records.get(id);
-    if (fav?.tags?.includes(folder)) continue;
-    if (fav) await vrc.removeFavorite({ path: { favoriteId: fav.id }, throwOnError: true });
-    try {
-      await vrc.addFavorite({
-        body: { type: "avatar", favoriteId: id, tags: [folder] },
-        throwOnError: true,
-      });
-    } catch (err) {
-      if (fav) await restoreAvatarFavorite(vrc, fav);
-      if (isTransientError(err)) {
-        await reloadFavorites();
-        throw err;
-      }
-      skipped.push(id);
-      continue;
-    }
-    moved++;
-  }
-  await reloadFavorites();
-  return { moved, skipped };
+  return moveManyFavorites(avatarMover(vrc), records, avatarIds, folder);
 }
 
 async function canRefavorite(vrc: VRChat, avatarId: string): Promise<boolean> {

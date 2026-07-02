@@ -47,7 +47,13 @@ export interface FavoriteWorldFolder {
   worldIds: string[];
 }
 
-export type FavoriteVisibility = "private" | "friends" | "public";
+export type {
+  FavoriteVisibility,
+  FavoriteLimits,
+  FavoriteGroupEdit,
+  MoveResult,
+} from "./favorites";
+import type { FavoriteVisibility, FavoriteLimits } from "./favorites";
 
 export interface FavoriteWorldGroup {
   name: string;
@@ -55,21 +61,6 @@ export interface FavoriteWorldGroup {
   visibility: FavoriteVisibility;
   worldIds: string[];
   vrcPlus: boolean;
-}
-
-export interface FavoriteLimits {
-  maxGroups: number;
-  maxPerGroup: number;
-}
-
-export interface FavoriteGroupEdit {
-  displayName?: string;
-  visibility?: FavoriteVisibility;
-}
-
-export interface MoveResult {
-  moved: number;
-  skipped: string[];
 }
 
 export interface WorldFavoritesSnapshot {

@@ -27,6 +27,7 @@ const handlers = {
   "auth:status": () => guard(() => auth.checkStatus()),
   "auth:login": (creds) => guard(() => auth.login(creds)),
   "auth:verify2fa": (payload) => guard(() => auth.verify2fa(payload)),
+  "auth:cancel2fa": () => guard(async () => auth.cancel2fa()),
   "auth:logout": () => guard(() => auth.logout()),
 
   "accounts:list": () => guard(async () => auth.listAccountsState()),

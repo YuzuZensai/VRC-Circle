@@ -10,7 +10,7 @@ type Listener = (change: Change) => void;
 class WorldStore {
   private readonly listeners = new Set<Listener>();
   private byAuthor = new Map<string, Set<string>>();
-  private wired = false;
+  private unwire: (() => void) | null = null;
 
   onChange(fn: Listener): () => void {
     this.wire();
@@ -19,9 +19,8 @@ class WorldStore {
   }
 
   private wire(): void {
-    if (this.wired || !repos.hasActive) return;
-    this.wired = true;
-    repos.active.worlds.onChange((c) => {
+    if (this.unwire || !repos.hasActive) return;
+    this.unwire = repos.active.worlds.onChange((c) => {
       this.emit({ type: "upsert", world: c.entity });
     });
   }
@@ -55,7 +54,8 @@ class WorldStore {
 
   reset(): void {
     this.byAuthor.clear();
-    this.wired = false;
+    this.unwire?.();
+    this.unwire = null;
     this.wire();
     this.emit({ type: "seed", snapshot: this.snapshot() });
   }

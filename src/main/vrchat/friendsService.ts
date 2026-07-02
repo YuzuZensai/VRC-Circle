@@ -13,21 +13,40 @@ const order: Record<string, number> = {
   offline: 4,
 };
 
+const PAGE_SIZE = 100;
+
+type FriendPage = NonNullable<
+  Awaited<ReturnType<ReturnType<typeof requireActiveClient>["getFriends"]>>["data"]
+>;
+
+async function allFriendPages(
+  vrc: ReturnType<typeof requireActiveClient>,
+  offline: boolean,
+): Promise<FriendPage> {
+  const out: FriendPage = [];
+  for (let offset = 0; ; offset += PAGE_SIZE) {
+    const { data } = await vrc.getFriends({
+      query: { offline, n: PAGE_SIZE, offset },
+      throwOnError: true,
+    });
+    const page = data ?? [];
+    out.push(...page);
+    if (page.length < PAGE_SIZE) return out;
+  }
+}
+
 export async function listFriends(): Promise<UserProfile[]> {
   const vrc = requireActiveClient();
   const self = (await currentUser()).id;
 
   return userCache.get(cacheKeys.friends(), policies.friends, async () => {
     const [online, offline] = await Promise.all([
-      vrc.getFriends({ query: { offline: false, n: 100 }, throwOnError: true }),
-      vrc.getFriends({ query: { offline: true, n: 100 }, throwOnError: true }),
+      allFriendPages(vrc, false),
+      allFriendPages(vrc, true),
     ]);
     const friends = [
-      ...(online.data ?? []).map((u) => ({ ...toUserProfile(u, self), state: "online" as const })),
-      ...(offline.data ?? []).map((u) => ({
-        ...toUserProfile(u, self),
-        state: "offline" as const,
-      })),
+      ...online.map((u) => ({ ...toUserProfile(u, self), state: "online" as const })),
+      ...offline.map((u) => ({ ...toUserProfile(u, self), state: "offline" as const })),
     ];
     return friends.sort(
       (a, b) =>

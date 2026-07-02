@@ -1,31 +1,11 @@
 import type { ApiError, ApiErrorCode, IpcResult } from "../../shared/types/result";
+import { httpStatusOf, retryAfterSecondsOf, type HttpLike } from "../lib/http";
 
-interface HttpLike {
-  status?: number;
-  statusCode?: number;
-  status_code?: number;
-  response?: { status?: number; headers?: Record<string, string> };
-  headers?: Record<string, string>;
-  message?: string;
+export { httpStatusOf };
+
+interface ErrorLike extends HttpLike {
   code?: ApiErrorCode;
   methods?: ("totp" | "emailOtp")[];
-  error?: { status_code?: number; statusCode?: number; status?: number };
-}
-
-function statusOf(e: HttpLike): number | undefined {
-  return (
-    e.status ??
-    e.statusCode ??
-    e.status_code ??
-    e.response?.status ??
-    e.error?.status_code ??
-    e.error?.statusCode ??
-    e.error?.status
-  );
-}
-
-export function httpStatusOf(err: unknown): number | undefined {
-  return statusOf((err ?? {}) as HttpLike);
 }
 
 export function isTransientError(err: unknown): boolean {
@@ -34,15 +14,9 @@ export function isTransientError(err: unknown): boolean {
   return status === 429 || status >= 500;
 }
 
-function retryAfterOf(e: HttpLike): number | undefined {
-  const raw = e.response?.headers?.["retry-after"] ?? e.headers?.["retry-after"];
-  const n = raw != null ? Number(raw) : NaN;
-  return Number.isFinite(n) ? n : undefined;
-}
-
 export function toApiError(err: unknown): ApiError {
-  const e = (err ?? {}) as HttpLike;
-  const status = statusOf(e);
+  const e = (err ?? {}) as ErrorLike;
+  const status = httpStatusOf(e);
   const message = e.message ?? "Unexpected error";
 
   if (e.code) return { code: e.code, message, methods: e.methods };
@@ -57,14 +31,14 @@ export function toApiError(err: unknown): ApiError {
     return {
       code,
       message: "VRChat API rate limit hit. Try again shortly.",
-      retryAfter: retryAfterOf(e),
+      retryAfter: retryAfterSecondsOf(e),
     };
   }
   if (status !== undefined && status >= 500) {
     return { code, message: "VRChat API is temporarily unavailable. Try again shortly." };
   }
 
-  return { code, message, retryAfter: retryAfterOf(e) };
+  return { code, message, retryAfter: retryAfterSecondsOf(e) };
 }
 
 export async function guard<T>(fn: () => Promise<T>): Promise<IpcResult<T>> {

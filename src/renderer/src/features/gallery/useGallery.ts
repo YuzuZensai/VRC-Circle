@@ -19,15 +19,19 @@ export function useGallery(): GalleryData {
   const [error, setError] = useState<string | null>(null);
   const [recent, setRecent] = useState<ReadonlySet<string>>(() => new Set());
 
-  const reload = useCallback(() => {
-    setLoading(true);
-    setError(null);
-    api.gallery
+  const fetchSnapshot = useCallback(() => {
+    return api.gallery
       .snapshot()
       .then(setSnap)
       .catch((e) => setError(errorMessage(e, "Could not load your gallery.")))
       .finally(() => setLoading(false));
   }, []);
+
+  const reload = useCallback(() => {
+    setLoading(true);
+    setError(null);
+    void fetchSnapshot();
+  }, [fetchSnapshot]);
 
   const remove = useCallback(
     async (ids: string[]) => {
@@ -44,7 +48,9 @@ export function useGallery(): GalleryData {
     [reload],
   );
 
-  useEffect(reload, [reload]);
+  useEffect(() => {
+    void fetchSnapshot();
+  }, [fetchSnapshot]);
 
   useEffect(() => {
     return events.on("gallery:added", (photo) => {

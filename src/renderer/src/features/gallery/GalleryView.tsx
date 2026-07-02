@@ -31,13 +31,13 @@ export function GalleryView() {
   const { snap, loading, error, reload, remove, recent } = useGallery();
   const [query, setQuery] = useState("");
   const [activeId, setActiveId] = useState<string | null>(null);
-  const [selected, setSelected] = useState<Set<string>>(() => new Set());
+  const [selectedRaw, setSelected] = useState<Set<string>>(() => new Set());
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const bandRef = useRef<HTMLDivElement>(null);
   const [width, gridRef] = useWidth();
 
-  const photos = snap?.photos ?? [];
+  const photos = useMemo(() => snap?.photos ?? [], [snap]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -61,19 +61,15 @@ export function GalleryView() {
 
   const activeIndex = activeId ? filtered.findIndex((p) => p.id === activeId) : -1;
 
-  useEffect(() => {
-    if (activeId && !filtered.some((p) => p.id === activeId)) setActiveId(null);
-  }, [activeId, filtered]);
+  if (activeId && activeIndex < 0) setActiveId(null);
 
-  useEffect(() => {
-    setSelected((s) => {
-      if (s.size === 0) return s;
-      const live = new Set(photos.map((p) => p.id));
-      const next = new Set<string>();
-      for (const id of s) if (live.has(id)) next.add(id);
-      return next.size === s.size ? s : next;
-    });
-  }, [photos]);
+  const selected = useMemo(() => {
+    if (selectedRaw.size === 0) return selectedRaw;
+    const live = new Set(photos.map((p) => p.id));
+    const next = new Set<string>();
+    for (const id of selectedRaw) if (live.has(id)) next.add(id);
+    return next.size === selectedRaw.size ? selectedRaw : next;
+  }, [selectedRaw, photos]);
 
   const selecting = selected.size > 0;
   const toggle = useCallback((id: string) => {
@@ -128,7 +124,9 @@ export function GalleryView() {
   }, [activeIndex, filtered, deleteIds]);
 
   const selectedRef = useRef(selected);
-  selectedRef.current = selected;
+  useEffect(() => {
+    selectedRef.current = selected;
+  }, [selected]);
   const startRef = useRef<{ x: number; y: number } | null>(null);
   const baseRef = useRef<Set<string>>(new Set());
   const rectsRef = useRef<{ id: string; r: DOMRect }[]>([]);

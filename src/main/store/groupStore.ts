@@ -11,7 +11,7 @@ class GroupStore {
   private readonly listeners = new Set<Listener>();
   private byUser = new Map<string, Set<string>>();
   private representedByUser = new Map<string, string>();
-  private wired = false;
+  private unwire: (() => void) | null = null;
 
   onChange(fn: Listener): () => void {
     this.wire();
@@ -20,9 +20,8 @@ class GroupStore {
   }
 
   private wire(): void {
-    if (this.wired || !repos.hasActive) return;
-    this.wired = true;
-    repos.active.groups.onChange((c) => {
+    if (this.unwire || !repos.hasActive) return;
+    this.unwire = repos.active.groups.onChange((c) => {
       this.emit({ type: "upsert", group: c.entity });
     });
   }
@@ -62,7 +61,8 @@ class GroupStore {
   reset(): void {
     this.byUser.clear();
     this.representedByUser.clear();
-    this.wired = false;
+    this.unwire?.();
+    this.unwire = null;
     this.wire();
     this.emit({ type: "seed", snapshot: this.snapshot() });
   }

@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { create } from "zustand";
 import { useShallow } from "zustand/react/shallow";
 import type {
@@ -47,13 +47,15 @@ const failed = new Set<string>();
 
 export function useAvatar(avatarId?: string): { avatar?: Avatar; failed: boolean } {
   const avatar = useAvatars((s) => (avatarId ? s.avatars[avatarId] : undefined));
-  if (avatarId && !avatar && !fetching.has(avatarId) && !failed.has(avatarId)) {
+  const missing = Boolean(avatarId) && !avatar;
+  useEffect(() => {
+    if (!missing || !avatarId || fetching.has(avatarId) || failed.has(avatarId)) return;
     fetching.add(avatarId);
     api.avatar
       .get(avatarId)
       .catch(() => failed.add(avatarId))
       .finally(() => fetching.delete(avatarId));
-  }
+  }, [missing, avatarId]);
   return { avatar, failed: avatarId ? failed.has(avatarId) : false };
 }
 

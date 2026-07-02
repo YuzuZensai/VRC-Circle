@@ -27,7 +27,7 @@ class AvatarStore {
   private mineIds = new Set<string>();
   private favorites: FavoriteAvatarFolder[] = [];
   private favoriteLimits: FavoriteLimits = DEFAULT_LIMITS;
-  private wired = false;
+  private unwire: (() => void) | null = null;
 
   onChange(fn: Listener): () => void {
     this.wire();
@@ -36,9 +36,8 @@ class AvatarStore {
   }
 
   private wire(): void {
-    if (this.wired || !repos.hasActive) return;
-    this.wired = true;
-    repos.active.avatars.onChange((c) => {
+    if (this.unwire || !repos.hasActive) return;
+    this.unwire = repos.active.avatars.onChange((c) => {
       this.emit({ type: "upsert", avatar: c.entity });
     });
   }
@@ -91,7 +90,8 @@ class AvatarStore {
     this.mineIds.clear();
     this.favorites = [];
     this.favoriteLimits = DEFAULT_LIMITS;
-    this.wired = false;
+    this.unwire?.();
+    this.unwire = null;
     this.wire();
     this.emit({ type: "seed", snapshot: this.snapshot() });
   }

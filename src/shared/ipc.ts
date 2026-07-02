@@ -43,6 +43,7 @@ export interface IpcRequests {
   "auth:status": () => IpcResult<AuthStatus>;
   "auth:login": (creds: LoginCredentials) => IpcResult<AuthStatus>;
   "auth:verify2fa": (payload: TwoFactorPayload) => IpcResult<AuthStatus>;
+  "auth:cancel2fa": () => IpcResult<AuthStatus>;
   "auth:logout": () => IpcResult<void>;
 
   "accounts:list": () => IpcResult<AccountsState>;

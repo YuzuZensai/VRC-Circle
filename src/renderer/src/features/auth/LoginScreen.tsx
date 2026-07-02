@@ -7,10 +7,11 @@ import { Banner, Button, Field } from "../../components/ui";
 import { useI18n } from "../../lib/i18n";
 
 export function LoginScreen() {
-  const { status, login, verify2fa, adding, cancelAddAccount, accounts } = useAuth();
+  const { status, login, verify2fa, cancel2fa, adding, cancelAddAccount, accounts } = useAuth();
   const { t } = useI18n();
   const awaiting2fa = status.state === "awaiting2fa";
-  const canGoBack = adding && accounts.accounts.length > 0;
+  const canGoBack = awaiting2fa || (adding && accounts.accounts.length > 0);
+  const goBack = awaiting2fa ? () => void cancel2fa() : cancelAddAccount;
 
   return (
     <div className="relative grid h-full place-items-center p-6">
@@ -19,7 +20,7 @@ export function LoginScreen() {
         {canGoBack ? (
           <button
             className="absolute left-4 top-4 inline-flex items-center gap-1 rounded-sm px-2 py-[5px] text-[13px] text-muted transition-[color,background] duration-[var(--dur)] ease-[var(--ease)] hover:bg-surface-2 hover:text-text"
-            onClick={cancelAddAccount}
+            onClick={goBack}
           >
             <ArrowLeft size={15} /> {t("auth:back")}
           </button>

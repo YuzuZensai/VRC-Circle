@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Check, ChevronDown, LogOut, Plus, Users, X } from "lucide-react";
 import { useAuth } from "./AuthContext";
 import { Avatar, StatusDot } from "../../components/ui";
@@ -161,10 +161,13 @@ function StatusPicker() {
   const current = self?.status ?? "offline";
   const [desc, setDesc] = useState(self?.statusDescription ?? "");
   const [busy, setBusy] = useState(false);
+  const descKey = `${self?.id ?? ""}\n${self?.statusDescription ?? ""}`;
+  const [prevDescKey, setPrevDescKey] = useState(descKey);
 
-  useEffect(() => {
+  if (descKey !== prevDescKey) {
+    setPrevDescKey(descKey);
     setDesc(self?.statusDescription ?? "");
-  }, [self?.id, self?.statusDescription]);
+  }
 
   async function apply(status: UserStatus, description: string) {
     setBusy(true);

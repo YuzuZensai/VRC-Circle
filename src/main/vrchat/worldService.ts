@@ -3,7 +3,6 @@ import type {
   DiscoverCategory,
   FavoriteGroupEdit,
   FavoriteLimits,
-  FavoriteVisibility,
   FavoriteWorldFolder,
   MoveResult,
   World,
@@ -16,6 +15,8 @@ import {
   type WorldFavoriteGroupType,
 } from "./rawEndpoints";
 import { toWorld } from "./mappers";
+import { fillSlots, normalizeVisibility } from "./favoriteFolders";
+import { moveOneFavorite, moveManyFavorites, pause, type FavoriteMover } from "./favoriteMove";
 import { cachedRead } from "./cachedRead";
 import { requireActiveClient } from "./client";
 import { userCache, currentUser } from "./userService";
@@ -97,6 +98,8 @@ async function loadFavoriteWorlds(vrc: VRChat, userId: string): Promise<CachedFa
     });
   }
 
+  // looks redundant with the caller's broadcast, but on a background revalidate
+  // nobody awaits us and this is the only done:true the ui gets
   const folders = groupIntoFolders(order, members, names);
   broadcast("world:favoriteFolders", { userId, folders, done: true });
   return { worlds, folders };
@@ -243,46 +246,34 @@ async function fetchMyFavorites(
       vrcPlus: (group.type as WorldFavoriteGroupType) === "vrcPlusWorld",
     });
   }
-  return { groups: fillSlots(existing, caps), limits };
+  return { groups: fillWorldSlots(existing, caps), limits };
 }
 
-function fillSlots(existing: FavoriteGroupInput[], caps: WorldFavoriteCaps): FavoriteGroupInput[] {
+function fillWorldSlots(
+  existing: FavoriteGroupInput[],
+  caps: WorldFavoriteCaps,
+): FavoriteGroupInput[] {
   const out: FavoriteGroupInput[] = [];
   for (const [prefix, vrcPlus, max] of [
     ["worlds", false, caps.world],
     ["vrcPlusWorlds", true, caps.vrcPlusWorld],
   ] as const) {
-    const mine = orderSlots(
-      existing.filter((g) => g.vrcPlus === vrcPlus),
-      prefix,
+    out.push(
+      ...fillSlots(
+        existing.filter((g) => g.vrcPlus === vrcPlus),
+        prefix,
+        max,
+        (name): FavoriteGroupInput => ({
+          name,
+          displayName: prettyFolderName(name),
+          visibility: "private",
+          worlds: [],
+          vrcPlus,
+        }),
+      ),
     );
-    const taken = new Set(mine.map((g) => g.name));
-    for (let i = 1; mine.length < max && i <= max; i++) {
-      const name = `${prefix}${i}`;
-      if (taken.has(name)) continue;
-      mine.push({
-        name,
-        displayName: prettyFolderName(name),
-        visibility: "private",
-        worlds: [],
-        vrcPlus,
-      });
-    }
-    out.push(...mine);
   }
   return out;
-}
-
-function orderSlots<T extends { name: string }>(groups: T[], prefix: string): T[] {
-  const slotNum = (name: string) => {
-    const m = new RegExp(`^${prefix}(\\d+)$`).exec(name);
-    return m ? Number(m[1]) : null;
-  };
-  const custom = groups.filter((g) => slotNum(g.name) === null);
-  const numbered = groups
-    .filter((g) => slotNum(g.name) !== null)
-    .sort((a, b) => slotNum(a.name)! - slotNum(b.name)!);
-  return [...custom, ...numbered];
 }
 
 type WorldFavoriteCaps = { world: number; vrcPlusWorld: number };
@@ -302,10 +293,6 @@ async function fetchFavoriteLimits(
   };
 }
 
-function normalizeVisibility(v: string): FavoriteVisibility {
-  return v === "friends" || v === "public" ? v : "private";
-}
-
 export async function favoriteWorld(worldId: string, folder = DEFAULT_FOLDER): Promise<void> {
   const vrc = requireActiveClient();
   await vrc.addFavorite({
@@ -322,6 +309,28 @@ export async function unfavoriteWorld(worldId: string): Promise<void> {
   await reloadMyFavorites();
 }
 
+function worldMover(vrc: VRChat, meId: string): FavoriteMover<WorldFavoriteRecord> {
+  let typeOf: Promise<WorldFavoriteGroupType> | null = null;
+  const folderType = (folder: string) =>
+    (typeOf ??= favoriteTypeForExistingFolder(vrc, meId, folder));
+  return {
+    skip: isOnlyInFolder,
+    canRefavorite: (id) => canRefavorite(vrc, id),
+    remove: async (fav) => {
+      await vrc.removeFavorite({ path: { favoriteId: fav.id }, throwOnError: true });
+    },
+    add: async (id, folder) => {
+      await vrc.addFavorite({
+        body: favoriteBody(await folderType(folder), id, [folder]),
+        throwOnError: true,
+      });
+    },
+    restore: (fav) => restoreWorldFavorite(vrc, fav),
+    reload: () => reloadMyFavorites(),
+    onMoved: (id, folder) => worldFavoritesStore.moveWorld(id, folder),
+  };
+}
+
 export async function moveWorldToFolder(
   worldId: string,
   folder: string,
@@ -330,32 +339,19 @@ export async function moveWorldToFolder(
   const vrc = requireActiveClient();
   const me = await currentUser();
   const fav = await findFavoriteRecord(vrc, worldId);
-  if (isOnlyInFolder(fav, folder)) return { moved: 0, skipped: [] };
-  if (!(await canRefavorite(vrc, worldId))) return { moved: 0, skipped: [worldId] };
-  const type = await favoriteTypeForExistingFolder(vrc, me.id, folder);
-  if (fav) await vrc.removeFavorite({ path: { favoriteId: fav.id }, throwOnError: true });
-  try {
-    await vrc.addFavorite({
-      body: favoriteBody(type, worldId, [folder]),
-      throwOnError: true,
-    });
-  } catch (err) {
-    if (fav) await restoreWorldFavorite(vrc, fav);
-    if (reload) await reloadMyFavorites();
-    if (isTransientError(err)) throw err;
-    return { moved: 0, skipped: [worldId] };
-  }
-  if (reload) await reloadMyFavorites();
-  worldFavoritesStore.moveWorld(worldId, folder);
-  return { moved: 1, skipped: [] };
+  return moveOneFavorite(worldMover(vrc, me.id), fav, worldId, folder, reload);
 }
 
 export async function unfavoriteWorlds(worldIds: string[]): Promise<void> {
   const vrc = requireActiveClient();
   const records = await favoriteRecords(vrc);
+  let first = true;
   for (const id of worldIds) {
     const fav = records.get(id);
-    if (fav) await vrc.removeFavorite({ path: { favoriteId: fav.id }, throwOnError: true });
+    if (!fav) continue;
+    if (!first) await pause();
+    first = false;
+    await vrc.removeFavorite({ path: { favoriteId: fav.id }, throwOnError: true });
   }
   await reloadMyFavorites();
 }
@@ -364,36 +360,7 @@ export async function moveWorldsToFolder(worldIds: string[], folder: string): Pr
   const vrc = requireActiveClient();
   const me = await currentUser();
   const records = await favoriteRecords(vrc);
-  const type = await favoriteTypeForExistingFolder(vrc, me.id, folder);
-  const skipped: string[] = [];
-  let moved = 0;
-  for (const id of worldIds) {
-    if (!(await canRefavorite(vrc, id))) {
-      skipped.push(id);
-      continue;
-    }
-    const fav = records.get(id);
-    if (isOnlyInFolder(fav, folder)) continue;
-    if (fav) await vrc.removeFavorite({ path: { favoriteId: fav.id }, throwOnError: true });
-    try {
-      await vrc.addFavorite({
-        body: favoriteBody(type, id, [folder]),
-        throwOnError: true,
-      });
-    } catch (err) {
-      if (fav) await restoreWorldFavorite(vrc, fav);
-      if (isTransientError(err)) {
-        await reloadMyFavorites();
-        throw err;
-      }
-      skipped.push(id);
-      continue;
-    }
-    moved++;
-  }
-  await reloadMyFavorites();
-  for (const id of worldIds) if (!skipped.includes(id)) worldFavoritesStore.moveWorld(id, folder);
-  return { moved, skipped };
+  return moveManyFavorites(worldMover(vrc, me.id), records, worldIds, folder);
 }
 
 async function restoreWorldFavorite(vrc: VRChat, fav: WorldFavoriteRecord): Promise<void> {

@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { writeFileAtomic, writeFileAtomicSync } from "../lib/atomicFile";
 import type { CacheEntryInfo, CacheStats } from "../../shared/types/debug";
-import { httpStatusOf } from "../vrchat/errors";
+import { rateLimitDelayMs } from "../lib/http";
 
 interface Entry<T> {
   value: T;
@@ -29,17 +29,6 @@ function byteSize(value: unknown): number {
   } catch {
     return 0;
   }
-}
-
-function retryAfterMs(err: unknown): number | null {
-  if (httpStatusOf(err) !== 429) return null;
-  const e = (err ?? {}) as {
-    response?: { headers?: Record<string, string> };
-    headers?: Record<string, string>;
-  };
-  const raw = e.response?.headers?.["retry-after"] ?? e.headers?.["retry-after"];
-  const secs = raw != null ? Number(raw) : NaN;
-  return Number.isFinite(secs) ? secs * 1000 : 8000;
 }
 
 export interface CachePolicy {
@@ -230,7 +219,7 @@ export class TtlCache {
         return value;
       })
       .catch((err) => {
-        const ms = retryAfterMs(err);
+        const ms = rateLimitDelayMs(err);
         if (ms != null) this.rateLimitedUntil = Date.now() + ms;
         throw err;
       })

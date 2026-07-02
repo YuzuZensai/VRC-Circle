@@ -48,6 +48,7 @@ export const api = {
     login: (username: string, password: string) => call("auth:login", { username, password }),
     verify2fa: (method: "totp" | "emailOtp", code: string) =>
       call("auth:verify2fa", { method, code }),
+    cancel2fa: () => call("auth:cancel2fa"),
     logout: () => call("auth:logout"),
   },
   accounts: {

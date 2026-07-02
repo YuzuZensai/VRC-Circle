@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { create } from "zustand";
 import { useShallow } from "zustand/react/shallow";
 import type { World, WorldSnapshot } from "../../../shared/types/world";
@@ -56,13 +57,15 @@ const failed = new Set<string>();
 
 export function useWorld(worldId?: string): World | undefined {
   const world = useWorlds((s) => (worldId ? s.worlds[worldId] : undefined));
-  if (worldId && !world && !fetching.has(worldId) && !failed.has(worldId)) {
+  const missing = Boolean(worldId) && !world;
+  useEffect(() => {
+    if (!missing || !worldId || fetching.has(worldId) || failed.has(worldId)) return;
     fetching.add(worldId);
     api.world
       .get(worldId)
       .catch(() => failed.add(worldId))
       .finally(() => fetching.delete(worldId));
-  }
+  }, [missing, worldId]);
   return world;
 }
 

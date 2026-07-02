@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { create } from "zustand";
 import { useShallow } from "zustand/react/shallow";
 import type { Group, GroupSnapshot } from "../../../shared/types/group";
@@ -36,13 +37,15 @@ const failed = new Set<string>();
 
 export function useGroup(groupId?: string): Group | undefined {
   const group = useGroups((s) => (groupId ? s.groups[groupId] : undefined));
-  if (groupId && !group?.detailed && !fetching.has(groupId) && !failed.has(groupId)) {
+  const missing = Boolean(groupId) && !group?.detailed;
+  useEffect(() => {
+    if (!missing || !groupId || fetching.has(groupId) || failed.has(groupId)) return;
     fetching.add(groupId);
     api.group
       .get(groupId)
       .catch(() => failed.add(groupId))
       .finally(() => fetching.delete(groupId));
-  }
+  }, [missing, groupId]);
   return group;
 }
 

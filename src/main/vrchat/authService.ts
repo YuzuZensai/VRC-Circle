@@ -15,6 +15,7 @@ import {
   setActive,
 } from "../accounts/store";
 import { toCurrentUserSummary } from "./mappers";
+import { isTransientError } from "./errors";
 import { userCache } from "./userService";
 import { clearSessionCookies, syncSessionCookies } from "./cookies";
 import { logger } from "../debug/logger";
@@ -47,12 +48,14 @@ function isRealUser(data: unknown): data is RawUser {
 
 async function summaryFrom(vrc: VRChatLike): Promise<CurrentUserSummary> {
   const { data } = await vrc.getCurrentUser({ throwOnError: true });
-  if (!isRealUser(data)) throw new Error("not authenticated");
+  if (!isRealUser(data)) throw { status: 401, message: "Not authenticated" };
   return toCurrentUserSummary(data);
 }
 
 let pendingTwoFactor: {
+  creds: LoginCredentials;
   resolveCode: (code: string) => void;
+  rejectCode: (err: unknown) => void;
   methods: TwoFactorMethod[];
   loginDone: Promise<AuthStatus>;
 } | null = null;
@@ -81,7 +84,8 @@ export async function checkStatus(): Promise<AuthStatus> {
     await syncSessionCookies(vrc);
     void seedActiveAccount();
     return { state: "authenticated", user };
-  } catch {
+  } catch (err) {
+    if (isTransientError(err)) throw err;
     return { state: "unauthenticated" };
   }
 }
@@ -96,6 +100,8 @@ export async function login(creds: LoginCredentials): Promise<AuthStatus> {
     resolveCode = res;
     rejectCode = rej;
   });
+  // nothing awaits this if login fails before 2fa is even asked, don't let it reject unhandled
+  codePromise.catch(() => {});
 
   let signalAwaiting!: (methods: TwoFactorMethod[]) => void;
   const awaiting = new Promise<TwoFactorMethod[]>((res) => {
@@ -128,22 +134,38 @@ export async function login(creds: LoginCredentials): Promise<AuthStatus> {
     return winner.status;
   }
 
-  pendingTwoFactor = { resolveCode, methods: winner.methods, loginDone };
+  pendingTwoFactor = { creds, resolveCode, rejectCode, methods: winner.methods, loginDone };
   return { state: "awaiting2fa", methods: winner.methods };
 }
 
 export async function verify2fa(payload: TwoFactorPayload): Promise<AuthStatus> {
   if (!pendingTwoFactor) return { state: "unauthenticated" };
-  const { resolveCode, loginDone } = pendingTwoFactor;
+  const { resolveCode, loginDone, creds } = pendingTwoFactor;
   resolveCode(payload.code);
   try {
     const status = await loginDone;
     pendingTwoFactor = null;
     return status;
-  } catch {
+  } catch (err) {
     pendingTwoFactor = null;
-    return { state: "unauthenticated" };
+    if (isTransientError(err)) throw err;
+    const next = await login(creds);
+    if (next.state === "awaiting2fa") {
+      throw { code: "invalid_2fa", message: "Invalid two-factor code." };
+    }
+    return next;
   }
+}
+
+export function cancel2fa(): AuthStatus {
+  if (pendingTwoFactor) {
+    pendingTwoFactor.rejectCode({ status: 401, message: "Two-factor auth cancelled" });
+    pendingTwoFactor.loginDone.catch(() => {});
+    pendingTwoFactor = null;
+  }
+  clearLoginClient();
+  clearPending();
+  return { state: "unauthenticated" };
 }
 
 export function listAccountsState(): AccountsState {
