@@ -7,7 +7,7 @@ An unofficial VRChat desktop hub and launcher built with Electron, React, and th
 > [!WARNING]
 > VRC Circle is in heavy development. Expect bugs, incomplete features, breaking changes, and rough edges. Use it at your own risk.
 
-## ✨ Features
+## Features
 
 - Accounts
 - Friends and presence
@@ -19,7 +19,7 @@ An unofficial VRChat desktop hub and launcher built with Electron, React, and th
 - Themes and localization
 - Unity project tools (TODO)
 
-## 🛠️ Development
+## Development
 
 ```bash
 pnpm install
@@ -27,10 +27,10 @@ pnpm dev
 pnpm build
 ```
 
-## 📜 VRChat Guidelines
+## VRChat Guidelines
 
 Use VRC Circle responsibly and follow VRChat's [Creator Guidelines](https://hello.vrchat.com/creator-guidelines), Community Guidelines, and Terms of Use.
 
-## ⚠️ Disclaimer
+## Disclaimer
 
 VRC Circle is not affiliated with, endorsed by, or sponsored by VRChat Inc.
