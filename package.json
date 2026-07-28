@@ -34,7 +34,7 @@
     "keyv": "^5.2.3",
     "keyv-file": "^5.1.2",
     "lucide-react": "^1.21.0",
-    "react-i18next": "^17.0.8",
+    "react-i18next": "^17.0.11",
     "sharp": "^0.35.2",
     "vrchat": "2.21.8-nightly.16",
     "ws": "^8.18.0",
